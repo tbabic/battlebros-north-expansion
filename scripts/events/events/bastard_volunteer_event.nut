@@ -166,15 +166,7 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 	}
 
 	function onUpdateScore()
-	{
-		//TODO: test event
-		logInfo("update score: bastard event");
-		if(true){
-			this.m.Score = 100000;
-			return;
-		}
-		
-		
+	{		
 		local multiplier = 1;
 		if (!this.Const.DLC.Wildmen)
 		{
@@ -190,7 +182,7 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 			return;
 		}
 		
-		if (this.World.Ambitions.hasActiveAmbition() && this.World.Ambitions.getActiveAmbition().getID() != "ambition.roster_of_12")
+		if (this.World.Ambitions.hasActiveAmbition() && this.World.Ambitions.getActiveAmbition().getID() == "ambition.roster_of_12")
 		{
 			multiplier = 4;
 		}

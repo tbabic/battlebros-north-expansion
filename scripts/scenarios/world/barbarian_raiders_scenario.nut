@@ -307,7 +307,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 			this.Music.setTrackList([
 				"music/barbarians_02.ogg"
 			], this.Const.Music.CrossFadeTime);
-			this.World.Events.fire("event.bastard_volunteer");
+			this.World.Events.fire("event.barbarian_raiders_scenario_intro");
 		}, null);
 	}
 	

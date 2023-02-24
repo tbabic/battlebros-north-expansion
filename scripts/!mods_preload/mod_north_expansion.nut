@@ -1,5 +1,6 @@
 ::mods_registerMod("mod_north_expansion", 0.1, "North Expansion");
 
+//TODO: initial ambition, something like win 2 battles
 //TODO: barbarian recruits events
 //TODO: disowned noble event
 //TODO: event: if king, keep adventuring but retire from fighting
