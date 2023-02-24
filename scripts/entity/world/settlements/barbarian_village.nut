@@ -23,7 +23,7 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 		this.m.Lighting = "";
 		this.m.Rumors = this.Const.Strings.RumorsSnowSettlement;
 		this.m.Culture = this.Const.World.Culture.Northern;
-		this.m.IsMilitary = false;
+		this.m.IsMilitary = false; //TODO: should it be military?
 		this.m.Size = 1;
 		this.m.HousesType = 1;
 		this.m.HousesMin = 0;
@@ -38,6 +38,8 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 			this.m.Sprite = "world_wildmen_02";
 		}
 		this.settlement.onInit();
+		//TODO: taxidermist???
+		//TODO: barber
 	}
 
 	function onBuild()

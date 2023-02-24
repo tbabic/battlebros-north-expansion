@@ -72,7 +72,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 
 	function onSpawnAssets()
 	{
-	
+		//TODO: remove monk bro
 		local useDefaultBro = true;
 		local roster = this.World.getPlayerRoster();
 
@@ -272,7 +272,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		talents[this.Const.Attributes.Bravery] = 3;
 		
 		this.World.Assets.m.BusinessReputation = -50;
-		this.World.Assets.m.MoralReputation = -30;
+		this.World.Assets.addMoralReputation(-30.0);
 		this.World.Assets.getStash().add(this.new("scripts/items/supplies/goat_cheese_item"));
 		this.World.Assets.getStash().add(this.new("scripts/items/supplies/smoked_ham_item"));
 		this.World.Assets.m.Money = this.World.Assets.m.Money / 2;
@@ -293,9 +293,10 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 			n.addPlayerRelation(-100.0, "You are considered outlaws and barbarians");
 		}
 
-		local coords = getCoordinates();
-		local barbarianSettlement = this.World.spawnLocation("scripts/entity/world/settlements/barbarian_village", coords);
-		createBarbarianSettlementFaction(barbarianSettlement);
+
+		
+		local barbarians = createBarbarianSettlement()
+		local coords = barbarians.coords;
 		
 		this.World.State.m.Player = this.World.spawnEntity("scripts/entity/world/player_party", coords.X, coords.Y);
 		
@@ -306,11 +307,60 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 			this.Music.setTrackList([
 				"music/barbarians_02.ogg"
 			], this.Const.Music.CrossFadeTime);
-			this.World.Events.fire("event.barbarian_raiders_scenario_intro");
+			this.World.Events.fire("event.bastard_volunteer");
 		}, null);
 	}
 	
-	function getCoordinates() {
+	function createBarbarianSettlement()
+	{
+		local f = this.new("scripts/factions/barbarian_settlement_faction");
+		local c = getCoordinates(f);
+		local s = this.World.spawnLocation("scripts/entity/world/settlements/barbarian_village", c);
+		
+		s.updateProperties();
+		s.build();
+		
+		
+		local allies = f.getAllies();
+		this.World.FactionManager.m.Factions.push(f);
+		f.setName(s.getName());
+		f.setID(this.World.FactionManager.m.Factions.len()-1);
+		f.setDescription(s.getDescription());
+		f.setBanner(11);
+		f.setDiscovered(true);
+		f.getFlags().set("IsBarbarianFaction", true);
+		
+		f.setPlayerRelation(50.0);
+		f.addSettlement(s, true);
+		f.getFlags().set("BarbarianSettlementNoAllies", true);
+		checkFactions();
+		
+		
+		local allies = f.getAllies();
+		logInfo("Alliance: " + f.getName());
+		foreach (a in allies) {
+			if (this.World.FactionManager.getFaction(a) == null) {
+				logInfo("Faction: null");
+			} else {
+				logInfo("Faction: " + this.World.FactionManager.getFaction(a).getName());
+			}
+		}
+		
+		return {
+			faction = f,
+			settlement = s,
+			coords = c
+		};
+		
+	}
+	
+	function getCoordinates(f) {
+	
+		
+		local spawnTile = spawnTile(f);
+		if (spawnTile != null) {
+			return spawnTile.Coords;
+		}
 		local northVillage;
 		local maxY = this.World.getMapSize().Y;
 		local minY = this.World.getMapSize().Y * 0.7;
@@ -366,8 +416,6 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		local maxBoundaryX = this.Math.min(halfX, northernX + xOffset);
 		local minBoundaryX = this.Math.max(halfX, northernX + xOffset);
 		
-		local spawnTile;
-		
 		do
 		{
 			local x = this.Math.rand(minBoundaryX, maxBoundaryX);
@@ -408,40 +456,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 	
 	}
 	
-	function createBarbarianSettlementFaction(s)
-	{
-		s.updateProperties();
-		s.build();
-		local f = this.new("scripts/factions/barbarian_settlement_faction");
-		
-		local allies = f.getAllies();
-		this.World.FactionManager.m.Factions.push(f);
-		f.setName(s.getName());
-		f.setID(this.World.FactionManager.m.Factions.len()-1);
-		f.setDescription(s.getDescription());
-		f.setBanner(11);
-		f.setDiscovered(true);
-		f.getFlags().set("IsBarbarianFaction", true);
-		
-		f.setPlayerRelation(50.0);
-		f.addSettlement(s, true);
-		this.World.Statistics.getFlags().set("BarbarianSettlementNoAllies", true);
-		checkFactions();
-		
-		
-		local allies = f.getAllies();
-		logInfo("Alliance: " + f.getName());
-		foreach (a in allies) {
-			if (this.World.FactionManager.getFaction(a) == null) {
-				logInfo("Faction: null");
-			} else {
-				logInfo("Faction: " + this.World.FactionManager.getFaction(a).getName());
-			}
-		}
-		
-		return f;
-		
-	}
+	
 	
 	
 	
@@ -505,6 +520,18 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 			
 		}
 	}
+	
+	function spawnTile(f) {
+		local settlements = this.World.EntityManager.getSettlements();
+		local action = this.new("scripts/factions/actions/build_barbarian_camp_action");
+		action.m.Faction = f;
+		local spawnTile = action.getTileToSpawnLocation(10, [
+				this.Const.World.TerrainType.Mountains
+			], 7, 12, 0, 0, 0, null, 0.75, 0.9);
+		return spawnTile;
+	}
+	
+	
 	
 
 });

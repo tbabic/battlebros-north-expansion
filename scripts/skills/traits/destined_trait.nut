@@ -7,7 +7,7 @@ this.destined_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		this.m.ID = "trait.destined";
 		this.m.Name = "Destined";
 		this.m.Icon = "ui/traits/trait_icon_destined.png";
-		this.m.Description = "You know the time and manner of your death, and it is not here and it is not now.";
+		this.m.Description = "This character knows the time and manner of his death, and it is not here and it is not now.";
 		this.m.Type = this.m.Type;
 		this.m.Titles = [];
 		this.m.Excluded = [];
@@ -29,16 +29,38 @@ this.destined_trait <- this.inherit("scripts/skills/traits/character_trait", {
 			{
 				id = 10,
 				type = "text",
-				icon = "ui/icons/melee_defense.png",
-				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Defense\n[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Ranged Defense"
+				icon = "ui/icons/morale.png",
+				text = "Will start combat at confident morale if permitted by mood"
+			},
+			{
+				id = 11,
+				type = "text",
+				icon = "ui/icons/bravery.png",
+				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+10[/color] Resolve"
+			},
+			{
+				id = 12,
+				type = "text",
+				icon = "ui/icons/special.png",
+				text = "Re-roll every failed morale check for a second chance"
 			}
 		];
 	}
 
 	function onUpdate( _properties )
 	{
-		_properties.MeleeDefense += 5;
-		_properties.RangedDefense += 5;
+		_properties.RerollMoraleChance = 100;
+		_properties.Bravery += 10;
+	}
+	
+	function onCombatStarted()
+	{
+		local actor = this.getContainer().getActor();
+
+		if (actor.getMoodState() >= this.Const.MoodState.Neutral && actor.getMoraleState() < this.Const.MoraleState.Confident)
+		{
+			actor.setMoraleState(this.Const.MoraleState.Confident);
+		}
 	}
 
 });

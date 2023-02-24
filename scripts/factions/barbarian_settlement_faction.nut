@@ -24,6 +24,7 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 			card.setFaction(this);
 			this.m.Deck.push(card);
 		}
+		//TODO: banner
 	}
 
 	function onUpdateRoster()
@@ -96,7 +97,7 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 		} else {
 			logInfo("Faction: " + this.World.FactionManager.getFaction(_a).getName());
 		}
-		if (this.World.Statistics.getFlags().get("BarbarianSettlementNoAllies")) {
+		if (this.getFlags().get("BarbarianSettlementNoAllies")) {
 			return;
 		}
 		this.faction.addAlly(_a);

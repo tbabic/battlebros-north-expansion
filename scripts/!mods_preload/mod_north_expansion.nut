@@ -1,5 +1,19 @@
 ::mods_registerMod("mod_north_expansion", 0.1, "North Expansion");
 
+//TODO: barbarian recruits events
+//TODO: disowned noble event
+//TODO: event: if king, keep adventuring but retire from fighting
+//TODO: if civil level 3, disband settlement
+//TODO: 'crude polearm' weapon and named weapon for barbarians
+//TODO: test traits
+//TODO: champion brother winning duels events
+//TODO: recruiting events
+//TODO: extract utils and const
+//TODO: logInfo comment out
+//TODO: situation eager recruits, icon: perk13
+//TODO: threetrees event??
+
+
 ::NorthMod <- {};
 ::NorthMod.Utils <-{
 	
@@ -32,7 +46,50 @@
 		}
 		return result;
 	}
+	
+	function scorePicker(scores)
+	{
+		local totalScore = 0;
+		for (local i = 0; i < totalScore.len(); i++)
+		{
+			totalScore += scores[i];
+		}
+		local r = this.Math.rand(1, totalScore);
+		for (local i = 0; i < totalScore.len(); i++) {
+			if (score[i] >= totalScore)
+			{
+				return i;
+			}
+			totalScore -= score[i];
+		}
+		return null;
+	}
 }
+
+::NorthMod.Const <- {};
+::NorthMod.Const.DisabledAmbitions1 <- [
+	"ambition.allied_civilians",
+	"ambition.allied_nobles",
+	"ambition.battle_standard",
+	"ambition.contracts",
+	"ambition.defeat_holywar",
+	"ambition.defeat_civilwar",
+	"ambition.fulfill_x_southern_contracts",
+	"ambition.make_nobles_aware",
+	"ambition.sergeant",
+	"ambition.trade",
+	"ambition.visit_settlements",
+	"ambition.ranged_mastery"
+	
+];
+
+::NorthMod.Const.DisabledAmbitions2 <- [
+	"ambition.battle_standard",
+	"ambition.sergeant",
+	
+];
+
+
 
 ::mods_queue(null, null, function()
 {
@@ -42,6 +99,7 @@
 			Description = "You were raised in the harsh north and fought many battles, mostly victorious but you've managed to live through few bitter defeats. But now it's time to find your destiny somewhere south. Working as a mercenary, doing what you do best, fighting, seems like the best way to go forward."
 			StartingLevel = 3,
 		};
+		//TODO: add new traits to avatar mod
 	}
 	else {
 		logInfo("avatarMod not registered")
@@ -59,6 +117,8 @@
 		local onAddEquipment = ::mods_getMember(o, "onAddEquipment");
 		::mods_override(o, "onAddEquipment", function() {
 			if (this.World.Assets.getOrigin().getID() == "scenario.barbarian_raiders") {
+				logInfo("barb equipment:" + this.getID());
+				local items = this.getContainer().getActor().getItems();
 				local r = this.Math.rand(1,100);
 				if (r <= 60) {
 					onAddEquipment();
@@ -66,32 +126,32 @@
 				if (r <= 90) {
 					// thrall equipment
 					local weapons = [
-						"scripts/items/weapons/barbarians/antler_cleaver",
-						"scripts/items/weapons/barbarians/claw_club",
-						"scripts/items/weapons/militia_spear"
+						"weapons/barbarians/antler_cleaver",
+						"weapons/barbarians/claw_club",
+						"weapons/militia_spear"
 					];
-					this.m.Items.equip(this.new("scripts/items/" + weapons[this.Math.rand(0, weapons.len() - 1)]));
+					items.equip(this.new("scripts/items/" + weapons[this.Math.rand(0, weapons.len() - 1)]));
 					if (this.Math.rand(1, 100) <= 60)
 					{
 						local armor = [
-							"scripts/items/armor/barbarians/thick_furs_armor",
-							"scripts/items/armor/barbarians/animal_hide_armor"
+							"armor/barbarians/thick_furs_armor",
+							"armor/barbarians/animal_hide_armor"
 						];
 						local a = this.new("scripts/items/" + armor[this.Math.rand(0, armor.len() - 1)]);
-						this.m.Items.equip(a);
+						items.equip(a);
 					}
 					if (this.Math.rand(1, 2) <= 1)
 					{
 						local helmet = [
-							"scripts/items/helmets/barbarians/leather_headband",
-							"scripts/items/helmets/barbarians/bear_headpiece"
+							"helmets/barbarians/leather_headband",
+							"helmets/barbarians/bear_headpiece"
 						];
-						this.m.Items.equip(this.new("scripts/items/" + helmet[this.Math.rand(0, helmet.len() - 1)]));
+						items.equip(this.new("scripts/items/" + helmet[this.Math.rand(0, helmet.len() - 1)]));
 					}
 					
 					if (this.Math.rand(1, 100) <= 20)
 					{
-						this.m.Items.equip(this.new("scripts/items/shields/wooden_shield_old"));
+						items.equip(this.new("scripts/items/shields/wooden_shield_old"));
 					}
 					
 				} else {
@@ -102,7 +162,7 @@
 						"weapons/barbarians/skull_hammer",
 						"weapons/barbarians/two_handed_spiked_mace"
 					];
-					this.m.Items.equip(this.new("scripts/items/" + weapons[this.Math.rand(0, weapons.len() - 1)]));
+					items.equip(this.new("scripts/items/" + weapons[this.Math.rand(0, weapons.len() - 1)]));
 					
 					local armor = [
 						"armor/barbarians/thick_plated_barbarian_armor",
@@ -110,19 +170,19 @@
 						"armor/barbarians/heavy_iron_armor"
 					];
 					local a = this.new("scripts/items/" + armor[this.Math.rand(0, armor.len() - 1)]);
-					this.m.Items.equip(a);
+					items.equip(a);
 					
 					local helmet = [
 						"helmets/barbarians/heavy_horned_plate_helmet",
 						"helmets/barbarians/closed_scrap_metal_helmet",
 						"helmets/barbarians/crude_faceguard_helmet"
 					];
-					this.m.Items.equip(this.new("scripts/items/" + helmet[this.Math.rand(0, helmet.len() - 1)]));
+					items.equip(this.new("scripts/items/" + helmet[this.Math.rand(0, helmet.len() - 1)]));
 				}
 			} else {
 				onAddEquipment();
 			}
-		}
+		});
 	});
 	
 	::mods_hookClass("contracts/contracts/drive_away_barbarians_contract", function(o) {
@@ -183,6 +243,95 @@
 			
 		});
 	});
+	
+	::mods_hookBaseClass("entity/tactical/player", function(o) {
+		local onInit = ::mods_getMember(o, "onInit");
+		::mods_override(o, "onInit", function() {
+			onInit();
+			if (this.World.Assets.getOrigin().getID() == "scenario.barbarian_raiders")
+			{
+				this.m.Skills.add(this.new("scripts/skills/effects/skald_horn_effect"));
+			}
+		});
+	});
+	
+	::mods_hookBaseClass("ambitions/ambition", function(o) {
+		local onUpdateScore = ::mods_getMember(o, "onUpdateScore");
+		::mods_override(o, "onUpdateScore", function() {
+			if (this.World.Assets.getOrigin().getID() == "scenario.barbarian_raiders" && this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") <= 2)
+			{
+				local disabledAmbitions = ::NorthMod.Const.DisabledAmbitions1;
+				if (this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") == 2)
+				{
+					local disabledAmbitions = ::NorthMod.Const.DisabledAmbitions2;
+				}
+				if (disabledAmbitions.find(this.m.ID) != null)
+				{
+					logInfo("ambition blocked - " + this.m.ID);
+					return;
+				}
+				
+			}
+			logInfo("ambition proceed - " + this.m.ID);
+			onUpdateScore();
+			logInfo("ambition - " + this.m.ID + " = " + this.m.Score);
+		});
+	});
+	
+	::mods_hookBaseClass("factions/faction", function(o) {
+		local normalizeRelation = ::mods_getMember(o, "normalizeRelation");
+		::mods_override(o, "normalizeRelation", function() {
+			//logInfo("normalize relations:" + this.getName());
+			if (this.getFlags().get("IsBarbarianFaction"))
+			{
+				normalizeRelation();
+				return;
+			}
+			else if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders" )
+			{
+				normalizeRelation();
+				return;
+			}
+			else if(this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") >= 2)
+			{
+				normalizeRelation();
+				return;
+			}
+			else if (this.World.Ambitions.hasActiveAmbition() && this.World.Ambitions.getActiveAmbition().getID() == "ambition.make_civil_friends")
+			{
+				normalizeRelation();
+				return;
+			}
+			//logInfo("normalize relations:" + this.getName() + " disabled" );
+		});
+	});
+	
+	::mods_hookClass("factions/faction_manager", function(o) {
+		local makeEveryoneFriendlyToPlayer = ::mods_getMember(o, "makeEveryoneFriendlyToPlayer");
+		::mods_override(o, "makeEveryoneFriendlyToPlayer", function() {
+			logInfo("make friendly relations");
+			if(this.World.Assets.getOrigin().getID() == "scenario.barbarian_raiders" && this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") <= 1)
+			{
+				logInfo("make friendly relations disabled");
+				return;
+			}
+			makeEveryoneFriendlyToPlayer();
+			
+			
+		});
+	});
+	//TODO: delete because of logging
+	::mods_hookBaseClass("events/event", function(o) {
+		local onUpdateScore = ::mods_getMember(o, "onUpdateScore");
+		::mods_override(o, "onUpdateScore", function() {
+			onUpdateScore();
+			if(this.m.Score > 0) {
+				logInfo("event - " + this.m.ID + " = " + this.m.Score);
+			}
+			
+		});
+	});
+
 	
 });
 

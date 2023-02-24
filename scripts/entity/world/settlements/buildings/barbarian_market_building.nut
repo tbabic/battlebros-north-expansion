@@ -324,6 +324,16 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 				P = 1.0,
 				S = "helmets/barbarians/leather_helmet"
 			},
+			{
+				R = 70,
+				P = 1.0,
+				S = "helmets/nordic_helmet"
+			},
+			{
+				R = 80,
+				P = 1.0,
+				S = "helmets/nordic_helmet_with_closed_mail"
+			},
 			//other
 			
 			{
@@ -393,6 +403,27 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 				});
 			}
 		}
+		
+		local norseNamedItems = [
+			"helmets/named/wolf_helmet",
+			"helmets/named/norse_helmet",
+			"helmets/named/named_nordic_helmet_with_closed_mail"
+			"weapons/named/named_javelin",
+			"weapons/named/named_throwing_axe"
+		];
+		
+		foreach( i in norseNamedItems )
+		{
+			if (this.Math.rand(1, 100) <= 33)
+			{
+				list.push({
+					R = 99,
+					P = 2.0,
+					S = i
+				});
+			}
+		}
+		
 
 		if (this.m.Settlement.getSize() >= 3)
 		{

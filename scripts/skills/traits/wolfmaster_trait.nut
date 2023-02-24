@@ -1,0 +1,74 @@
+this.wolfmaster_trait <- this.inherit("scripts/skills/traits/character_trait", {
+	m = {},
+	function create()
+	{
+		logInfo("creating wolfmaster trait");
+		this.character_trait.create();
+		this.m.ID = "trait.wolfmaster";
+		this.m.Name = "Wolfmaster";
+		this.m.Icon = "ui/traits/trait_icon_wolfmaster.png";
+		this.m.Description = "This character has a trusted direwolf as a companion.";
+		this.m.Type = this.m.Type;
+		this.m.Titles = [];
+		this.m.Excluded = [];
+	}
+
+	function getTooltip()
+	{
+		return [
+			{
+				id = 1,
+				type = "title",
+				text = this.getName()
+			},
+			{
+				id = 2,
+				type = "description",
+				text = this.getDescription()
+			},
+			{
+				id = 10,
+				type = "text",
+				icon = "ui/icons/special.png",
+				text = "This character can equip and train a direwolf to use in battle."
+			},
+			{
+				id = 11,
+				type = "text",
+				icon = "ui/icons/melee_skill.png",
+				text = "While adjacent to his wolf character gains [color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Skill"
+			}
+			{
+				id = 12,
+				type = "text",
+				icon = "ui/icons/melee_defense.png",
+				text = "While adjacent to his wolf character gains [color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Defense"
+			}
+			
+		];
+	}
+
+	function onAdded()
+	{
+		local actor = this.getContainer().getActor();
+		actor.getFlags().set("NorthExpansionWolfmaster", true);
+	}
+	
+	function onRemoved()
+	{
+		local actor = this.getContainer().getActor();
+		actor.getFlags().set("NorthExpansionWolfmaster", false);
+		//TODO:
+		//this.getContainer().removeByID("effects.wolfmaster");
+	}
+	
+	function onCombatStarted()
+	{
+		//TODO: wolfmaster effect that gives both wolf and character the bonus to hit and defense
+		//TODO: wolfrotation effect
+		//this.getContainer().add(this.new("scripts/skills/effects/wolfmaster_effect"));
+		
+	}
+
+});
+
