@@ -50,6 +50,7 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 	
 	function onReward()
 	{
+		this.World.Ambitions.getAmbition("ambition.battle_standard").setDone(false);
 		this.m.SuccessList.push({
 			id = 10,
 			icon = "ui/icons/special.png",
@@ -57,6 +58,22 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 		});
 		this.World.Ambitions.getAmbition("ambition.contracts").setDone(true);
 		this.World.Statistics.getFlags().set("NorthExpansionCivilLevel", 3);
+		
+		for (local i = 0; i < ; i++) {
+			local f = this.World.FactionManager.m.Factions[i];
+			if (f.getFlags().get("isBarbarianFaction"))
+			{
+				this.World.FactionManager.m.Factions.remove(i);
+				foreach (s in f.getSettlements())
+				{
+					s.fadeOutAndDie();
+				}
+				
+			}
+			
+			break;
+		}
+		//TODO: allow battle standard and seargeant ambitions
 		//TODO: remove barbarian unique items
 	}
 

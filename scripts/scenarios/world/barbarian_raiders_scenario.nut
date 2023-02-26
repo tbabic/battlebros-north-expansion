@@ -8,6 +8,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		this.m.Difficulty = 3;
 		this.m.Order = 60;
 		this.m.IsFixedLook = true;
+		this.m.RecruitsEvent = null;
 	}
 
 	function isValid()
@@ -267,12 +268,19 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		bros[2].setPlaceInFormation(13);
 		bros[2].m.Talents = [];
 		bros[2].getFlags().set("isScenarioMonk", true);
+		
 		local talents = bros[2].getTalents();
 		talents.resize(this.Const.Attributes.COUNT, 0);
 		talents[this.Const.Attributes.Bravery] = 3;
 		
 		this.World.Assets.m.BusinessReputation = -50;
 		this.World.Assets.addMoralReputation(-30.0);
+		local polearm = this.new("scripts/items/weapons/named/named_crude_polearm");
+		if (polearm == null) {
+			logInfo("polearm null");
+		}
+		this.World.Assets.getStash().add(polearm);
+		this.World.Assets.getStash().add( this.new("scripts/items/weapons/ancient/warscythe"));
 		this.World.Assets.getStash().add(this.new("scripts/items/supplies/goat_cheese_item"));
 		this.World.Assets.getStash().add(this.new("scripts/items/supplies/smoked_ham_item"));
 		this.World.Assets.m.Money = this.World.Assets.m.Money / 2;
@@ -300,6 +308,8 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		
 		this.World.State.m.Player = this.World.spawnEntity("scripts/entity/world/player_party", coords.X, coords.Y);
 		
+		this.World.Events.addSpecialEvent("event.survivor_recruits");
+		
 		this.World.Assets.updateLook(5);
 		this.World.getCamera().setPos(this.World.State.m.Player.getPos());
 		this.Time.scheduleEvent(this.TimeUnit.Real, 1000, function ( _tag )
@@ -307,8 +317,10 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 			this.Music.setTrackList([
 				"music/barbarians_02.ogg"
 			], this.Const.Music.CrossFadeTime);
-			this.World.Events.fire("event.barbarian_raiders_scenario_intro");
+			this.World.Events.fire("event.bastard_volunteer");
 		}, null);
+		
+		
 	}
 	
 	function createBarbarianSettlement()
@@ -531,7 +543,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		return spawnTile;
 	}
 	
-	
+
 	
 
 });

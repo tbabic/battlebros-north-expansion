@@ -1,18 +1,16 @@
 ::mods_registerMod("mod_north_expansion", 0.1, "North Expansion");
 
-//TODO: initial ambition, something like win 2 battles
-//TODO: barbarian recruits events
+//TODO: threetrees event??
+//TODO: after_battle_events
 //TODO: disowned noble event
 //TODO: event: if king, keep adventuring but retire from fighting
-//TODO: if civil level 3, disband settlement
-//TODO: 'crude polearm' weapon and named weapon for barbarians
 //TODO: test traits
 //TODO: champion brother winning duels events
 //TODO: recruiting events
 //TODO: extract utils and const
 //TODO: logInfo comment out
 //TODO: situation eager recruits, icon: perk13
-//TODO: threetrees event??
+
 
 
 ::NorthMod <- {};
@@ -64,6 +62,43 @@
 			totalScore -= score[i];
 		}
 		return null;
+	}
+	
+	
+	function guaranteedTalents(bro, talent, number)
+	{
+	
+		local talents = bro.getTalents();
+		if (talents[talent] > 0 && talents[talent] < number )
+		{
+			talents[talent] = number;
+		}
+		else if (talents[talent] == 0) {
+			local count = 0;
+			local min = 10;
+			local minTalent = null;
+			for (local i = 0; i < talents.len(); i++) {
+				if (talents[i] > 0) {
+					count++;
+					if (talents[i] < min && i != this.Const.Attributes.MeleeDefense) {
+						min = talents[i];
+						minTalent = i;
+					}
+				}
+				
+			}
+			if(count < 3) {
+				talents[this.Const.Attributes.MeleeSkill] = number;
+			} else {
+				talents[minTalent] = 0;
+				talents[this.Const.Attributes.MeleeSkill] = number;
+			}
+		}
+		
+		
+		
+		bro.m.Attributes = [];
+		bro.fillAttributeLevelUpValues(this.Const.XP.MaxLevelWithPerkpoints - 1);
 	}
 }
 

@@ -52,6 +52,23 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 				_event.m.Dude.setStartValuesEx([
 					"bastard_background"
 				]);
+				
+				
+				local actor = _event.m.Dude;
+				actor.getSprite("head").setBrush("bust_head_05");
+				actor.getSprite("hair").setBrush("hair_black_19");
+				local beard = actor.getSprite("beard");
+				beard.setBrush("beard_black_16");
+				if (this.doesBrushExist(beard.getBrush().Name + "_top"))
+				{
+					logInfo("beardTop");
+					local sprite = actor.getSprite("beard_top");
+					sprite.setBrush(beard.getBrush().Name + "_top");
+					sprite.Color = actor.getSprite("hair").Color;
+				}
+
+					
+				
 				_event.m.Dude.getBackground().m.RawDescription = "{%name% was born during a fiery military campaign far away from his father\'s home. His father, head of an old and noble house provided him with same training as his half-brothers, but not the same opportunities. During a war, his father and half brother's were all killed and executed. %name% was forced to escape his home castle, save only by the fact he did not carry his father\'s name. After you saved him against the undead he is willing to follow you and fight for you, hoping one day he might have the opportunity for revenge against the nobles.";
 				_event.m.Dude.getBackground().buildDescription(true);
 				
@@ -79,34 +96,11 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 				_event.m.Dude.getSkills().add(survivor);
 				_event.m.Dude.getSkills().add(wolfmaster);
 				
-				//TODO: appearance
-				local talents = _event.m.Dude.getTalents();
-				if (talents[this.Const.Attributes.MeleeSkill] == 0) {
-					local count = 0;
-					local min = 10;
-					local minTalent = null;
-					for (local i = 0; i < talents.len(); i++) {
-						if (talents[i] > 0) {
-							count++;
-							if (talents[i] < min && i != this.Const.Attributes.MeleeDefense) {
-								min = talents[i];
-								minTalent = i;
-							}
-						}
-						
-					}
-					if(count < 3) {
-						talents[this.Const.Attributes.MeleeSkill] = 1;
-					} else {
-						talents[minTalent] = 0;
-						talents[this.Const.Attributes.MeleeSkill] = 1;
-					}
-				}
-				
+				::NorthMod.Utils.guaranteedTalents(_event.m.Dude, this.Const.Attributes.MeleeSkill, 1);
+	
 				
 				_event.m.Dude.getSkills().update();
-				_event.m.Dude.m.Attributes = [];
-				_event.m.Dude.fillAttributeLevelUpValues(this.Const.XP.MaxLevelWithPerkpoints - 1);
+				
 				
 				local items = _event.m.Dude.getItems();
 				items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Body));
@@ -130,7 +124,7 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 		});
 		this.m.Screens.push({
 			ID = "Aftermath",
-			Text = "%terrainImage%{The battle is over and the man in black approaches you, the wolf keeping at his heel.%SPEECH_ON%I\'m Jon The Crow.%SPEECH_OFF% He pauses, perhaps waiting to see if you\'ll recognize the name or just to catch his breath. After no reaction from you, he continues.%SPEECH_ON%Thank you for helping me out. I owe you a debt of gratitude and my honor bounds me to help you back, if you\'ll have me, ofcourse.%SPEECH_OFF%%randombrother& whispers in your ear.%SPEECH_ON%He\'s got some skill with the sword, but I don\'t trust that beast of his%SPEECH_OFF%}", 
+			Text = "%terrainImage%{The battle is over and the man in black approaches you, the wolf keeping at his heel.%SPEECH_ON%I\'m %jonsnow%.%SPEECH_OFF% He pauses, perhaps waiting to see if you\'ll recognize the name or just to catch his breath. After no reaction from you, he continues.%SPEECH_ON%Thank you for helping me out. I owe you a debt of gratitude and my honor bounds me to help you back, if you\'ll have me, ofcourse.%SPEECH_OFF%%randombrother& whispers in your ear.%SPEECH_ON%He\'s got some skill with the sword, but I don\'t trust that beast of his%SPEECH_OFF%}", 
 			Image = "",
 			List = [],
 			Characters = [],
@@ -194,13 +188,13 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 		this.m.Score = 5 * multiplier;
 
 	}
-
-	function onPrepare()
-	{
-	}
-
+	
 	function onPrepareVariables( _vars )
 	{
+		_vars.push([
+			"jonsnow",
+			this.m.Dude.getName()
+		]);
 	}
 
 	function onClear()

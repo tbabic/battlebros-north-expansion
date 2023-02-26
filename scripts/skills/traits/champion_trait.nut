@@ -30,7 +30,7 @@ this.champion_trait <- this.inherit("scripts/skills/traits/character_trait", {
 				id = 10,
 				type = "text",
 				icon = "ui/icons/melee_defense.png",
-				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Defense\n[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Ranged Defense"
+				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Defense\n[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Skill"
 			},
 			{
 				id = 11,
@@ -43,7 +43,7 @@ this.champion_trait <- this.inherit("scripts/skills/traits/character_trait", {
 
 	function onUpdate( _properties )
 	{
-		_properties.MeleeDefense += 5;
+		_properties.MeleeSkill += 5;
 		_properties.RangedDefense += 5;
 	}
 

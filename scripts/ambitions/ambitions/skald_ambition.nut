@@ -52,6 +52,7 @@ this.skald_ambition <- this.inherit("scripts/ambitions/ambition", {
 
 	function onReward()
 	{
+		this.World.Ambitions.getAmbition("ambition.battle_standard").setDone(true);
 		local brothers = this.World.getPlayerRoster().getAll();
 		local highestBravery = 0;
 		local bestSergeant;
