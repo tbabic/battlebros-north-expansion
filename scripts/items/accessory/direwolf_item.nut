@@ -70,7 +70,7 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 		this.updateVariant();
 		this.m.ID = "accessory.direwolf";
 		this.m.Name = "Ghost"
-		this.m.Friend = "Jon Snow";
+		this.m.Friend = "Jon The Crow";
 		//TODO: description
 		this.m.Description = "This large direwolf is loyal to his human friend" + this.m.Friend + ", but will not listen to anyone else";
 		this.m.SlotType = this.Const.ItemSlot.Accessory;

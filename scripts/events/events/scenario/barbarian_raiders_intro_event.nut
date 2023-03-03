@@ -6,8 +6,7 @@ this.barbarian_raiders_intro_event <- this.inherit("scripts/events/event", {
 		this.m.IsSpecial = true;
 		this.m.Screens.push({
 			ID = "A",
-			//TODO: text rework, everybody dead, close barbarian settlement looks for work
-			Text = "[img]gfx/ui/events/event_87.png[/img]{It's been a week since you and your friend %friend% joined %chief%'s raiding party and it's been slim pickings, but it looks like you finally struck gold and found a rich caravan. After a brief battle, most of the guards were dead and the rest fled, leaving only a single man in robes, a monk by the looks of it. There was a familiar throbbing in your head, destiny once again playing a trick on you. This man is important to you, at least for now. You raise your voice to stop other raiders from killing him, but they don't look happy. After some arguing and threatening with no progress, you finally ready your sword.%SPEECH_ON%I am Vindurask, from the Frostpeak mountains. Some call me the Whirlwind, some call me the Equalizer and others, they just call me crazy bastard. Great witch Sigrid has shown me my death and it is not here and it is not now. Monk is going with me and if anybody stays in my way, I\'ll cut him in half!%SPEECH_OFF%A moment of silence turns into a minute of hard stares and slow breathing, %friend% stands beside you, his hands gripping an axe. Finally, chief tells you to take the monk and go, but you will no longer be welcome in his tribe. You didn\'t particularly like %chief%, anyway.\n\nAs you walk away monk thanks you for saving him and introduces himself as %monk%.You reply that it\'s not you who saved him, but rather destiny, however you will accept his gratitude and service. Monk calmly shrugs his shoulders as if accepting his fate. But as you walk, he starts suggesting a nearby village might have some work for strong men, a work that pays well. You just nod.}",
+			Text = "[img]gfx/ui/events/event_87.png[/img]{There is always a chance that a raid goes wrong, but this one has gone quite unexpectedly. Some monk has started blabbering about south and becoming mercenaries. Bunch of unholds turd, but he\'s actually managed to convince %southerner% and others. Most of the crew take their share of the loot and went south. They took the monk as well. Some good at least, such a weakling would never make a good warrior.South, you\'ve heard of south. A place where there is hot, there is only sand instead of snow. A place where instead of direwolves there are packs of snakes roaming,  where instead of giants, rocks walk the lands. Where instead of weapons, men carry boomsticks. You\'ve heard of the south and decided against it.You look at the men that stayed with you, %friend%, your most loyal friend and %other%. Not much but better than nothing. Now you just need to put them to work. Find some caravan or village to plunder. As if he noticed your thoughts, %friend% comes with a suggestion.%SPEECH_ON%Chief, I\'ve heard %chieftain% is looking for men. Heard he might have some job that needs doing. Who knows, we might find some men for our crew there. What do you think?%SPEECH_OFF%}",
 			Image = "",
 			Banner = "",
 			List = [],
@@ -52,13 +51,25 @@ this.barbarian_raiders_intro_event <- this.inherit("scripts/events/event", {
 			brothers[1].getName()
 		]);
 		_vars.push([
-			"monk",
+			"other",
 			brothers[2].getName()
 		]);
 
 		_vars.push([
-			"chief",
+			"southerner",
 			this.Const.Strings.BarbarianNames[this.Math.rand(0, this.Const.Strings.BarbarianNames.len() - 1)]
+		]);
+		
+		local f = this.World.FactionManager.getFactionOfType(::NorthMod.Const.FactionType.BarbarianSettlement);
+		logInfo("faction:" + f.getName());
+		local roster = f.getRoster().getAll();
+		logInfo("roster: " + roster.len());
+		
+		
+		local chieftain = f.getRandomCharacter()
+		_vars.push([
+			"chieftain",
+			chieftain.getName()
 		]);
 		
 	}

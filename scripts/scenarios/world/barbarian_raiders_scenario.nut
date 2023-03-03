@@ -3,12 +3,11 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 	function create()
 	{
 		this.m.ID = "scenario.barbarian_raiders";
-		this.m.Name = "Barbarian Raiders";
-		this.m.Description = "[p=c][img]gfx/ui/events/event_135.png[/img][/p][p]You are a warrior and a raider You whole life has been battle and struggle and it's not about to change now.\n\n[color=#bcad8c]Barbarian Leader:[/color] Start with a leader that has permanently bad relations with civilized factions but friendly with a barbarian settlement. If the leader dies, the campaign ends.\n[color=#bcad8c]Barbarian dozen:[/color] Can not have more than 12 men.\n[color=#bcad8c]Father\'s Sword:[/color] Start with a greatsword inherited from your father.\n[color=#bcad8c]Mercenary Path:[/color] Make decisions to become mercenary and remove restrictions or stay barbarian.[/p]";
+		this.m.Name = "Barbarians of the North";
+		this.m.Description = "[p=c][img]gfx/ui/events/event_08.png[/img][/p][p]You are a warrior and a raider You whole life has been battle and struggle and it's not about to change now.\n\n[color=#bcad8c]Barbarian Leader:[/color] Start with a leader that has permanently bad relations with civilized factions but friendly with a barbarian settlement. If the leader dies, the campaign ends.\n[color=#bcad8c]Barbarian dozen:[/color] Can not have more than 12 men.\n[color=#bcad8c]Father\'s Sword:[/color] Start with a greatsword inherited from your father.\n[color=#bcad8c]Mercenary Path:[/color] Make decisions to become mercenary and remove restrictions or stay barbarian.[/p]";
 		this.m.Difficulty = 3;
 		this.m.Order = 60;
 		this.m.IsFixedLook = true;
-		this.m.RecruitsEvent = null;
 	}
 
 	function isValid()
@@ -73,8 +72,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 
 	function onSpawnAssets()
 	{
-		//TODO: remove monk bro
-		local useDefaultBro = true;
+		local useDefaultBro = false;
 		local roster = this.World.getPlayerRoster();
 
 		for( local i = 0; i < 3; i = ++i )
@@ -127,15 +125,37 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 			bros[0].getSkills().update();
 			
 			bros[0].setName("Vindurask");
-			
+			bros[0].setTitle("Whirlwind");
 			
 			
 		}
-		bros[0].setTitle("Whirlwind");
+		
 		bros[0].getSkills().removeByID("trait.survivor");
 		bros[0].getSkills().removeByID("trait.greedy");
 		bros[0].getSkills().removeByID("trait.loyal");
 		bros[0].getSkills().removeByID("trait.disloyal");
+		
+		local r = Math.rand(1,10);
+		if (r <= 2)
+		{
+			// remove existing traits
+			foreach( trait in this.Const.CharacterTraits ) {
+				bros[0].getSkills().removeByID(trait[0]);
+			}
+			
+			local trait;
+			if (r == 1)
+			{
+				trait = this.new("scripts/skills/traits/destined_trait")
+			}
+			else
+			{
+				trait = this.new("scripts/skills/traits/champion_trait")
+			}
+			bros[0].getSkills().add(trait);
+		}
+		
+		
 		bros[0].getSkills().add(this.new("scripts/skills/traits/player_character_trait"));
 		bros[0].setPlaceInFormation(3);
 		bros[0].getFlags().set("IsPlayerCharacter", true);
@@ -165,38 +185,38 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		bros[1].getBackground().m.RawDescription = "%name% is your best friend and has followed you all over the north, suffering victories and defeats together. He has no plans to abandon you now.";
 		bros[1].getBackground().buildDescription(true);
 		
-		if (useDefaultBro) {
-			local _appearance2 = {
-				HairColors = ["red"],
-				Faces = ["bust_head_10"],
-				Hairs = ["08"],
-				Beards = ["14"],
-			}
-			setBroAppearance(bros[1], _appearance2);
-			
-			
-			foreach( trait in this.Const.CharacterTraits ) {
-				bros[1].getSkills().removeByID(trait[0]);
-			}
-			
-			bros[1].getSkills().add(this.new("scripts/skills/traits/loyal_trait"));
-			bros[1].getSkills().add(this.new("scripts/skills/traits/eagle_eyes_trait"));
-			
-			
-			local b = bros[1].getBaseProperties();
-			b.Hitpoints = 61;
-			b.Bravery = 42;
-			b.Stamina = 102;
-			b.MeleeSkill = 59;
-			b.RangedSkill = 40;
-			b.MeleeDefense = 3;
-			b.RangedDefense = 5;
-			b.Initiative = 117;
-			bros[1].getSkills().update();
-			
-			bros[1].setName("Rikke");
-			bros[1].setTitle("The Dogman");
+		
+		local _appearance2 = {
+			HairColors = ["red"],
+			Faces = ["bust_head_10"],
+			Hairs = ["08"],
+			Beards = ["14"],
 		}
+		setBroAppearance(bros[1], _appearance2);
+		
+		
+		foreach( trait in this.Const.CharacterTraits ) {
+			bros[1].getSkills().removeByID(trait[0]);
+		}
+		
+		bros[1].getSkills().add(this.new("scripts/skills/traits/loyal_trait"));
+		bros[1].getSkills().add(this.new("scripts/skills/traits/eagle_eyes_trait"));
+		
+		
+		local b = bros[1].getBaseProperties();
+		b.Hitpoints = 61;
+		b.Bravery = 42;
+		b.Stamina = 102;
+		b.MeleeSkill = 59;
+		b.RangedSkill = 40;
+		b.MeleeDefense = 3;
+		b.RangedDefense = 5;
+		b.Initiative = 117;
+		bros[1].getSkills().update();
+		
+		bros[1].setName("Rikke");
+		bros[1].setTitle("The Dogman");
+		
 		
 		bros[1].setPlaceInFormation(4);
 		bros[1].m.PerkPoints = 1;
@@ -225,7 +245,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		
 		
 		bros[2].setStartValuesEx([
-			"monk_background"
+			"wildman_background"
 		]);
 		
 		
@@ -237,50 +257,22 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 				Beards = ["05"],
 			}
 			
-			
-			setBroAppearance(bros[2], _appearance3);
-			
-			
-			foreach( trait in this.Const.CharacterTraits ) {
-				bros[2].getSkills().removeByID(trait[0]);
-			}
-			
-			bros[2].getSkills().add(this.new("scripts/skills/traits/survivor_trait"));
-			bros[2].getSkills().add(this.new("scripts/skills/traits/teamplayer_trait"));
-			
-			
-			local b = bros[2].getBaseProperties();
-			b.Hitpoints = 55;
-			b.Bravery = 46;
-			b.Stamina = 90;
-			b.MeleeSkill = 47;
-			b.RangedSkill = 37;
-			b.MeleeDefense = 2;
-			b.RangedDefense = 3;
-			b.Initiative = 105;
-			bros[2].getSkills().update();
-			
-			bros[2].setName("Beinar");
-			bros[2].setTitle("");
 		}
-		
-		bros[2].getBackground().m.RawDescription = "The man you saved, you believe %name% serves some greater purpose in your destiny. You\'ve seen northern gimps and one-armed men who would best him in combat, but his knowledge and intelligence may be sharper blades in good time.";
+		bros[2].setTitle("The Wildling");
+		bros[2].getBackground().m.RawDescription = "%name% has decided to stay with you, instead of going south. When asked why, he grounts out that north is his home. While not a man of many words, he is absolutely vicious and ferocious specimen in battle.";
+		bros[2].getBackground().buildDescription(true);
 		bros[2].setPlaceInFormation(13);
 		bros[2].m.Talents = [];
-		bros[2].getFlags().set("isScenarioMonk", true);
 		
 		local talents = bros[2].getTalents();
 		talents.resize(this.Const.Attributes.COUNT, 0);
-		talents[this.Const.Attributes.Bravery] = 3;
+		talents[this.Const.Attributes.Hitpoints] = 3;
+		talents[this.Const.Attributes.Fatigue] = 2;
+		talents[this.Const.Attributes.MeleeSkill] = 1;
 		
 		this.World.Assets.m.BusinessReputation = -50;
 		this.World.Assets.addMoralReputation(-30.0);
-		local polearm = this.new("scripts/items/weapons/named/named_crude_polearm");
-		if (polearm == null) {
-			logInfo("polearm null");
-		}
-		this.World.Assets.getStash().add(polearm);
-		this.World.Assets.getStash().add( this.new("scripts/items/weapons/ancient/warscythe"));
+		
 		this.World.Assets.getStash().add(this.new("scripts/items/supplies/goat_cheese_item"));
 		this.World.Assets.getStash().add(this.new("scripts/items/supplies/smoked_ham_item"));
 		this.World.Assets.m.Money = this.World.Assets.m.Money / 2;
@@ -317,7 +309,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 			this.Music.setTrackList([
 				"music/barbarians_02.ogg"
 			], this.Const.Music.CrossFadeTime);
-			this.World.Events.fire("event.bastard_volunteer");
+			this.World.Events.fire("event.barbarian_raiders_scenario_intro");
 		}, null);
 		
 		
@@ -345,6 +337,12 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		f.setPlayerRelation(50.0);
 		f.addSettlement(s, true);
 		f.getFlags().set("BarbarianSettlementNoAllies", true);
+		if (s.getOwner() == null)
+		{
+			logInfo("owner null");
+			s.setOwner(f);
+		}
+		f.onUpdateRoster();
 		checkFactions();
 		
 		
@@ -496,8 +494,14 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 	
 	
 	function onInit()
-	{
+	{	
+		logInfo("scenario on init")
 		this.World.Assets.m.BrothersMax = 12;
+		if (this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") >= 3)
+		{
+			this.World.Assets.m.BrothersMax = 20;
+		}
+		
 	}
 	
 	function onCombatFinished()

@@ -10,7 +10,7 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 	function create()
 	{
 		this.building.create();
-		this.m.ID = "building.marketplace";
+		this.m.ID = "building.barbarian_marketplace";
 		this.m.Name = "Marketplace";
 		this.m.Description = "A lively market offering all sorts of goods common in the region";
 		this.m.UIImage = "ui/settlements/building_06";
@@ -241,6 +241,11 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 				P = 1.0,
 				S = "weapons/barbarians/two_handed_spiked_mace"
 			},
+			{
+				R = 90,
+				P = 1.0,
+				S = "weapons/crude_polearm"
+			},
 			//armors
 			{
 				R = 10,
@@ -402,6 +407,15 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 					S = i
 				});
 			}
+		}
+		
+		if (this.Math.rand(1, 100) <= 30)
+		{
+			list.push({
+				R = 99,
+				P = 2.0,
+				S = "weapons/named/named_crude_polearm"
+			});
 		}
 		
 		local norseNamedItems = [

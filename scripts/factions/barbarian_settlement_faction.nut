@@ -10,7 +10,7 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 	function create()
 	{
 		this.faction.create();
-		this.m.Type = this.Const.FactionType.Settlement;
+		this.m.Type = ::NorthMod.Const.FactionType.BarbarianSettlement;
 		this.m.Base = "world_base_12";
 		this.m.TacticalBase = "bust_base_wildmen_01";
 		this.m.CombatMusic = this.Const.Music.BarbarianTracks;

@@ -47,7 +47,6 @@ this.make_civil_friends_ambition <- this.inherit("scripts/ambitions/ambition", {
 
 	function onReward()
 	{
-		//TODO: relations with noble factions
 		this.m.SuccessList.push({
 			id = 10,
 			icon = "ui/icons/special.png",

@@ -1,26 +1,26 @@
 this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 	m = {
 		Faction = null,
-		multiplier = 3
+		NobleBro = null,
 	},
 	//TODO: test this event
 	function create()
 	{
 		this.m.ID = "event.noble_offers_redemption";
 		this.m.Title = "Along the road...";
-		this.m.Cooldown = this.m.multiplier * this.World.getTime().SecondsPerDay;
+		this.m.Cooldown = 20.0 * this.World.getTime().SecondsPerDay;
 		this.m.Faction = null;
 		
 		this.m.Screens.push({
 			ID = "A",
-			Text = "[img]gfx/ui/events/event_55.png[/img]While marching down the road, you find a %caravan% with a broken cart by the side of the path. Caravan hands are busy trying to get the wheels back on, unsuspecting of your men approaching.%SPEECH_ON% Easy pickings, chief.%SPEECH_OFF%%randombrother% mutters in your ear.%SPEECH_ON%Let's ease their trouble and take what we can.%SPEECH_OFF%"
-			
+			Text = "[img]gfx/ui/events/event_58.png[/img]{%noblebro% has been with %companyname% for some time now. Traveling, fighting, killing without much complaints, until now at least. However, he has decided it is time to talk to you.%SPEECH_ON%Chief, I\'ve heard you want to make some headway with the nobles. Reckon, you think it would be better to have them as friends, rather then enemies. That\'s true, probably, although they can be more dangerous as friends. I believe I can help.%SPEECH_off%He explains, he still has friends and contacts among influential people, particularly in %noblehouse%. He could ask a favor, put in a good word, but ultimately, he says, words are cheap, money is not. At least %crowns% coins is not cheap.}",
+			Banner = "",
 			Image = "",
 			List = [],
 			Characters = [],
 			Options = [
 				{
-					Text = "No, we need friends. We'll help them out.",
+					Text = "Make it happen.",
 					function getResult( _event )
 					{
 						return "B";
@@ -28,91 +28,33 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 
 				},
 				{
-					Text = "It's not the time to make enemies. Let's just move on.",
+					Text = "We have no need for this.",
 					function getResult( _event )
 					{
-						return "C";
-					}
-
-				},
-				{
-					Text = "Yes, we need those supplies. Kill them all.",
-					function getResult( _event )
-					{
-						return "D";
+						return 0;
 					}
 
 				}
 			],
 			function start( _event )
 			{
-				
+				this.Characters.push(_event.m.Monk.getImagePath());
+				this.Banner = _event.m.NobleHouse.getUIBannerSmall();
 			}
 
 		});
-		
 		this.m.Screens.push({
 			ID = "B",
-			Text = "Thanks for helping out"
-			Image = "",
-			List = [],
-			Characters = [],
+			Text = "[img]gfx/ui/events/event_31.png[/img]{You agree to the %noblebro%\'s notions and he sets up a meeting. Together you meet with an intermediary and one of the nobles himself. He looks like a pampered fool which isn\'t to your liking, but it looks like the dislike is mutual. After the introductions he finally asks.%SPEECH_ON%Your kind has been raiding and pillaging our caravans, our homes. Our churches. Why should I listen to the likes of you.%SPEECH_OFF%Your first instinct is to take your sword and run it through the nobleman\'s mouth. However, you decide against it. Your second thought is to just turn around and leave, but you decide against that too. Instead, you decide to throw a bag of coins in front of him. He looks at it unimpressed. %SPEECH_ON%You steal from us, now you offer us back what you stole and you expect… What exactly? We\'ll be friends now? Not likely.%SPEECH_OFF%You look at your %noblebro% and give him your best expression of irritation and displeasure. He is calm though and slowly nods to you. You take another bag of gold and throw it at the nobleman. %noblebro% slowly takes a step forward.%SPEECH_ON%Yes, there has been raiding and pillaging, but if we are to dwell on such pasts we\'ll miss the opportunities of the future%SPEECH_OFF%.He continues on talking about all kinds of work %companyname% could do for the noble house. After he is finished, the noble takes the money.%SPEECH_ON%Fine, but no more raiding, at least not of %noblehouse%. I don\'t care about others. We will not be meeting like this again.%SPEECH_OFF%}",
 			Banner = "",
-			Options = [
-				{
-					Text = "Spread the word", //TODO: text;
-					function getResult( _event )
-					{
-						this.m.Faction.addPlayerRelation(this.Const.World.Assets.RelationNobleContractSuccess, "Helped out their caravan");
-						return 0;
-					}
-
-				}
-			],
-			function start( _event )
-			{
-				this.Banner = this.m.Faction.getUIBannerSmall();
-			}
-
-		});
-		
-		this.m.Screens.push({
-			ID = "C",
-			Text = "Just passing by"
-			Image = "",
-			List = [],
-			Characters = [],
-			Banner = "",
-			Options = [
-				{
-					Text = "We'll be on our way.", //TODO: text;
-					function getResult( _event )
-					{
-						this.m.Faction.addPlayerRelation(this.Const.World.Assets.RelationNobleContractPoor, "Avoided attacking a caravan");
-						return 0;
-					}
-
-				}
-			],
-			function start( _event )
-			{
-				this.Banner = this.m.Faction.getUIBannerSmall();
-			}
-
-		});
-		
-		this.m.Screens.push({
-			ID = "D",
-			Text = "They are all dead"  //TODO: text;
 			Image = "",
 			List = [],
 			Characters = [],
 			Options = [
 				{
-					Text = "We are raiders not helpers. Attack!",
+					Text = "With friends like these, who needs enemies.",
 					function getResult( _event )
 					{
-						//TODO: combat ??
 						return 0;
 					}
 
@@ -120,7 +62,22 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 			],
 			function start( _event )
 			{
-				//TODO: add loot
+				this.Characters.push(_event.m.Monk.getImagePath());
+				this.Banner = _event.m.NobleHouse.getUIBannerSmall();
+				this.World.Flags.set("IsRaidersRedemption", true);
+				this.World.Assets.addBusinessReputation(50);
+				this.World.Assets.addMoney(-2000);
+				this.List.push({
+					id = 10,
+					icon = "ui/icons/asset_money.png",
+					text = "You lose [color=" + this.Const.UI.Color.NegativeEventValue + "]-2000[/color] Crowns"
+				});
+				_event.m.NobleHouse.addPlayerRelation(20.0, "Was bribed to have dealings with you");
+				this.List.push({
+					id = 10,
+					icon = "ui/icons/relations.png",
+					text = "Your relations to " + _event.m.NobleHouse.getName() + " improve"
+				});
 			}
 
 		});
@@ -146,84 +103,88 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 			return;
 		}
 		
-		if (!currentTile.HasRoad)
+		if(this.World.Statistics.getFlags().get("NorthExpansionRedemptionAccepted"))
 		{
 			return;
 		}
+		
+		local brothers = this.World.getPlayerRoster().getAll();
+		local candidates = [];
+
+		foreach( bro in brothers )
+		{
+			if (bro.getBackground().getID() == "background.bastard" && bro.getLevel() > 1)
+			{
+				candidates.push(bro);
+			}
+			
+			if (bro.getBackground().getID() == "background.adventurous_noble" && bro.getLevel() > 1)
+			{
+				candidates.push(bro);
+			}
+			
+			if (bro.getBackground().getID() == "background.disowned_noble" && bro.getLevel() > 1)
+			{
+				candidates.push(bro);
+			}
+		}
+
+		if (candidates.len() == 0)
+		{
+			return;
+		}
+		this.m.NobleBro = candidates[this.Math.rand(0, candidates.len() - 1)];
+		
+		
+		local nobles = this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse);
+		local totalScore = 0;
+		foreach (n in nobles)
+		{
+			totalScore += 5 + n.getPlayerRelation();
+		}
+		
+		local r = this.Math.rand(1, totalScore);
+		foreach (n in nobles)
+		{
+			if (r <= 5 + n.getPlayerRelation())
+			{
+				this.m.Faction = n;
+				break;
+			}
+			totalScore -= 5 + n.getPlayerRelation();
+		}
+		
 		
 		
 		
 		this.m.Score = 100;
 	}
-
+	
 	function onPrepare()
 	{
-		local currentTile = this.World.State.getPlayer().getTile();
-		local nobles = this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse);
-		local houses = [];
-
-		foreach( n in nobles )
-		{
-			local closest;
-			local dist = 9999;
-
-			foreach( s in n.getSettlements() )
-			{
-				local d = s.getTile().getDistanceTo(randomVillageTile);
-
-				if (d < dist)
-				{
-					dist = d;
-					closest = s;
-				}
-			}
-
-			houses.push({
-				Faction = n,
-				Dist = dist
-			});
-		}
-		
-		houses.sort(function ( _a, _b )
-		{
-			if (_a.Dist > _b.Dist)
-			{
-				return 1;
-			}
-			else if (_a.Dist < _b.Dist)
-			{
-				return -1;
-			}
-
-			return 0;
-		});
-		
-		local r = Math.rand(1,7);
-		if (r <= 4) {
-			this.m.Faction = houses[0];
-		}
-		else if (r <= 6) {
-			this.m.Faction = houses[1];
-		}
-		else {
-			this.m.Faction = houses[2];
-		}
-		
-		
 	}
 
 	function onPrepareVariables( _vars )
 	{
 		
 		_vars.push([
-			"caravan",
-			this.m.Faction.getName() + " caravan"
+			"noblebro",
+			this.m.NobleBro.getName()
+		]);
+		_vars.push([
+			"noblehouse",
+			this.m.NobleHouse.getName()
+		]);
+		_vars.push([
+			"crowns",
+			"2,000"
 		]);
 	}
 
 	function onClear()
 	{
 		this.m.Faction = null;
+		this.m.NobleBro = null;
 	}
 
 });

@@ -3,7 +3,7 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 		Dude = null,
 		Town = null
 	},
-	},
+	
 	function create()
 	{
 		this.m.ID = "event.barbarian_recruits";

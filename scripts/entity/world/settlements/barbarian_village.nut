@@ -23,7 +23,7 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 		this.m.Lighting = "";
 		this.m.Rumors = this.Const.Strings.RumorsSnowSettlement;
 		this.m.Culture = this.Const.World.Culture.Northern;
-		this.m.IsMilitary = false; //TODO: should it be military?
+		this.m.IsMilitary = false;
 		this.m.Size = 1;
 		this.m.HousesType = 1;
 		this.m.HousesMin = 0;
@@ -38,8 +38,6 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 			this.m.Sprite = "world_wildmen_02";
 		}
 		this.settlement.onInit();
-		//TODO: taxidermist???
-		//TODO: barber
 	}
 
 	function onBuild()
@@ -51,6 +49,8 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 		}
 		this.addBuilding(this.new("scripts/entity/world/settlements/buildings/crowd_building"), 5);
 		this.addBuilding(this.new("scripts/entity/world/settlements/buildings/barbarian_market_building"), 2);
+		this.addBuilding(this.new("scripts/entity/world/settlements/buildings/taxidermist_building"));
+		this.addBuilding(this.new("scripts/entity/world/settlements/buildings/barber_building"));
 	}
 	
 	function getUIInformation()
@@ -91,6 +91,21 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 	
 	
 		this.settlement.addSituation( _s, _validForDays = 0 );
+	}
+	
+	function isEnterable()
+	{
+		if (!this.m.IsActive)
+		{
+			return false;
+		}
+
+		if (!this.getOwner().isAlliedWithPlayer())
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 		

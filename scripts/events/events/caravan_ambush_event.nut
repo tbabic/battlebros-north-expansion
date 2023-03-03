@@ -151,9 +151,9 @@ this.caravan_ambush_event <- this.inherit("scripts/events/event", {
 			return;
 		}
 		
+		//TODO: score;
 		
-		
-		this.m.Score = 100;
+		this.m.Score = 0;
 	}
 
 	function onPrepare()

@@ -330,8 +330,8 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 		
 		this.m.Dude.getBackground().m.RawDescription = "%name% was taken as an indebted after barely surviving a battle against your men. His spirit was broken and he was forced to fight for you, so that he may pay his debt to the Gilder.";
 		this.m.Dude.getBackground().buildDescription(true);
-		local permanent = this.Const.Injury.Permanent[this.Math.rand(0, this.Const.Injury.Permanent.len());
-		local temporary = this.Const.Injury.All[this.Math.rand(0, this.Const.Injury.All.len());
+		local permanent = this.Const.Injury.Permanent[this.Math.rand(0, this.Const.Injury.Permanent.len()-1)];
+		local temporary = this.Const.Injury.All[this.Math.rand(0, this.Const.Injury.All.len()-1)];
 		this.m.Dude.getSkills().add(this.new("scripts/skills/" permanent.Script));
 		this.m.Dude.getSkills().add(this.new("scripts/skills/" temporary.Script));
 		this.m.Dude.m.Hitpoints = 10;

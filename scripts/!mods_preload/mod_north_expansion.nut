@@ -1,12 +1,6 @@
 ::mods_registerMod("mod_north_expansion", 0.1, "North Expansion");
 
-//TODO: threetrees event??
-//TODO: after_battle_events
-//TODO: disowned noble event
-//TODO: event: if king, keep adventuring but retire from fighting
 //TODO: test traits
-//TODO: champion brother winning duels events
-//TODO: recruiting events
 //TODO: extract utils and const
 //TODO: logInfo comment out
 //TODO: situation eager recruits, icon: perk13
@@ -125,6 +119,10 @@
 	
 ];
 
+::NorthMod.Const.FactionType <- {
+	BarbarianSettlement = 100,
+};
+
 
 
 ::mods_queue(null, null, function()
@@ -132,9 +130,31 @@
 	if(::mods_getRegisteredMod("mod_avatar")) {
 		::AvatarMod.Const.ScenarioBackgrounds["scenario.barbarian_raiders"] <- { 
 			Background = "barbarian_background",
-			Description = "You were raised in the harsh north and fought many battles, mostly victorious but you've managed to live through few bitter defeats. But now it's time to find your destiny somewhere south. Working as a mercenary, doing what you do best, fighting, seems like the best way to go forward."
+			Description = "You were born and raised in the harsh north. When you were just a boy, a witch of the north foretold you a great destiny, but mostly fighting raiding and pillaging. That destiny has brought you many victories and carried you through few defeats. However, a twist in the fate has now left you in command of other men. You are no longer the master of only your destiny."
 			StartingLevel = 3,
+			AlternativeBackgrounds = ["wildman_background", "raider_background"],
+			Traits = ["scripts/skills/traits/destined_trait", "scripts/skills/traits/champion_trait"]
 		};
+		
+		::AvatarMod.Const.TraitCosts["trait.destined"] <- 50;
+		::AvatarMod.Const.TraitCosts["trait.champion"] <- 50;
+		
+		/* local newTraits = [];
+		newTraits.push(
+		[
+			"trait.destined",
+			"scripts/skills/traits/destined_trait"
+		]);
+		
+		newTraits.push(
+		[
+			"trait.champion",
+			"scripts/skills/traits/champion_trait"
+		]);
+		
+		
+		::AvatarMod.AvatarManager.addAdditionalTraits(newTraits); */
+		
 		//TODO: add new traits to avatar mod
 	}
 	else {
@@ -265,6 +285,11 @@
 		local getScreen = ::mods_getMember(o, "getScreen");
 		::mods_override(o, "getScreen", function(_id) {
 			local screen = getScreen(_id);
+			logInfo("contract:" + this.getID() + ";" + this.getName());
+			local f = this.World.FactionManager.getFaction(this.m.Faction);
+			if (f== null) {
+				return screen;
+			}
 			if (screen != null && this.World.FactionManager.getFaction(this.m.Faction).getFlags().get("IsBarbarianFaction")) {
 				local newText = screen.Text;
 				newText = ::NorthMod.Utils.stringReplace(newText, "mercenary", "warrior");
@@ -278,6 +303,67 @@
 			return screen;
 			
 		});
+	});
+	
+	::mods_hookClass("contracts/contracts/drive_away_barbarians_contract", function(o) {
+		local duelScreen = null;
+		
+		foreach( s in o.m.Screens )
+		{
+			if (s.ID == "TheDuel1")
+			{
+				duelScreen = s;
+			}
+		}
+
+		local start = duelScreen.start;
+		::mods_override(duelScreen, "start", function() {
+			start();
+			if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders") {
+				return;
+			}
+			local brothers = this.World.getPlayerRoster().getAll();
+			local champion;
+			local avatar;
+			foreach( bro in raw_roster )
+			{
+				if (bro.getSkills().getSkillByID("trait.champion"))
+				{
+					champion = bro;
+				}
+				
+				if (bro.getFlags().get("IsPlayerCharacter") || bro.getFlags().get("IsPlayerCharacterAvatar"))
+				{
+					avatar = bro;
+				}
+			}
+			local optionToModify = this.Options.len()-1;
+			for( local i = 0; i < this.Options.len(); i++) {
+				if (this.Options[i].Text == champion.getName() + " will fight your champion!")
+				{
+					optionToModify = i;
+				}
+				if (this.Options[i].Text == avatar.getName() + " will fight your champion!")
+				{
+					this.Options[i].Text = "I, " + this.Options[i].Text;
+				}
+			}
+			local text = champion.getName() + " is my champion and he will win!";
+			if (champion.getFlags().get("IsPlayerCharacter") || champion.getFlags().get("IsPlayerCharacterAvatar"))
+			{
+				text = "I, " + champion.getName() + ", will fight your champion and win!"
+			}
+			
+			this.Options[optionToModify] = {
+				Text = text,
+				function getResult() {
+					this.Flags.set("ChampionBrotherName", champion.getName());
+					this.Flags.set("ChampionBrother", champion.getID());
+					return "TheDuel2";
+				}
+			}
+		});
+		
 	});
 	
 	::mods_hookBaseClass("entity/tactical/player", function(o) {
@@ -356,6 +442,41 @@
 			
 		});
 	});
+	
+	::mods_hookClass("entity/world/locations/barbarian_camp_location", function(o) {
+		o.setOnCombatWithPlayerCallback(function(_location){
+			local event = this.World.Events.getEvent("event.barbarian_duel");
+			event.m.Location = _location;
+			if(event.isValid())
+			{
+				this.World.Events.fire("event.barbarian_duel");
+			}
+		})
+	});
+	
+	::mods_hookClass("entity/world/locations/barbarian_camp_location", function(o) {
+		o.setOnCombatWithPlayerCallback(function(_location){
+			local event = this.World.Events.getEvent("event.barbarian_duel");
+			event.m.Location = _location;
+			if(event.isValid())
+			{
+				this.World.Events.fire("event.barbarian_duel");
+			}
+		})
+	});
+	
+	::mods_hookClass("entity/world/locations/barbarian_shelter_location", function(o) {
+		o.setOnCombatWithPlayerCallback(function(_location){
+			local event = this.World.Events.getEvent("event.barbarian_duel");
+			event.m.Location = _location;
+			if(event.isValid())
+			{
+				this.World.Events.fire("event.barbarian_duel");
+			}
+		})
+	});
+	
+	
 	//TODO: delete because of logging
 	::mods_hookBaseClass("events/event", function(o) {
 		local onUpdateScore = ::mods_getMember(o, "onUpdateScore");

@@ -51,6 +51,7 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 	function onReward()
 	{
 		this.World.Ambitions.getAmbition("ambition.battle_standard").setDone(false);
+		this.World.Ambitions.getAmbition("ambition.seargeant").setDone(false);
 		this.m.SuccessList.push({
 			id = 10,
 			icon = "ui/icons/special.png",
@@ -59,7 +60,7 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 		this.World.Ambitions.getAmbition("ambition.contracts").setDone(true);
 		this.World.Statistics.getFlags().set("NorthExpansionCivilLevel", 3);
 		
-		for (local i = 0; i < ; i++) {
+		for (local i = 0; i < this.World.FactionManager.m.Factions ; i++) {
 			local f = this.World.FactionManager.m.Factions[i];
 			if (f.getFlags().get("isBarbarianFaction"))
 			{
@@ -73,8 +74,27 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 			
 			break;
 		}
-		//TODO: allow battle standard and seargeant ambitions
-		//TODO: remove barbarian unique items
+		
+		this.World.Assets.m.BrothersMax = 20;
+		
+		
+		local brothers = this.World.getPlayerRoster().getAll();
+		foreach( bro in brothers )
+		{
+			local items = bro.getItems();
+			
+			foreach (item in items.getData())
+			{
+				if (item.getID() == "accessory.skaldhorn")
+				{
+					items.unequip(item);
+					return;
+				}
+			}
+			
+		}
+		local stash = this.World.Assets.getStash();
+		local item = stash.removeByID("accessory.skaldhorn");
 	}
 
 	function onCheckSuccess()

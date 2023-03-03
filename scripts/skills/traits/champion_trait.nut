@@ -11,6 +11,12 @@ this.champion_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		this.m.Type = this.m.Type;
 		this.m.Titles = [];
 		this.m.Excluded = [];
+		
+		foreach (t in this.Const.CharacterTraits)
+		{
+			this.m.Excluded.push(t[0]);
+		}
+		this.m.Excluded.push("trait.destined");
 	}
 
 	function getTooltip()
