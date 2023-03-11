@@ -4,7 +4,7 @@ this.b_raid_caravan_action <- this.inherit("scripts/factions/faction_action", {
 	},
 	function create()
 	{
-		this.m.ID = "b_raid_caravan_action";
+		this.m.ID = "action.b_raid_caravan";
 		this.m.Cooldown = this.World.getTime().SecondsPerDay * 12;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
@@ -43,6 +43,11 @@ this.b_raid_caravan_action <- this.inherit("scripts/factions/faction_action", {
 
 		for( local i = 0; i < factions.len(); i = ++i )
 		{
+			logInfo("faction raid: " + faction[i].getName());
+			if (factions[i] == null)
+			{
+				continue;
+			}
 			if (factions[i].getID() == _faction.getID())
 			{
 				continue;
@@ -53,6 +58,7 @@ this.b_raid_caravan_action <- this.inherit("scripts/factions/faction_action", {
 			}
 			else if (_faction.isAlliedWith(factions[i].getID()))
 			{
+				logInfo("b_raid_caravan - allied with: " + factions[i].getName());
 				continue;
 			}
 			local isolated = true;
@@ -65,6 +71,7 @@ this.b_raid_caravan_action <- this.inherit("scripts/factions/faction_action", {
 			if (isolated) {
 				continue;
 			}
+			logInfo("faction raid pushed: " + faction[i].getName());
 			potentialEnemies.push(factions[i]);
 		}
 		

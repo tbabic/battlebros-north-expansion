@@ -109,7 +109,8 @@
 	"ambition.sergeant",
 	"ambition.trade",
 	"ambition.visit_settlements",
-	"ambition.ranged_mastery"
+	"ambition.ranged_mastery",
+	"ambition.win_x_arena_fights"
 	
 ];
 
@@ -118,10 +119,6 @@
 	"ambition.sergeant",
 	
 ];
-
-::NorthMod.Const.FactionType <- {
-	BarbarianSettlement = 100,
-};
 
 
 
@@ -380,10 +377,10 @@
 	::mods_hookBaseClass("ambitions/ambition", function(o) {
 		local onUpdateScore = ::mods_getMember(o, "onUpdateScore");
 		::mods_override(o, "onUpdateScore", function() {
-			if (this.World.Assets.getOrigin().getID() == "scenario.barbarian_raiders" && this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") <= 2)
+			if (this.World.Assets.getOrigin().getID() == "scenario.barbarian_raiders" && this.World.Flags.get("NorthExpansionCivilLevel") <= 2)
 			{
 				local disabledAmbitions = ::NorthMod.Const.DisabledAmbitions1;
-				if (this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") == 2)
+				if (this.World.Flags.get("NorthExpansionCivilLevel") == 2)
 				{
 					local disabledAmbitions = ::NorthMod.Const.DisabledAmbitions2;
 				}
@@ -414,7 +411,7 @@
 				normalizeRelation();
 				return;
 			}
-			else if(this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") >= 2)
+			else if(this.World.Flags.get("NorthExpansionCivilLevel") >= 2)
 			{
 				normalizeRelation();
 				return;
@@ -432,7 +429,7 @@
 		local makeEveryoneFriendlyToPlayer = ::mods_getMember(o, "makeEveryoneFriendlyToPlayer");
 		::mods_override(o, "makeEveryoneFriendlyToPlayer", function() {
 			logInfo("make friendly relations");
-			if(this.World.Assets.getOrigin().getID() == "scenario.barbarian_raiders" && this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") <= 1)
+			if(this.World.Assets.getOrigin().getID() == "scenario.barbarian_raiders" && this.World.Flags.get("NorthExpansionCivilLevel") <= 1)
 			{
 				logInfo("make friendly relations disabled");
 				return;
@@ -474,19 +471,6 @@
 				this.World.Events.fire("event.barbarian_duel");
 			}
 		})
-	});
-	
-	
-	//TODO: delete because of logging
-	::mods_hookBaseClass("events/event", function(o) {
-		local onUpdateScore = ::mods_getMember(o, "onUpdateScore");
-		::mods_override(o, "onUpdateScore", function() {
-			onUpdateScore();
-			if(this.m.Score > 0) {
-				logInfo("event - " + this.m.ID + " = " + this.m.Score);
-			}
-			
-		});
 	});
 
 	

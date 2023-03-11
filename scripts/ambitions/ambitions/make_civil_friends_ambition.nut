@@ -28,7 +28,7 @@ this.make_civil_friends_ambition <- this.inherit("scripts/ambitions/ambition", {
 		{
 			return;
 		}
-		if (this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") >= 3) {
+		if (this.World.Flags.get("NorthExpansionCivilLevel") >= 3) {
 			return;
 		}
 
@@ -53,7 +53,7 @@ this.make_civil_friends_ambition <- this.inherit("scripts/ambitions/ambition", {
 			text = "You can now enter civilized settlements."
 		});
 		this.World.Ambitions.getAmbition("ambition.make_nobles_aware").setDone(true);
-		this.World.Statistics.getFlags().set("NorthExpansionCivilLevel", 2);
+		this.World.Flags.set("NorthExpansionCivilLevel", 2);
 	}
 
 	function onSerialize( _out )

@@ -39,8 +39,8 @@ this.shieldmaster_trait <- this.inherit("scripts/skills/traits/character_trait",
 	{
 		local actor = this.getContainer().getActor();
 		local items = actor.getItems();
-		offhand = items.getItemAtSlot(this.Const.ItemSlot.Offhand);
-		if ( offhand.isItemType(this.Const.Items.ItemType.Shield))
+		local offhand = items.getItemAtSlot(this.Const.ItemSlot.Offhand);
+		if ( offhand != null && offhand.isItemType(this.Const.Items.ItemType.Shield))
 		{
 			_properties.MeleeDamageMult *= 1.1;
 		}

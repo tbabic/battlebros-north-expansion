@@ -14,7 +14,40 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 			this.m.Item = this.WeakTableRef(_i);
 		}
 		
-		//TODO: bonuses from level ups
+		
+		local extraPerks = this.getExtraPerks();
+		foreach (perk in extraPerks)
+		{
+			this.m.Skills.add(this.new(perk));
+		}
+	}
+	
+	function getExtraPerks()
+	{
+		local xp = this.m.Item.m.XP;
+		local perks = [];
+		local xpLevels = this.m.Item.getXPLevels();
+		local allPerks = [
+			"scripts/skills/perks/perk_colossus",
+			"scripts/skills/perks/perk_fortified_mind",
+			"scripts/skills/perks/perk_relentless",
+			"scripts/skills/perks/perk_overwhelm",
+			"scripts/skills/perks/perk_steel_brow",
+			"scripts/skills/perks/perk_nimble",
+			"scripts/skills/perks/perk_lone_wolf"
+		];
+		
+		
+		for (local i = 0; i < allPerks.len() && i < xpLevels.len(); i++)
+		{
+			if (xp >= xpLevels[i])
+			{
+				perks.push(allPerks[i]);
+			}
+		}
+		
+		return perks;
+		
 	}
 
 	function setName( _n )
@@ -254,6 +287,11 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 			
 			
 			local brothers = this.Tactical.Entities.getInstancesOfFaction(this.Const.Faction.Player);
+			if (this.m.Item.m.XP < 15000)
+			{
+				this.m.Item.m.XP += XPgroup;
+				return;
+			}
 
 			foreach( bro in brothers )
 			{
@@ -261,7 +299,7 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 				{
 					return;
 				}
-
+				
 				bro.addXP(this.Math.max(1, this.Math.floor(XPgroup / brothers.len())));
 			}
 		}
@@ -283,10 +321,10 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 		this.m.FatigueCosts = this.Const.DefaultMovementFatigueCost;
 		
 		//appearance??
-		this.m.Items.getAppearance().Body = "bust_direwolf_0" + this.Math.rand(1, 3) + "_body";
+		this.m.Items.getAppearance().Body = "bust_direwolf_01_body";
 		this.addSprite("socket").setBrush("bust_base_player");
 		local body = this.addSprite("body");
-		body.setBrush("bust_direwolf_0" + this.Math.rand(1, 3));
+		body.setBrush("bust_direwolf_01");
 
 		/* if (this.Math.rand(0, 100) < 90)
 		{
@@ -299,7 +337,7 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 		}
 		*/
 		local head = this.addSprite("head");
-		head.setBrush("bust_direwolf_0" + this.Math.rand(1, 3) + "_head");
+		head.setBrush("bust_direwolf_01_head");
 		head.Color = body.Color;
 		head.Saturation = body.Saturation;
 		local head_frenzy = this.addSprite("head_frenzy");
@@ -320,6 +358,7 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 		this.m.Skills.add(this.new("scripts/skills/perks/perk_coup_de_grace"));
 		this.m.Skills.add(this.new("scripts/skills/perks/perk_berserk"));
 		this.m.Skills.add(this.new("scripts/skills/perks/perk_pathfinder"));
+		this.m.Skills.add(this.new("scripts/skills/effects/wolfmaster_bonus_effect"));
 
 	}
 

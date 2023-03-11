@@ -49,7 +49,10 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 		}
 		this.addBuilding(this.new("scripts/entity/world/settlements/buildings/crowd_building"), 5);
 		this.addBuilding(this.new("scripts/entity/world/settlements/buildings/barbarian_market_building"), 2);
-		this.addBuilding(this.new("scripts/entity/world/settlements/buildings/taxidermist_building"));
+		
+		local taxidermist = this.new("scripts/entity/world/settlements/buildings/barbarian_taxidermist_building");
+		taxidermist.onUpdateDraftList = function(_list){};
+		this.addBuilding(taxidermist);
 		this.addBuilding(this.new("scripts/entity/world/settlements/buildings/barber_building"));
 	}
 	
@@ -95,6 +98,19 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 	
 	function isEnterable()
 	{
+		
+		logInfo("last roster update:" + this.m.LastRosterUpdate);
+		
+		logInfo("situations on enter:");
+		foreach(s in this.m.Situations)
+		{
+			if (s == null)
+			{
+				logInfo("null situation");
+			}
+			logInfo(s.getID());
+		}
+		
 		if (!this.m.IsActive)
 		{
 			return false;
@@ -106,6 +122,86 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 		}
 
 		return true;
+	}
+	
+	function updateRoster( _force = false )
+	{
+		logInfo("last roster update:" + this.m.LastRosterUpdate);
+		logInfo("force: " + _force);
+		local daysPassed = (this.Time.getVirtualTimeF() - this.m.LastRosterUpdate) / this.World.getTime().SecondsPerDay;
+		logInfo("dayPassed:" + daysPassed);
+		this.settlement.updateRoster(_force);
+	}
+	
+	function addSituation( _s, _validForDays = 0 )
+	{
+		logInfo("Situation Frysdolk: " + _s.getID() + " - " + _s.getInstanceID());
+		return this.settlement.addSituation(_s, _validForDays);
+	}
+	
+	function updateSituations()
+	{
+		
+		logInfo("contract manager:");
+		foreach( c in this.World.Contracts.m.Open)
+		{
+			if (c != null)
+			{
+				logInfo("contract: " + c.getType() + " - " + c.getID() + " - " + c.getSituationID());
+			}
+		}
+		
+		logInfo("situations update1:");
+		foreach(s in this.m.Situations)
+		{
+			if (s == null)
+			{
+				logInfo("null situation");
+			}
+			logInfo(s.getID());
+			
+			logInfo(this.Time.getVirtualTimeF());
+			logInfo(s.m.ValidUntil);
+		}
+		local garbage = [];
+
+		foreach( i, s in this.m.Situations )
+		{
+			logInfo("validity")
+			if (!s.isValid())
+			{
+				logInfo("invalid");
+				garbage.push(i);
+			}
+			else if (s.getValidUntil() == 0)
+			{
+				logInfo("contract?");
+				if (!this.World.Contracts.hasContractWithSituation(s.getInstanceID()))
+				{
+					logInfo("no contract");
+					garbage.push(i);
+				}
+			}
+		}
+
+		garbage.reverse();
+
+		foreach( g in garbage )
+		{
+			logInfo("remove: " + this.m.Situations[g].getID());
+			this.m.Situations[g].onRemoved(this);
+			this.m.Situations.remove(g);
+		}
+		
+		logInfo("situations update2:");
+		foreach(s in this.m.Situations)
+		{
+			if (s == null)
+			{
+				logInfo("null situation");
+			}
+			logInfo(s.getID());
+		}
 	}
 
 		

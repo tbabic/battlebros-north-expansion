@@ -190,7 +190,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 			HairColors = ["red"],
 			Faces = ["bust_head_10"],
 			Hairs = ["08"],
-			Beards = ["14"],
+			Beards = ["13"],
 		}
 		setBroAppearance(bros[1], _appearance2);
 		
@@ -248,27 +248,57 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 			"wildman_background"
 		]);
 		
-		
-		if (useDefaultBro) {
-			local _appearance3 = {
-				HairColors = ["brown"],
-				Faces = ["bust_head_07"],
-				Hairs = ["14"],
-				Beards = ["05"],
-			}
-			
+		foreach( trait in this.Const.CharacterTraits ) {
+			bros[2].getSkills().removeByID(trait[0]);
 		}
+		
+		bros[2].getSkills().add(this.new("scripts/skills/traits/iron_jaw_trait"));
+		bros[2].getSkills().add(this.new("scripts/skills/traits/feral_trait"));
+		
+		local b = bros[2].getBaseProperties();
+		b.Hitpoints = 66;
+		b.Bravery = 46;
+		b.Stamina = 115;
+		b.MeleeSkill = 55;
+		b.RangedSkill = 35;
+		b.MeleeDefense = 0;
+		b.RangedDefense = -2;
+		b.Initiative = 100;
+		
+		
+		bros[2].getSkills().update();
+		
+		local _appearance3 = {
+			HairColors = ["brown"],
+			Faces = ["bust_head_10"],
+			Hairs = ["shaved"],
+			Beards = ["14"],
+		}
+		setBroAppearance(bros[2], _appearance3);
+		bros[2].getSprite("body").setBrush("bust_naked_body_01");
+		bros[2].getSprite("tattoo_body").setBrush("scar_02_bust_naked_body_01")
+		bros[2].getSprite("tattoo_head").setBrush("scar_02_head")
+		
+		bros[2].setName("Bjorn");
 		bros[2].setTitle("The Wildling");
-		bros[2].getBackground().m.RawDescription = "%name% has decided to stay with you, instead of going south. When asked why, he grounts out that north is his home. While not a man of many words, he is absolutely vicious and ferocious specimen in battle.";
+		bros[2].getBackground().m.RawDescription = "%name% has decided to stay with you, instead of going south. When asked why, he grounts out that north is his home. While not a man of many words, he is absolutely vicious and ferocious specimen in battle. Sometimes it looks like, the closer he is to death, the more dangerous he is.";
 		bros[2].getBackground().buildDescription(true);
 		bros[2].setPlaceInFormation(13);
 		bros[2].m.Talents = [];
 		
+		
 		local talents = bros[2].getTalents();
 		talents.resize(this.Const.Attributes.COUNT, 0);
 		talents[this.Const.Attributes.Hitpoints] = 3;
-		talents[this.Const.Attributes.Fatigue] = 2;
+		talents[this.Const.Attributes.RangedDefense] = 2;
 		talents[this.Const.Attributes.MeleeSkill] = 1;
+		
+		local items = bros[2].getItems();
+		items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Body));
+		items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Head));
+		items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Mainhand));
+		items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Offhand));
+		items.equip(this.new("scripts/items/weapons/barbarians/blunt_cleaver"));
 		
 		this.World.Assets.m.BusinessReputation = -50;
 		this.World.Assets.addMoralReputation(-30.0);
@@ -282,7 +312,10 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 	function onSpawnPlayer()
 	{
 		this.World.Statistics.getFlags().set("NorthExpansionActive", true);
-		this.World.Statistics.getFlags().set("NorthExpansionCivilLevel", 1);
+		this.World.Flags.set("NorthExpansionCivilLevel", 1);
+		
+		local f = this.World.Flags.get("NorthExpansionCivilLevel");
+		logInfo("flag:" + f);
 		
 		
 		local nobles = this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse);
@@ -292,15 +325,22 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		{
 			n.addPlayerRelation(-100.0, "You are considered outlaws and barbarians");
 		}
+		
+		local cityStates = this.World.FactionManager.getFactionsOfType(this.Const.FactionType.OrientalCityState);
+		local houses = [];
 
-
+		foreach( c in cityStates )
+		{
+			c.addPlayerRelation(-100.0, "You are considered outlaws and barbarians");
+		}
+		this.reassignBanners();
 		
 		local barbarians = createBarbarianSettlement()
 		local coords = barbarians.coords;
 		
 		this.World.State.m.Player = this.World.spawnEntity("scripts/entity/world/player_party", coords.X, coords.Y);
 		
-		this.World.Events.addSpecialEvent("event.survivor_recruits");
+		//this.World.Events.addSpecialEvent("event.survivor_recruits");
 		
 		this.World.Assets.updateLook(5);
 		this.World.getCamera().setPos(this.World.State.m.Player.getPos());
@@ -414,22 +454,33 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 
 		local halfY = (this.World.getMapSize().Y + minY) / 2;
 		
-		local maxBoundaryY = this.Math.max(halfY, minY + 20);
-		local minBoundaryY = this.Math.min(halfY, minY + 20);
+		local maxX = this.Math.max(halfY, maxX);
+		
+		local maxBoundaryY = this.Math.max(maxX, minY + 5);
+		local minBoundaryY = this.Math.min(maxX, minY + 5);
 		
 		local halfX = (minX + maxX) / 2;
-		local xOffset = 20;
+		local xOffset = 10;
 		if (northernX > halfX) {
-			xOffset = -20;
+			xOffset = -10;
 		}
 		
-		local maxBoundaryX = this.Math.min(halfX, northernX + xOffset);
-		local minBoundaryX = this.Math.max(halfX, northernX + xOffset);
+		
+		
+		local maxBoundaryX = this.Math.max(halfX, northernX + xOffset);
+		local minBoundaryX = this.Math.min(halfX, northernX + xOffset);
+		
+		logInfo("minX:" + minBoundaryX);
+		logInfo("maxX:" + maxBoundaryX);
+		logInfo("minY:" + minBoundaryY);
+		logInfo("maxY:" + maxBoundaryY);
 		
 		do
 		{
 			local x = this.Math.rand(minBoundaryX, maxBoundaryX);
 			local y = this.Math.rand(minBoundaryY, maxBoundaryY);
+			logInfo("x: " + x);
+			logInfo("y: " + y);
 
 			if (!this.World.isValidTileSquare(x, y))
 			{
@@ -440,7 +491,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 				logInfo("cand x coord:" + tile.Coords.X);
 				logInfo("cand y coord:" + tile.Coords.Y);
 
-				if (tile.Type == this.Const.World.TerrainType.Ocean || tile.Type == this.Const.World.TerrainType.Shore || tile.IsOccupied)
+				if (tile.Type == this.Const.World.TerrainType.Ocean || tile.Type == this.Const.World.TerrainType.Shore || tile.IsOccupied || tile.HasRoad)
 				{
 				}
 				
@@ -472,7 +523,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 	
 	function onUpdateHiringRoster( _roster )
 	{
-		if (this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") < 2)
+		if (this.World.Statistics.getFlags().getAsInt("NorthExpansionCivilLevel") < 2)
 		{
 			local garbage = [];
 			local bros = _roster.getAll();
@@ -497,10 +548,18 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 	{	
 		logInfo("scenario on init")
 		this.World.Assets.m.BrothersMax = 12;
-		if (this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") >= 3)
+		local f = this.World.Flags.get("NorthExpansionCivilLevel");
+		logInfo("flag:" + f);
+		
+		if (this.World.Flags.get("NorthExpansionCivilLevel") >= 3)
 		{
 			this.World.Assets.m.BrothersMax = 20;
 		}
+		
+		this.World.Events.addSpecialEvent("event.survivor_recruits");
+		
+		
+		
 		
 	}
 	
@@ -541,10 +600,63 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		local settlements = this.World.EntityManager.getSettlements();
 		local action = this.new("scripts/factions/actions/build_barbarian_camp_action");
 		action.m.Faction = f;
-		local spawnTile = action.getTileToSpawnLocation(10, [
+		local spawnTile = action.getTileToSpawnLocation(100, [
 				this.Const.World.TerrainType.Mountains
-			], 7, 12, 0, 0, 0, null, 0.75, 0.9);
+			], 9, 12, 0, 0, 0, null, 0.8, 0.95);
 		return spawnTile;
+	}
+	
+	function reassignBanners()
+	{
+		local nobles = this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse);
+		
+		
+		local northMost = null;
+		
+		local houses = [];
+		
+		
+		foreach (n in nobles)
+		{
+			local house = {
+				Faction = n,
+				North = 0
+			}
+			local maxY = 0;
+			foreach (s in n.getSettlements())
+			{
+				if (s.getTile().Coords.Y > house.North)
+				{
+					house.North = s.getTile().Coords.Y;
+				}
+			}
+			
+			houses.push(house);
+		}
+		
+		houses.sort(function ( _a, _b )
+		{
+			if (_a.North > _b.North)
+			{
+				return -1;
+			}
+			else if (_a.North < _b.North)
+			{
+				return 1;
+			}
+
+			return 0;
+		});
+		
+		local northBanners = [2, 6, 8];
+		local middleBanners = [3, 5,7];
+		local southBanners = [4, 9, 10];
+		
+		logInfo("banners");
+		
+		houses[0].Faction.setBanner(northBanners[this.Math.rand(0, northBanners.len() - 1)]);
+		houses[1].Faction.setBanner(middleBanners[this.Math.rand(0, middleBanners.len() - 1)]);
+		houses[2].Faction.setBanner(southBanners[this.Math.rand(0, southBanners.len() - 1)]);
 	}
 	
 

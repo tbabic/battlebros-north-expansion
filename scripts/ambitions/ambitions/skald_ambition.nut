@@ -23,7 +23,7 @@ this.skald_ambition <- this.inherit("scripts/ambitions/ambition", {
 		{
 			return;
 		}
-		if (this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") >= 3) {
+		if (this.World.Flags.get("NorthExpansionCivilLevel") >= 3) {
 			return;
 		}
 

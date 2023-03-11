@@ -36,7 +36,7 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 		{
 			return;
 		}
-		if (this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") != 2) {
+		if (this.World.Flags.get("NorthExpansionCivilLevel") != 2) {
 			return;
 		}
 		if (this.World.Ambitions.getAmbition("ambition.king").isDone())
@@ -58,7 +58,7 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 			text = "You are now considered mercenaries and not barbarians."
 		});
 		this.World.Ambitions.getAmbition("ambition.contracts").setDone(true);
-		this.World.Statistics.getFlags().set("NorthExpansionCivilLevel", 3);
+		this.World.Flags.set("NorthExpansionCivilLevel", 3);
 		
 		for (local i = 0; i < this.World.FactionManager.m.Factions ; i++) {
 			local f = this.World.FactionManager.m.Factions[i];
@@ -83,11 +83,11 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 		{
 			local items = bro.getItems();
 			
-			foreach (item in items.getData())
+			foreach (item in items.getAllItems())
 			{
 				if (item.getID() == "accessory.skaldhorn")
 				{
-					items.unequip(item);
+					item.removeSelf();
 					return;
 				}
 			}

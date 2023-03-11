@@ -2,7 +2,8 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 	m = {
 		LastCombatID = 0,
 		Dude = null,
-		RecruitResult = null
+		RecruitResult = null,
+		shouldTrigger = false
 	},
 	function create()
 	{
@@ -11,7 +12,7 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 		this.m.IsSpecial = true;
 		this.m.Screens.push({
 			ID = "Civilians",
-			Text = "[img]gfx/ui/events/event_53.png[/img]{After the battle you and your men scour the battlefield for loot and supplies. %randombrother% calls for you, points to one of the men who is still breathing, barely and not for long. Not without help anyway. Brother2 takes out his knife and asks if he should finish him off. Brother stops him and speaks up.%SPEECH_ON%He fought well, that one. We need men and could use a man like that. Maybe we should offer him to fight for us in exchange for his life.%SPEECH_OFF%The dying man grumbles something, but you understand he\'s willing to accept the proposal.}",
+			Text = "[img]gfx/ui/events/event_53.png[/img]{After the battle you and your men scour the battlefield for loot and supplies. %randombrother% calls for you, points to one of the men who is still breathing, barely and not for long. Not without help anyway. %randombrother2% takes out his knife and asks if he should finish him off. %randombrother% stops him and speaks up.%SPEECH_ON%He fought well, that one. We need men and could use a man like that. Maybe we should offer him to fight for us in exchange for his life.%SPEECH_OFF%The dying man grumbles something, but you understand he\'s willing to accept the proposal.}",
 			Image = "",
 			List = [],
 			Characters = [],
@@ -20,9 +21,9 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 					Text = "He\'s a good fighter. We\'ll take him.",
 					function getResult( _event )
 					{
-						if(this.m.RecruitResult != "Recruited")
+						if(_event.m.RecruitResult != "Recruited")
 						{
-							return this.m.RecruitResult;
+							return _event.m.RecruitResult;
 						}
 					
 						this.World.getPlayerRoster().add(_event.m.Dude);
@@ -58,6 +59,7 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 			{
 				local probabilities;
 				local backgrounds = [];
+				local f = this.World.FactionManager.getFaction(this.World.Statistics.getFlags().getAsInt("LastCombatFaction"));
 				if (f.getType() == this.Const.FactionType.NobleHouse)
 				{
 					probabilities = [40, 20];
@@ -82,7 +84,7 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 				{
 					probabilities = [20, 40];
 					backgrounds.push({
-						name = "farmer_background",
+						name = "farmhand_background",
 						score = 2
 					});
 					backgrounds.push({
@@ -116,12 +118,16 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 				}
 				
 				_event.recruit(probabilities, backgrounds);
+				if(_event.m.Dude != null)
+				{
+					this.Characters.push(_event.m.Dude.getImagePath());
+				}
 			}
 
 		});
 		this.m.Screens.push({
 			ID = "Barbarians",
-			Text = "[img]gfx/ui/events/event_145.png[/img]{The battle is over, battlefield filled with dead enemies, or soon to be dead. Surprisingly one of the enemies is standing up, holding his weapon, barely but holding. His legs buckle and he falls to his knees, but still holds his weapon.%randombrother% comes up to you%SPEECH_ON%He is refusing to die, have to admire that in a man. But death catches even the stubborn ones and he can't run right now. But maybe we should help him and he'll join us.%SPEECH_OFF}",
+			Text = "[img]gfx/ui/events/event_145.png[/img]{The battle is over, battlefield filled with dead enemies, or soon to be dead. Surprisingly one of the enemies is standing up, holding his weapon, barely but holding. His legs buckle and he falls to his knees, but still holds his weapon.%randombrother% comes up to you. %SPEECH_ON%He is refusing to die, have to admire that in a man. But death catches even the stubborn ones and he can't run right now. But maybe we should help him and he'll join us.%SPEECH_OFF%}",
 			Image = "",
 			List = [],
 			Characters = [],
@@ -130,11 +136,16 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 					Text = "We\'ll save his life, if he\'ll join us.",
 					function getResult( _event )
 					{
-						if(this.m.RecruitResult != "Recruited")
+						logInfo("recruit result: " + _event.m.RecruitResult);
+						if(_event.m.RecruitResult != "Recruited")
 						{
-							return this.m.RecruitResult;
+							return _event.m.RecruitResult;
 						}
-						
+						logInfo("add dude");
+						if (_event.m.Dude == null)
+						{
+							logInfo("dude is null");
+						}
 						this.World.getPlayerRoster().add(_event.m.Dude);
 						this.World.getTemporaryRoster().clear();
 						_event.m.Dude.onHired();
@@ -168,6 +179,7 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 			{
 				local probabilities;
 				local backgrounds = [];
+				local f = this.World.FactionManager.getFaction(this.World.Statistics.getFlags().getAsInt("LastCombatFaction"));
 				if (f.getType() == this.Const.FactionType.Bandits)
 				{
 					probabilities = [30, 20];
@@ -186,6 +198,11 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 				}
 				
 				_event.recruit(probabilities, backgrounds);
+				if(_event.m.Dude != null)
+				{
+					this.Characters.push(_event.m.Dude.getImagePath());
+				}
+					
 				
 				
 			}
@@ -193,7 +210,7 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 		});
 		this.m.Screens.push({
 			ID = "KillAttempt",
-			Text = "[img]gfx/ui/events/event_145.png[/img]{%randombrother% moves to help the man with his wounds, when suddenly he pulls a knife on your man. His move is too slow and predictable. %randombrother% easily parries it and then slides his blade into the man\'s chests. His body falls to the ground, a single twitch of legs and then it\'s perfectly calm. Your warrior turns to you, his expression one of regret and dissapointment. %SPEECH_ON%I guess some men don\'t want to live. Shame he was a tough bastar. Would have fit in right with our crew.%SPEECH_OFF% You agree, but what is done is done.There is nothing left to do here, so you tell your men to gather all their belongings and move on.}",
+			Text = "[img]gfx/ui/events/event_145.png[/img]{%randombrother% moves to help the man with his wounds, when suddenly he pulls a knife on your man. His move is too slow and predictable. %randombrother% easily parries it and then slides his blade into the man\'s chests. His body falls to the ground, a single twitch of legs and then it\'s perfectly calm. Your warrior turns to you, his expression one of regret and dissapointment. %SPEECH_ON%I guess some men don\'t want to live. Shame he was a tough bastard. Would have fit in right with our crew.%SPEECH_OFF% You agree, but what is done is done.There is nothing left to do here, so you tell your men to gather all their belongings and move on.}",
 			Image = "",
 			List = [],
 			Characters = [],
@@ -241,7 +258,7 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 		});
 		this.m.Screens.push({
 			ID = "Executed",
-			Text = "[img]gfx/ui/events/event_145.png[/img]{%randombrother% unsheathes his sword and lowers the blade towards the man, his face blobbing at the tip. He spits out, last act of defiance, before the blade slides into his chest and his body falls to the floor.%randombrother% turns toward you, his expression blank, giving away no emotions if there were some.%SPEECH_ON%I guess that needed to be done. This world isn\'t one of mercy.%SPEECH_OFF%He breathes out loudly and sheathes the sword. His expression stil one of stone, before he turns away. There is nothing left to do here, so you tell your men to gather all their belongings and move on.}",
+			Text = "[img]gfx/ui/events/event_145.png[/img]{%randombrother% unsheathes his sword and lowers the blade towards the man, his face blobbing at the tip. He spits out, last act of defiance, before the blade slides into his chest and his body falls to the floor. %randombrother% turns toward you, his expression blank, giving away no emotions if there were some.%SPEECH_ON%I guess that needed to be done. This world isn\'t one of mercy.%SPEECH_OFF%He breathes out loudly and sheathes the sword. His expression stil one of stone, before he turns away. There is nothing left to do here, so you tell your men to gather all their belongings and move on.}",
 			Image = "",
 			List = [],
 			Characters = [],
@@ -328,22 +345,25 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 			selectedBackground
 		]);
 		
-		this.m.Dude.getBackground().m.RawDescription = "%name% was taken as an indebted after barely surviving a battle against your men. His spirit was broken and he was forced to fight for you, so that he may pay his debt to the Gilder.";
+		this.m.Dude.getBackground().m.RawDescription = "%name% was taken to your crew after barely surviving in a battle against your men. He swore loyalty and will fight for you as well as any man.";
 		this.m.Dude.getBackground().buildDescription(true);
 		local permanent = this.Const.Injury.Permanent[this.Math.rand(0, this.Const.Injury.Permanent.len()-1)];
 		local temporary = this.Const.Injury.All[this.Math.rand(0, this.Const.Injury.All.len()-1)];
-		this.m.Dude.getSkills().add(this.new("scripts/skills/" permanent.Script));
-		this.m.Dude.getSkills().add(this.new("scripts/skills/" temporary.Script));
+		this.m.Dude.getSkills().add(this.new("scripts/skills/" + permanent.Script));
+		this.m.Dude.getSkills().add(this.new("scripts/skills/" + temporary.Script));
 		this.m.Dude.m.Hitpoints = 10;
 		this.m.Dude.getSkills().update();
-		this.Characters.push(this.m.Dude.getImagePath());
+		local items = this.m.Dude.getItems();
+		items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Body));
+		items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Head));
 		
+		this.m.RecruitResult = "Recruited";
 		return "Recruited";
 	}
 	
-	
 	function isValid()
 	{
+		
 		if (!this.Const.DLC.Wildmen)
 		{
 			return;
@@ -358,21 +378,17 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 			return;
 		}
 		
-		if(this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") != 1) {
+		if(this.World.Flags.get("NorthExpansionCivilLevel") != 1) {
 			return false;
 		}
+
 	
-
-		if (this.World.Statistics.getFlags().getAsInt("LastCombatID") <= this.m.LastCombatID)
-		{
-			return false;
-		}
-
 		if (this.Time.getVirtualTimeF() - this.World.Events.getLastBattleTime() > 5.0 || this.World.Statistics.getFlags().getAsInt("LastCombatResult") != 1)
 		{
 			return false;
 		}
-
+		
+		
 
 		local f = this.World.FactionManager.getFaction(this.World.Statistics.getFlags().getAsInt("LastCombatFaction"));
 
@@ -386,6 +402,22 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 			return false;
 		}
 		
+		
+		if (this.World.Statistics.getFlags().getAsInt("LastCombatID") <= this.m.LastCombatID && !this.m.shouldTrigger)
+		{
+			this.m.LastCombatID = this.World.Statistics.getFlags().getAsInt("LastCombatID");
+			return false;
+		}
+		this.m.LastCombatID = this.World.Statistics.getFlags().getAsInt("LastCombatID");
+		
+		logInfo("survivors event");
+		
+		if (this.m.shouldTrigger)
+		{
+			logInfo("old trigger activated");
+			return true;
+		}
+		
 		local chance = 0;
 		local enemyNumber = this.World.Statistics.getFlags().getAsInt("LastEnemiesDefeatedCount");
 		chance += enemyNumber * 2;
@@ -396,15 +428,14 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 		{
 			chance += 20;
 		}
-		
-		if(this.Math.rand(1, 100) > chance) {
+		logInfo("survivors chance:" + chance);
+		local roll = this.Math.rand(1, 100);
+		logInfo("survivors roll:" + roll);
+		if(roll > chance) {
 			return false;
 		}
-		
-		
-		
-
-		this.m.LastCombatID = this.World.Statistics.getFlags().get("LastCombatID");
+		logInfo("survirors event trigger");
+		this.m.shouldTrigger = true;
 		return true;
 	}
 
@@ -423,6 +454,7 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 
 	function onDetermineStartScreen()
 	{
+		this.m.shouldTrigger = false;
 		local f = this.World.FactionManager.getFaction(this.World.Statistics.getFlags().getAsInt("LastCombatFaction"));
 
 		if (f.getType() == this.Const.FactionType.NobleHouse)
@@ -467,6 +499,12 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 		{
 			this.m.LastCombatID = _in.readU32();
 		}
+		this.m.shouldTrigger = false;
+		
+	}
+	
+	function getBackground()
+	{
 	}
 
 });

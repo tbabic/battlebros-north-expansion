@@ -7,8 +7,8 @@ this.reach_renown_ambition <- this.inherit("scripts/ambitions/ambition", {
 		this.m.Duration = 99999.0 * this.World.getTime().SecondsPerDay;
 		this.m.ButtonText = "We need to become more known in these lands, so that everyone treats us with respect. We shall increase our renown!";
 		this.m.RewardTooltip = "You\'ll unlock entirely new contracts and ambitions.";
-		this.m.UIText = "Reach \'Reputable\' renown";
-		this.m.TooltipText = "Become known as \'Reputable\' (1,400 renown). You can increase your renown by completing contracts and winning battles.";
+		this.m.UIText = "Reach \'Professional\' renown";
+		this.m.TooltipText = "Become known as \'Professional\' (1,050 renown). You can increase your renown by completing contracts and winning battles.";
 		this.m.SuccessText = "[img]gfx/ui/events/event_31.png[/img]You pushed your men to great deeds, outstanding bravery, and plentiful bloodshed. After several contracts and more than a few skirmishes, you worked hard enough and long enough so that folks finally know the name %companyname%";
 		this.m.SuccessButtonText = "We have earned a name for ourselves!";
 	}
@@ -20,7 +20,7 @@ this.reach_renown_ambition <- this.inherit("scripts/ambitions/ambition", {
 			return;
 		}
 
-		if (this.World.Assets.getBusinessReputation() < 1000)
+		if (this.World.Assets.getBusinessReputation() < 800)
 		{
 			return;
 		}
@@ -28,7 +28,7 @@ this.reach_renown_ambition <- this.inherit("scripts/ambitions/ambition", {
 		{
 			return;
 		}
-		if (this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") >= 3) {
+		if (this.World.Flags.get("NorthExpansionCivilLevel") >= 3) {
 			return;
 		}
 
@@ -37,7 +37,7 @@ this.reach_renown_ambition <- this.inherit("scripts/ambitions/ambition", {
 
 	function onCheckSuccess()
 	{
-		if (this.World.Assets.getBusinessReputation() >= 1400)
+		if (this.World.Assets.getBusinessReputation() >= 1050)
 		{
 			return true;
 		}

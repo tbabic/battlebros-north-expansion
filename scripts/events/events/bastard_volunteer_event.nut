@@ -9,7 +9,7 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 		this.m.Cooldown = 999999.0 * this.World.getTime().SecondsPerDay;
 		this.m.Screens.push({
 			ID = "A",
-			Text = "%terrainImage%You walks over a hill and sees a man in black cloak fighting undead. It looks like there is a large wolf helping him out.The man\'s sword cuts and slashes through the unded and wolf tears rips and shred them until they are all dead again.%randombrother& comes up and says%SPEECH_ON%He's not bad with that blade. Looks like he has it handled.%SPEECH_OFF%Just as he has finished those words a new group of undead comes over the hill. The man with the sword breathes visibly and you are not sure he has the strength to fight them again. He seems to realize it too and starts running away, but his steps are heavy and slow. He will not outrun them.",
+			Text = "%terrainImage%You walks over a hill and sees a man in black cloak fighting undead. It looks like there is a large wolf helping him out.The man\'s sword cuts and slashes through the unded and wolf tears rips and shred them until they are all dead again.%randombrother% comes up and says%SPEECH_ON%He's not bad with that blade. Looks like he has it handled.%SPEECH_OFF%Just as he has finished those words a new group of undead comes over the hill. The man with the sword breathes visibly and you are not sure he has the strength to fight them again. He seems to realize it too and starts running away, but his steps are heavy and slow. He will not outrun them.",
 			Image = "",
 			List = [],
 			Characters = [],
@@ -126,7 +126,7 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 		});
 		this.m.Screens.push({
 			ID = "Aftermath",
-			Text = "%terrainImage%{The battle is over and the man in black approaches you, the wolf keeping at his heel.%SPEECH_ON%I\'m %jonsnow%.%SPEECH_OFF% He pauses, perhaps waiting to see if you\'ll recognize the name or just to catch his breath. After no reaction from you, he continues.%SPEECH_ON%Thank you for helping me out. I owe you a debt of gratitude and my honor bounds me to help you back, if you\'ll have me, ofcourse.%SPEECH_OFF%%randombrother& whispers in your ear.%SPEECH_ON%He\'s got some skill with the sword, but I don\'t trust that beast of his%SPEECH_OFF%}", 
+			Text = "%terrainImage%{The battle is over and the man in black approaches you, the wolf keeping at his heel.%SPEECH_ON%I\'m %jonsnow%.%SPEECH_OFF% He pauses, perhaps waiting to see if you\'ll recognize the name or just to catch his breath. After no reaction from you, he continues.%SPEECH_ON%Thank you for helping me out. I owe you a debt of gratitude and my honor bounds me to help you back, if you\'ll have me, ofcourse.%SPEECH_OFF%%randombrother% whispers in your ear.%SPEECH_ON%He\'s got some skill with the sword, but I don\'t trust that beast of his%SPEECH_OFF%}", 
 			Image = "",
 			List = [],
 			Characters = [],
@@ -183,7 +183,7 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 			multiplier = 4;
 		}
 		
-		if(this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") == 2) {
+		if(this.World.Flags.get("NorthExpansionCivilLevel") == 2) {
 			multiplier = multiplier * 2;
 		}
 		

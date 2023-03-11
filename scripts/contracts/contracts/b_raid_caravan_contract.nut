@@ -37,6 +37,7 @@ this.b_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 
 		local myTile = this.World.State.getPlayer().getTile();
 		local enemyFaction = this.World.FactionManager.getFaction(this.m.Flags.get("TargetFaction"));
+		logInfo("enemy faction: " + enemyFaction.getName());
 		local settlements = enemyFaction.getSettlements();
 		local lowest_distance = 99999;
 		local highest_distance = 0;
@@ -55,13 +56,14 @@ this.b_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 			}
 			best_start = possible[this.Math.rand(0, possible.len()-1)];
 		}
-				
+		logInfo("start:" + best_start.getName());
 		local allSettlements = this.World.EntityManager.getSettlements();
 		local destinations = [];
 		foreach (s in settlements) {
 			local tile = s.getTile();
 			if (tile.SquareCoords.Y < this.World.getMapSize().Y * 0.7)
 			{
+				logInfo("dest:" + s.getName());
 				destinations.push(s);
 			}
 		}

@@ -36,13 +36,13 @@ this.wolfmaster_trait <- this.inherit("scripts/skills/traits/character_trait", {
 				id = 11,
 				type = "text",
 				icon = "ui/icons/melee_skill.png",
-				text = "While adjacent to his wolf character gains [color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Skill"
+				text = "While adjacent to his wolf, character gains [color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Skill"
 			}
 			{
 				id = 12,
 				type = "text",
 				icon = "ui/icons/melee_defense.png",
-				text = "While adjacent to his wolf character gains [color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Defense"
+				text = "While adjacent to his wolf, character gains [color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Defense"
 			}
 			
 		];
@@ -68,6 +68,53 @@ this.wolfmaster_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		//TODO: wolfrotation effect
 		//this.getContainer().add(this.new("scripts/skills/effects/wolfmaster_effect"));
 		
+	}
+	
+	function checkConditions()
+	{
+		local actor = this.getContainer().getActor();
+		if (!actor.isPlacedOnMap())
+		{
+			return false;
+		}
+		
+		local accessory = actor.getItems().getItemAtSlot(this.Const.ItemSlot.Accessory);
+		if (accessory == null || accessory.getID() != "accessory.direwolf")
+		{
+			return false;
+		}
+		if (!accessory.isUnleashed())
+		{
+			return false;
+		}
+		local ally = accessory.m.Entity;
+		
+		local myTile = actor.getTile();
+		local allyDistance = ally.getTile().getDistanceTo(myTile);
+		logInfo("ally: " + ally.getName() + " dist:"  + allyDistance);
+		ally.getSkills().update();
+		if (ally.getSkills().hasSkill("effects.wolfmaster_bonus") && allyDistance == 1)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	function processBonus( _properties )
+	{
+		if(this.checkConditions())
+		{
+			logInfo("wolfmaster active");
+			_properties.MeleeSkill += 5;
+			_properties.MeleeDefense += 5;
+		}
+		
+	}
+
+	function onUpdate( _properties )
+	{
+		logInfo("update wolfmaster");
+		this.processBonus(_properties);
 	}
 
 });

@@ -11,7 +11,7 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 		this.m.Cooldown = 99999.0 * this.World.getTime().SecondsPerDay;
 		this.m.Screens.push({
 			ID = "A",
-			Text = "%terrainImage%A man moves through the crowd shoving everybody in his path. He is heading straight for you, but two of your men stop to block his approach. The man gestures to mean no harm and you nod your men to let him through. He speaks softly and quietly, unusual for such a large man.%SPEECH_ON%I\'ve heard you are looking for men. You\'ve got a reputation as a capable group, and I\'d like to join.%SPEECH_OFF%You ask him, why you should let him in your warband, when %randombrother& interjects.%SPEECH_ON%That\'s, %recruit%, I\'ve heard of him. He is a good fighter, or so I\'ve been told.%SPEECH_OFF%Your man pauses for a moment and then adds. %SPEECH_ON%Haven\'t seen him myself, though. People tell a lot of things, so might be I\'ve been told wrong.%SPEECH_OFF%",
+			Text = "%terrainImage%A man moves through the crowd shoving everybody in his path. He is heading straight for you, but two of your men stop to block his approach. The man gestures to mean no harm and you nod your men to let him through. He speaks softly and quietly, unusual for such a large man.%SPEECH_ON%I\'ve heard you are looking for men. You\'ve got a reputation as a capable group, and I\'d like to join.%SPEECH_OFF%You ask him, why you should let him in your warband, when %randombrother% interjects.%SPEECH_ON%That\'s, %recruit%, I\'ve heard of him. He is a good fighter, or so I\'ve been told.%SPEECH_OFF%Your man pauses for a moment and then adds. %SPEECH_ON%Haven\'t seen him myself, though. People tell a lot of things, so might be I\'ve been told wrong.%SPEECH_OFF%",
 			Image = "",
 			List = [],
 			Characters = [],
@@ -57,37 +57,13 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 
 	function onUpdateScore()
 	{
+		logInfo("update score");
 		if (!this.Const.DLC.Wildmen)
 		{
 			return;
 		}
 
 		local currentTile = this.World.State.getPlayer().getTile();
-
-		if (!currentTile.HasRoad)
-		{
-			return;
-		}
-
-		if (currentTile.SquareCoords.Y < this.World.getMapSize().Y * 0.7)
-		{
-			return;
-		}
-
-		if (this.World.getPlayerRoster().getSize() >= this.World.Assets.getBrothersMax())
-		{
-			return;
-		}
-
-		if (this.World.Assets.getOrigin().getID() == "scenario.raiders")
-		{
-			this.m.Score = 20;
-		}
-		else
-		{
-			this.m.Score = 5;
-		}
-		
 		
 		local multiplier = 1;
 		if (!this.Const.DLC.Wildmen)
@@ -108,10 +84,10 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 		local inBarbarianVillage = false;
 		local town;
 		local playerTile = this.World.State.getPlayer().getTile();
-
+		logInfo("findTown");
 		foreach( s in settlements )
 		{
-			local faction = this.World.FactionManager.getOwner();
+			local faction = s.getOwner();
 			if (faction.getFlags().get("IsBarbarianFaction") && s.getTile().getDistanceTo(playerTile) <=4 )
 			{
 				town = s;
@@ -120,6 +96,7 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 		}
 		if(!inBarbarianVillage)
 		{
+			logInfo("town not found");
 			return
 		}
 		
@@ -128,7 +105,7 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 			multiplier = 4;
 		}
 		
-		if(this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") == 1) {
+		if(this.World.Flags.get("NorthExpansionCivilLevel") == 1) {
 			multiplier = multiplier * 2;
 		}
 		

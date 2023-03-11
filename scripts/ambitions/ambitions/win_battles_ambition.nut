@@ -51,13 +51,13 @@ this.win_battles_ambition <- this.inherit("scripts/ambitions/ambition", {
 	function onSerialize( _out )
 	{
 		this.ambition.onSerialize(_out);
-		_out.writeBool(this.m.Defeated);
+		_out.writeU16(this.m.Defeated);
 	}
 
 	function onDeserialize( _in )
 	{
 		this.ambition.onDeserialize(_in);
-		this.m.Defeated = _in.readBool();
+		this.m.Defeated = _in.readU16();
 	}
 
 });

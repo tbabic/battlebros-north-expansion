@@ -277,7 +277,7 @@ this.barbarian_duel_event <- this.inherit("scripts/events/event", {
 		{
 			return false;
 		}
-		if(this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") >= 3)
+		if(this.World.Flags.get("NorthExpansionCivilLevel") >= 3)
 		{
 			return false;
 		}

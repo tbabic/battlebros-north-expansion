@@ -4,7 +4,7 @@ this.threetrees_volunteer_event <- this.inherit("scripts/events/event", {
 	},
 	function create()
 	{
-		this.m.ID = "event.bastard_volunteer";
+		this.m.ID = "event.threetrees_volunteer";
 		this.m.Title = "Along the way...";
 		this.m.Cooldown = 999999.0 * this.World.getTime().SecondsPerDay;
 		this.m.Screens.push({
@@ -74,7 +74,7 @@ this.threetrees_volunteer_event <- this.inherit("scripts/events/event", {
 				local tough = this.new("scripts/skills/traits/tough_trait");
 				local old = this.new("scripts/skills/traits/old_trait");
 				
-				_event.m.Dude.getSkills().add(survivor);
+				_event.m.Dude.getSkills().add(shieldmaster);
 				_event.m.Dude.getSkills().add(tough);
 				_event.m.Dude.getSkills().add(old);
 				
@@ -116,7 +116,7 @@ this.threetrees_volunteer_event <- this.inherit("scripts/events/event", {
 		{
 			return;
 		}
-		if(this.World.Statistics.getFlags().get("NorthExpansionCivilLevel") >= 3) {
+		if(this.World.Flags.get("NorthExpansionCivilLevel") >= 3) {
 			return;
 		}
 		

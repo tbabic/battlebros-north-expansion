@@ -3,7 +3,6 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 		Skill = null,
 		Entity = null,
 		Script = "scripts/entity/tactical/direwolf_pet",
-		ArmorScript = null,
 		UnleashSounds = [
 			"sounds/combat/unleash_wardog_01.wav",
 			"sounds/combat/unleash_wardog_02.wav",
@@ -11,8 +10,7 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 			"sounds/combat/unleash_wardog_04.wav"
 		],
 		Friend = null,
-		Xp = 0,
-		Level = 0,
+		XP = 0
 	},
 	function isAllowedInBag()
 	{
@@ -22,11 +20,6 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 	function getScript()
 	{
 		return this.m.Script;
-	}
-
-	function getArmorScript()
-	{
-		return this.m.ArmorScript;
 	}
 
 	function isUnleashed()
@@ -42,7 +35,7 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 		}
 		else
 		{
-			return "Warhound Collar";
+			return "Direwolf Collar";
 		}
 	}
 
@@ -53,9 +46,17 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 
 	function getDescription()
 	{
+	
+		local xp = this.m.XP;
+		local nextLevel = this.getNextLevel();
+		local xpDesc = "";
+		if (nextLevel != null)
+		{
+			xpDesc = "\n\nXP: " + xp + " / " + nextLevel;
+		}
 		if (this.m.Entity == null)
 		{
-			return this.item.getDescription();
+			return this.item.getDescription() + xpDesc;
 		}
 		else
 		{
@@ -108,17 +109,14 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 	function onEquip()
 	{
 		this.accessory.onEquip();
-		local unleash = this.new("scripts/skills/actives/unleash_wardog");
+		local unleash = this.new("scripts/skills/actives/unleash_direwolf");
 		unleash.setItem(this);
-		unleash.m.Name = "Unleash Direwolf";
-		unleash.m.Description = "Unleash your warhound and send him charging into the enemy. Needs a free tile adjacent.";
-		unleash.m.Icon = "skills/active_165.png";
-		unleash.m.IconDisabled = "skills/active_165_sw.png";
-		unleash.m.Overlay = "active_165";
 		this.m.Skill = this.WeakTableRef(unleash);
 		this.addSkill(unleash);
 		
 		local actor = this.getContainer().getActor();
+						
+		
 		if (!actor.getFlags().get("NorthExpansionWolfmaster"))
 		{
 			this.getContainer().unequip(this);
@@ -161,13 +159,35 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 	{
 		this.accessory.onSerialize(_out);
 		_out.writeString(this.m.Name);
+		//_out.writeI32(this.m.XP);
 	}
 
 	function onDeserialize( _in )
 	{
 		this.accessory.onDeserialize(_in);
 		this.m.Name = _in.readString();
+		//this.m.XP = _in.readI32();
 	}
+	
+	function getXPLevels() {
+		local xpLevels = [1000, 2500, 4000, 6000, 8000, 11000, 14000];
+		return xpLevels;
+	}
+	
+	function getNextLevel()
+	{
+		local xpLevels = this.getXPLevels();
+		foreach (level in xpLevels)
+		{
+			if (level > this.m.XP)
+			{
+				return level;
+			}
+		}
+		return null;
+	}
+	
+	
 
 });
 

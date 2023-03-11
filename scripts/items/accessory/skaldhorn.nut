@@ -11,14 +11,14 @@ this.skaldhorn <- this.inherit("scripts/items/accessory/accessory", {
 		this.m.IsDroppedAsLoot = true;
 		this.m.ShowOnCharacter = false;
 		this.m.IconLarge = "";
-		this.m.Icon = "accessory/skaldhorn.png";
+		this.m.Icon = "accessory/skald_horn.png";
 		this.m.Sprite = "";
 		this.m.Value = 1000;
 	}
 
 	function getTooltip()
 	{
-		local result = this.weapon.getTooltip();
+		local result = this.accessory.getTooltip();
 		result.push({
 			id = 10,
 			type = "text",
