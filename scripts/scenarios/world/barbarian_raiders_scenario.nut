@@ -311,7 +311,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 
 	function onSpawnPlayer()
 	{
-		this.World.Statistics.getFlags().set("NorthExpansionActive", true);
+		this.World.Flags.set("NorthExpansionActive", true);
 		this.World.Flags.set("NorthExpansionCivilLevel", 1);
 		
 		local f = this.World.Flags.get("NorthExpansionCivilLevel");
