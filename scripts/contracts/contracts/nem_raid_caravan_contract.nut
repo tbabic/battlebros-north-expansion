@@ -1,4 +1,4 @@
-this.b_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 	m = {
 		Target = null,
 		LastCombatTime = 0.0
@@ -11,7 +11,7 @@ this.b_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 	function create()
 	{
 		this.contract.create();
-		this.m.Type = "contract.b_raid_caravan";
+		this.m.Type = "contract.nem_raid_caravan";
 		this.m.Name = "Raid Caravan";
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 7.0;
 	}

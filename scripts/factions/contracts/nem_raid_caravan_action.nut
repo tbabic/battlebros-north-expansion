@@ -1,10 +1,10 @@
-this.b_raid_caravan_action <- this.inherit("scripts/factions/faction_action", {
+this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", {
 	m = {
 		Enemy = null
 	},
 	function create()
 	{
-		this.m.ID = "action.b_raid_caravan";
+		this.m.ID = "action.nem_raid_caravan";
 		this.m.Cooldown = this.World.getTime().SecondsPerDay * 12;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
@@ -91,7 +91,7 @@ this.b_raid_caravan_action <- this.inherit("scripts/factions/faction_action", {
 
 	function onExecute( _faction )
 	{
-		local contract = this.new("scripts/contracts/contracts/b_raid_caravan_contract");
+		local contract = this.new("scripts/contracts/contracts/nem_raid_caravan_contract");
 		contract.setFaction(_faction.getID());
 		contract.setEmployerID(_faction.getRandomCharacter().getID());
 		contract.setTargetFaction(this.m.Enemy);
