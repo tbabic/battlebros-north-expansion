@@ -24,15 +24,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 		this.m.Flags.set("ChampionBrother", 0);
 		this.m.Payment.Pool = 600 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();
 
-		if (this.Math.rand(1, 100) <= 33)
-		{
-			this.m.Payment.Completion = 0.75;
-			this.m.Payment.Advance = 0.25;
-		}
-		else
-		{
-			this.m.Payment.Completion = 1.0;
-		}
+		this.m.Payment.Completion = 1.0;
 
 		this.contract.start();
 	}

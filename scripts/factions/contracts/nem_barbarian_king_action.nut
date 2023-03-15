@@ -3,7 +3,7 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 	function create()
 	{
 		this.m.ID = "barbarian_king_action";
-		this.m.Cooldown = this.World.getTime().SecondsPerDay * 7;
+		this.m.Cooldown = this.World.getTime().SecondsPerDay * 30;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();
@@ -40,7 +40,7 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 		{
 			return;
 		}
-
+		
 		local settlements = _faction.getSettlements();
 		local barbarians = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getSettlements();
 		local lowestDistance = 9999;

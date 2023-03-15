@@ -21,11 +21,6 @@ this.nem_drive_away_bandits_action <- this.inherit("scripts/factions/faction_act
 			return;
 		}
 
-		if (this.World.getTime().Days <= 3 && this.Math.rand(1, 100) < 33 || this.Math.rand(1, 100) > 25)
-		{
-			return;
-		}
-
 		local tooFar = true;
 		local myTile = _faction.getSettlements()[0].getTile();
 

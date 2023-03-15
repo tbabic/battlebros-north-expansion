@@ -36,15 +36,7 @@ this.nem_drive_away_bandits_contract <- this.inherit("scripts/contracts/contract
 		this.m.Flags.set("RobberBaronName", this.generateName());
 		this.m.Payment.Pool = 550 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();
 
-		if (this.Math.rand(1, 100) <= 33)
-		{
-			this.m.Payment.Completion = 0.75;
-			this.m.Payment.Advance = 0.25;
-		}
-		else
-		{
-			this.m.Payment.Completion = 1.0;
-		}
+		this.m.Payment.Completion = 1.0;
 
 		this.contract.start();
 	}

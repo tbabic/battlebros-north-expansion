@@ -1,7 +1,7 @@
 this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 	m = {
 		MaxConcurrentContracts = 1,
-		ContractDelay = 1,
+		ContractDelay = 1
 	},
 	function addPlayerRelation( _r, _reason = "" )
 	{
@@ -184,6 +184,17 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 		
 		_c.setFaction(this.getID());
 		this.m.Contracts.push(_c);
+		this.m.LastContractType = _c.getType();
+	}
+	
+	function onSerialize( _out )
+	{
+		this.faction.onSerialize(_out);
+	}
+
+	function onDeserialize( _in )
+	{
+		this.faction.onDeserialize(_in);
 	}
 	
 	

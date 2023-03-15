@@ -24,11 +24,6 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 		{
 			return;
 		}
-
-		if (this.Math.rand(1, 100) > 10)
-		{
-			return;
-		}
 		
 		
 		potentialEnemies.extend.this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse);

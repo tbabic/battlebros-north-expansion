@@ -22,17 +22,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 	function start()
 	{
 		this.m.Payment.Pool = 800 * this.getPaymentMult() * this.getDifficultyMult() * this.getReputationToPaymentMult();
-
-		if (this.Math.rand(1, 100) <= 33)
-		{
-			this.m.Payment.Completion = 0.75;
-			this.m.Payment.Advance = 0.25;
-		}
-		else
-		{
-			this.m.Payment.Completion = 1.0;
-		}
-		
+		this.m.Payment.Completion = 1.0;
 		this.contract.start();
 	}
 

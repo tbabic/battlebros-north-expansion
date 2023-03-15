@@ -20,7 +20,7 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 			this.m.DifficultyMult = this.Math.rand(115, 135) * 0.01;
 		}
 
-		this.m.Type = "contract.barbarian_king";
+		this.m.Type = "contract.nem_barbarian_king";
 		this.m.Name = "The Barbarian King";
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 5.0;
 		this.m.MakeAllSpawnsAttackableByAIOnceDiscovered = true;
@@ -33,15 +33,7 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 	
 		this.m.Payment.Pool = 1700 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();
 
-		if (this.Math.rand(1, 100) <= 33)
-		{
-			this.m.Payment.Completion = 0.75;
-			this.m.Payment.Advance = 0.25;
-		}
-		else
-		{
-			this.m.Payment.Completion = 1.0;
-		}
+		this.m.Payment.Completion = 1.0;
 
 		this.contract.start();
 	}
@@ -654,6 +646,11 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 		_vars.push([
 				"kingname",
 				this.getFlags().get("kingname")
+			]);
+			
+		_vars.push([[
+				"employer_short",
+				this.m.EmployerID != 0 ? this.Tactical.getEntityByID(this.m.EmployerID).getNameOnly() : ""
 			]);
 		if (this.m.Destination != null && !this.m.Destination.isNull() && this.m.Destination.isAlive())
 		{
