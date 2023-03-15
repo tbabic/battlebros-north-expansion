@@ -1,8 +1,8 @@
-this.roaming_beasts_action <- this.inherit("scripts/factions/faction_action", {
+this.nem_roaming_beasts_action <- this.inherit("scripts/factions/faction_action", {
 	m = {},
 	function create()
 	{
-		this.m.ID = "roaming_beasts_action";
+		this.m.ID = "nem_roaming_beasts_action";
 		this.m.Cooldown = this.World.getTime().SecondsPerDay * 9;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
@@ -21,11 +21,6 @@ this.roaming_beasts_action <- this.inherit("scripts/factions/faction_action", {
 			return;
 		}
 
-		if (this.World.getTime().Days <= 3 && this.Math.rand(1, 100) < 20 || this.Math.rand(1, 100) > 10)
-		{
-			return;
-		}
-
 		this.m.Score = 1;
 	}
 
@@ -35,7 +30,7 @@ this.roaming_beasts_action <- this.inherit("scripts/factions/faction_action", {
 
 	function onExecute( _faction )
 	{
-		local contract = this.new("scripts/contracts/contracts/roaming_beasts_contract");
+		local contract = this.new("scripts/contracts/contracts/nem_roaming_beasts_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(_faction.getSettlements()[0]);
 		contract.setEmployerID(_faction.getRandomCharacter().getID());

@@ -35,4 +35,42 @@
 	Other = 0
 }
 
+::NorthMod.Const.Troop <- {};
+
+::NorthMod.Const.Troop.BarbarianWolf <- {
+		ID = this.Const.EntityType.Direwolf,
+		Variant = 0,
+		Strength = 25,
+		Cost = 25,
+		Row = 0,
+		Script = "scripts/entity/tactical/humans/barbarian_marauder"
+	}
+
+::NorthMod.Const.Spawn <- {}
+
+::NorthMod.Const.Spawn.BarbarianWolves <- [];
+
+for(local i = 3; i<=30; i++)
+{
+	local troopType = this.Const.World.Spawn.Troops.BarbarianWolf;
+	local cost = troopType.Cost * i;
+	
+	::NorthMod.Const.Spawn.BarbarianWolves.push(
+		Cost = cost,
+		MovementSpeedMult = 1.0,
+		VisibilityMult = 1.0,
+		VisionMult = 1.0,
+		Body = "figure_werewolf_01",
+		Troops = [
+			{
+				Type = troopType,
+				Num = i
+			}
+		]
+	});
+	
+)
+
+
+
 ::NorthMod.Const.EnabledLogging <- true;
