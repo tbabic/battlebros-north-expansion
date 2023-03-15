@@ -3,9 +3,12 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 		Target = null,
 		LastCombatTime = 0.0
 	},
-	function setTargetFaction( _h )
+	
+	function setCaravanInfo( _enemyFaction, _startId, _destId )
 	{
-		this.m.Flags.set("TargetFaction", _h.getID());
+		this.m.Flags.set("TargetFaction", _enemyFaction);
+		this.m.Flags.set("InterceptStart", _startId);
+		this.m.Flags.set("InterceptDest", _destId);
 	}
 
 	function create()
@@ -15,12 +18,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 		this.m.Name = "Raid Caravan";
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 7.0;
 	}
-
-	function onImportIntro()
-	{
-		this.importNobleIntro();
-	}
-
+	
 	function start()
 	{
 		this.m.Payment.Pool = 800 * this.getPaymentMult() * this.getDifficultyMult() * this.getReputationToPaymentMult();
@@ -34,44 +32,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 		{
 			this.m.Payment.Completion = 1.0;
 		}
-
-		local myTile = this.World.State.getPlayer().getTile();
-		local enemyFaction = this.World.FactionManager.getFaction(this.m.Flags.get("TargetFaction"));
-		logInfo("enemy faction: " + enemyFaction.getName());
-		local settlements = enemyFaction.getSettlements();
-		local lowest_distance = 99999;
-		local highest_distance = 0;
-		local best_start;
-		local best_dest;
 		
-		local settlements = enemyFaction.getSettlements();
-		if (settlements.len() == 1 ) {
-			best_start = settlements[0];
-		} else {
-			local possible = [];
-			foreach (s in settlements) {
-				if (!s.isIsolated()) {
-					possible.push(s);
-				}
-			}
-			best_start = possible[this.Math.rand(0, possible.len()-1)];
-		}
-		logInfo("start:" + best_start.getName());
-		local allSettlements = this.World.EntityManager.getSettlements();
-		local destinations = [];
-		foreach (s in settlements) {
-			local tile = s.getTile();
-			if (tile.SquareCoords.Y < this.World.getMapSize().Y * 0.7)
-			{
-				logInfo("dest:" + s.getName());
-				destinations.push(s);
-			}
-		}
-		
-		best_dest = destinations[this.Math.rand(0, destinations.len()-1)];
-		
-		this.m.Flags.set("InterceptStart", best_start.getID());
-		this.m.Flags.set("InterceptDest", best_dest.getID());
 		this.contract.start();
 	}
 
@@ -121,10 +82,10 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 						this.Flags.set("IsUndeadSurprise", true);
 					}
 				}
-				/*else if (r <= 25)
+				else if (r <= 25)
 				{
 					this.Flags.set("IsWomenAndChildren", true);
-				}*/
+				}
 
 				local enemyFaction = this.World.FactionManager.getFaction(this.Flags.get("TargetFaction"));
 				local best_start = this.World.getEntityByID(this.Flags.get("InterceptStart"));
@@ -391,7 +352,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 		this.m.Screens.push({
 			ID = "Swordmaster",
 			Title = "As you approach...",
-			Text = "[img]gfx/ui/events/event_35.png[/img]{While preparing to assault the caravan, %randombrother% comes to your side and points to one of the men in the wagontrain.%SPEECH_ON%Know who that is?%SPEECH_OFF%You shake your head.%SPEECH_ON%That\'s %swordmaster%.%SPEECH_OFF%Slimming your eyes to get a clearer picture, all you see is an ordinary looking man. The mercenary explains that he\'s a renowned swordmaster who has killed untold numbers of men. He thumbs his nose and spits.%SPEECH_ON%Still want to attack?%SPEECH_OFF% | You glass the caravan with some spectacles and spot a familiar face: %swordmaster%. A man you saw compete in a jousting tournament in %randomtown% a few years back. If you recall correctly, he won with an arm tied behind his back. Anyone who met him off the horses was quickly slain as he displayed expert swordsmanship. This fellow is a dangerous one and should be approached carefully. | Scouting the wagontrain, you see a face that gives you\'ve seen before. %randombrother% joins you, picking his fingernails with a knife.%SPEECH_ON%That\'s %swordmaster%, the swordmaster. He\'s killed twenty men this year.%SPEECH_OFF%A voice barks from behind you.%SPEECH_ON%I heard fifty! Sixty maybe. Forty-five if we\'re being realistic...%SPEECH_OFF%Hmm, it appears there is a most dangerous opponent in that caravan\'s guard...}",
+			Text = "[img]gfx/ui/events/event_35.png[/img]{While preparing to assault the caravan, %randombrother% comes to your side and points to one of the men in the wagontrain.%SPEECH_ON%Know who that is?%SPEECH_OFF%You shake your head.%SPEECH_ON%That\'s %swordmaster%.%SPEECH_OFF%Slimming your eyes to get a clearer picture, all you see is an ordinary looking man. Your man explains that he\'s a renowned swordmaster who has killed untold numbers of men. He thumbs his nose and spits.%SPEECH_ON%Still want to attack?%SPEECH_OFF% | You glass the caravan with some spectacles. This fellow is a dangerous one and should be approached carefully. | Scouting the wagontrain, you see a face that gives you\'ve seen before. %randombrother% joins you, picking his fingernails with a knife.%SPEECH_ON%That\'s %swordmaster%, the swordmaster. He\'s killed twenty men this year.%SPEECH_OFF%A voice barks from behind you.%SPEECH_ON%I heard fifty! Sixty maybe. Forty-five if we\'re being realistic...%SPEECH_OFF%Hmm, it appears there is a most dangerous opponent in that caravan\'s guard...}",
 			Image = "",
 			List = [],
 			Options = [
@@ -649,7 +610,6 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 		{
 			this.m.Target = this.WeakTableRef(this.World.getEntityByID(target));
 		}
-
 		this.contract.onDeserialize(_in);
 	}
 

@@ -1,6 +1,8 @@
 this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", {
 	m = {
-		Enemy = null
+		EnemyFaction = null,
+		StartId = null,
+		DestId = null
 	},
 	function create()
 	{
@@ -18,17 +20,7 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 			return;
 		}
 
-		if (this.World.FactionManager.isGreaterEvil())
-		{
-			return;
-		}
-
 		if (!_faction.isReadyForContract())
-		{
-			return;
-		}
-
-		if (_faction.getPlayerRelation() <= 60)
 		{
 			return;
 		}
@@ -37,56 +29,93 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 		{
 			return;
 		}
-
-		local potentialEnemies = [];		
-		local factions = clone this.World.FactionManager.getFactions(true);
-
-		for( local i = 0; i < factions.len(); i = ++i )
+		
+		
+		potentialEnemies.extend.this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse);
+		potentialEnemies.extend.this.World.FactionManager.getFactionsOfType(this.Const.FactionType.OrientalCityState);
+		
+		local startSettlements = [];
+		
+		foreach(e in this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse))
 		{
-			logInfo("faction raid: " + faction[i].getName());
-			if (factions[i] == null)
-			{
-				continue;
+			local f = this.World.FactionManager.getFaction(e);
+			startSettlements.extend(f.getSettlements());
+		}
+		local idx = -1;
+		for (local i = 0; i < startSettlements.len(); i++)
+		{
+			if (startSettlements[i] == this.m.Faction){
+				idx = i;
 			}
-			if (factions[i].getID() == _faction.getID())
-			{
-				continue;
-			}
-			else if (factions[i].getSettlements().len() < 1)
-			{
-				continue;
-			}
-			else if (_faction.isAlliedWith(factions[i].getID()))
-			{
-				logInfo("b_raid_caravan - allied with: " + factions[i].getName());
-				continue;
-			}
-			local isolated = true;
-			foreach(s in factions[i].getSettlements()) {
-				if (!s.isIsolated()) {
-					isolated = false;
-					break;
-				}
-			}
-			if (isolated) {
-				continue;
-			}
-			logInfo("faction raid pushed: " + faction[i].getName());
-			potentialEnemies.push(factions[i]);
 		}
 		
-		if (potentialEnemies.len() == 0)
+		startSettlements.remove(idx);
+		local startIdx = this.Math.rand(0, startSettlements.len()-1);
+		local start = startSettlements[startIdx];
+		
+		
+		
+		local enemyFaction == null;
+		if (start.isMilitary())
+		{
+			enemyFaction = start.getOwner();
+		}
+		else if(start.isSouthern())
+		{
+			enemyFaction = start.getOwner();
+		}
+		else {
+			local factionId = start.getFactionOfType(this.Const.FactionType.Settlement);
+			if (factionId == null)
+			{
+				return;
+			}
+			local enemyFaction = this.World.FactionManager.getFaction(factionId);
+		}
+		
+		
+		
+		local endSettlements = start.getTile();
+		local candidateEnds = [];
+		local playerTile = this.World.State.getPlayer().getTile();
+		foreach (s in startSettlements)
+		{
+			if(s == start)
+			{
+				continue;
+			}
+			
+			local distanceStart = this.getDistanceOnRoads(start.getTile(), s.getTile());
+			local daysStart = this.getDaysRequiredToTravel(distanceStart, this.Const.World.MovementSettings.Speed * 0.6, true);
+			
+			local distancePlayer = start.getTile().getDistanceTo(playerTile);
+			local daysPlayer = this.getDaysRequiredToTravel(distancePlayer, this.Const.World.MovementSettings.Speed * 1.0, true)
+			if (daysPlayer > 1.5 * daysStart)
+			{
+				continue;
+			}
+			
+			endSettlements.push(s);
+		}
+		if (endSettlements.len() == 0)
 		{
 			return;
 		}
-
-		this.m.Enemy = potentialEnemies[this.Math.rand(0, potentialEnemies.len() - 1)];
+		
+		local endIdx = this.Math.rand(0, endSettlements.len()-1);
+		local end = endSettlements[endIdx];
+		
+		this.m.StartId = start.getID();
+		this.m.EnemyFaction = enemyFaction.getID();
+		this.m.DestId = end.getID();
 		this.m.Score = 1;
 	}
 
 	function onClear()
 	{
-		this.m.Enemy = null;
+		this.m.StartId = null;
+		this.m.DestId = null;
+		this.m.EnemyFaction = null;
 	}
 
 	function onExecute( _faction )
@@ -94,7 +123,7 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 		local contract = this.new("scripts/contracts/contracts/nem_raid_caravan_contract");
 		contract.setFaction(_faction.getID());
 		contract.setEmployerID(_faction.getRandomCharacter().getID());
-		contract.setTargetFaction(this.m.Enemy);
+		contract.setCaravanInfo(this.m.EnemyFaction, this.m.StartId, this.m.DestId)
 		this.World.Contracts.addContract(contract);
 	}
 

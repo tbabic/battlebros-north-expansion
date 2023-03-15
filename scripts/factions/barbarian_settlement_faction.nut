@@ -1,6 +1,7 @@
 this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 	m = {
-		MaxConcurrentContracts = 1
+		MaxConcurrentContracts = 1,
+		ContractDelay = 1,
 	},
 	function addPlayerRelation( _r, _reason = "" )
 	{
@@ -79,9 +80,17 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 		{
 			return false;
 		}
+		
+		if( this.getRoster().getSize() < 1)
+		{
+			return false;
+		}
 
-		this.m.MaxConcurrentContracts = this.getSettlements()[0].getSize();
 		local delay = 5.0 - (this.getSettlements()[0].getSize() - 1);
+		if (this.World.Flags.get("NorthExpansionCivilLevel") == 1)
+		{
+			delay = 1;
+		}
 		return this.m.Contracts.len() < this.m.MaxConcurrentContracts && (this.m.LastContractTime == 0 || this.World.getTime().Days <= 1 || this.Time.getVirtualTimeF() > this.m.LastContractTime + this.World.getTime().SecondsPerDay * delay);
 	}
 	
@@ -137,10 +146,16 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 			"scripts/factions/contracts/find_artifact_action",
 			"scripts/factions/contracts/root_out_undead_action",
 			"scripts/factions/contracts/privateering_action", //barbarianize
+			"NorthExpansionMod/contracts/nem_barbarian_king_action",
+			
 			
 			//settlement
 			//"scripts/factions/contracts/drive_away_bandits_action", // leads to ambushed trade routes situation
 			//"scripts/factions/contracts/drive_away_barbarians_action", //barbarianize flavor leads to ambushed trade routes situation
+			"scripts/factions/contracts/nem_drive_away_bandits_action",
+			"scripts/factions/contracts/nem_drive_away_barbarians_action"
+			
+			
 			"scripts/factions/contracts/investigate_cemetery_action",
 			"scripts/factions/contracts/roaming_beasts_action",
 			"scripts/factions/contracts/defend_settlement_bandits_action", //barbarianize
@@ -170,6 +185,8 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 		_c.setFaction(this.getID());
 		this.m.Contracts.push(_c);
 	}
+	
+	
 	
 	
 
