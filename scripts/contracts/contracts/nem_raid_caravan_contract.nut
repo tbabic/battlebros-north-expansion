@@ -485,7 +485,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/contract", {
 				
 				this.Contract.addSituation(this.new("scripts/entity/world/settlements/situations/well_supplied_situation"), 2, this.Contract.m.Home, this.List);
 				if(this.Flags.get("Slaves", true)) {
-					this.Contract.addSituation(this.new("scripts/entity/world/settlements/situations/well_supplied_situation"), 2, this.Contract.m.Home, this.List);
+					this.Contract.addSituation(this.new("scripts/entity/world/settlements/situations/high_spirits_situation"), 2, this.Contract.m.Home, this.List);
 				}
 			}
 

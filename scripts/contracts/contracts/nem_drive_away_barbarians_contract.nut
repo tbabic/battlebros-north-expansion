@@ -744,6 +744,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 					{
 						this.World.FactionManager.getFaction(this.Contract.getFaction()).getRoster().remove(this.Tactical.getEntityByID(this.Contract.m.EmployerID));
 						this.Contract.m.Home.addSituation(this.new("scripts/entity/world/settlements/situations/raided_situation"), 4);
+						this.Contract.m.Home.addSituation(this.new("scripts/entity/world/settlements/situations/conquered_situation"), 4);
 						this.Contract.m.Home.setLastSpawnTimeToNow();
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractFail * 2);
 						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractFail * 2, "You failed to save " + this.Contract.m.Home.getName() + " from barbarians out for revenge");
@@ -823,7 +824,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 	{
 		if (this.m.SituationID == 0)
 		{
-			this.m.SituationID = this.m.Home.addSituation(this.new("scripts/entity/world/settlements/situations/ambushed_trade_routes_situation"));
+			this.m.SituationID = this.m.Home.addSituation(this.new("scripts/entity/world/settlements/situations/raided_situation"));
 		}
 	}
 

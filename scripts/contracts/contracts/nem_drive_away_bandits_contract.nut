@@ -636,7 +636,7 @@ this.nem_drive_away_bandits_contract <- this.inherit("scripts/contracts/contract
 	{
 		if (this.m.SituationID == 0)
 		{
-			this.m.SituationID = this.m.Home.addSituation(this.new("scripts/entity/world/settlements/situations/ambushed_trade_routes_situation"));
+			this.m.SituationID = this.m.Home.addSituation(this.new("scripts/entity/world/settlements/situations/raided_situation"));
 		}
 	}
 
