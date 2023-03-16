@@ -10,7 +10,7 @@
 		if (f== null) {
 			return screen;
 		}
-		if (screen != null && this.World.FactionManager.getFaction(this.m.Faction).getFlags().get("IsBarbarianFaction")) {
+		if (screen != null && f.getFlags().get("IsBarbarianFaction")) {
 			local newText = screen.Text;
 			newText = ::NorthMod.Utils.stringReplace(newText, "mercenary", "warrior");
 			newText = ::NorthMod.Utils.stringReplace(newText, "Mercenary", "Warrior");
@@ -35,6 +35,7 @@
 		::NorthMod.ContractUtils.importSettlementIntro(o);
 	
 	});
+	
 
 	
 });

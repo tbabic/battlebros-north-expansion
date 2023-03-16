@@ -1,5 +1,6 @@
 this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
-	m = {},
+	m = {
+	},
 	function create()
 	{
 		this.settlement.create();
@@ -38,6 +39,12 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 			this.m.Sprite = "world_wildmen_02";
 		}
 		this.settlement.onInit();
+		
+		local worldmap = this.MapGen.get("world.worldmap_generator");
+		local terrain = worldmap.getTerrainInRegion(this.getTile());
+		
+		this.getFlags().set("IsNearbyForest", checkSuitableTerrain(terrain, "small_lumber_village"));
+		this.getFlags().set("IsNearbySnow", checkSuitableTerrain(terrain, "small_snow_village"));
 	}
 
 	function onBuild()
@@ -203,7 +210,28 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 			logInfo(s.getID());
 		}
 	}
-
+	
+	function isNearbyForest()
+	{
+		return this.getFlags().get("IsNearbyForest");
+	}
+	
+	function isNearbySnow()
+	{
+		return this.getFlags().get("IsNearbySnow");
+	}
+	
+	function checkSuitableTerrain(_terrain, villageType)
+	{
+		foreach (v in this.Const.World.Settlements.Villages_small)
+		{
+			if (this.String.Contains(v.Script, villageType))
+			{
+				return v.isSuitable(_terrain);
+			}
+		}
+		return false;
+	}
 		
 
 });
