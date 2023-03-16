@@ -31,11 +31,6 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 			return;
 		}
 
-		if (this.Math.rand(1, 100) > 10)
-		{
-			return;
-		}
-
 		if (!this.World.Ambitions.getAmbition("ambition.make_nobles_aware").isDone())
 		{
 			return;

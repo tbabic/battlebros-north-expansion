@@ -17,7 +17,7 @@ this.nem_hunting_webknechts_contract <- this.inherit("scripts/contracts/contract
 	function createScreens()
 	{
 		this.hunting_webknechts_contract.createScreens();
-		::NorthMod.ContractUtils.setScreenText(this, "Negotiations", 
+		::NorthMod.ContractUtils.setScreenText(this, "Task", 
 		"[img]gfx/ui/events/event_43.png[/img]{You find %employer% stretching a cobweb between two forks. He turns one of the utensils and wraps the webbing around a twine. Sighing, he finally looks at you.%SPEECH_ON%I must admit, I\'m at my wit\'s end here. Enormous spiders are afoot, stealing livestock, pets. One woman reported her infant taken from the crib, all there being a pit of webbing where it slept. I need these horrid creatures taken care of, their nest destroyed. With proper reward, would you be interested?%SPEECH_OFF%");
 		
 		::NorthMod.ContractUtils.setScreenText(this, "Survivor", 

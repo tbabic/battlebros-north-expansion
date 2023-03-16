@@ -651,8 +651,8 @@ this.nem_roaming_beasts_contract <- this.inherit("scripts/contracts/contract", {
 		]);
 		
 		_vars.push([
-			"randombarbarian"
-			this.Const.Strings.BarbarianNames[this.Math.rand(0, this.Const.Strings.BarbarianNames.len() - 1)] + this.Const.Strings.BarbarianTitles[this.Math.rand(0, this.Const.Strings.BarbarianTitles.len() - 1)]
+			"randombarbarian",
+			::NorthMod.Utils.barbarianNameAndTitle()
 		]);
 	}
 

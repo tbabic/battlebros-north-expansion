@@ -1,8 +1,8 @@
-this.nem_hunting_webknechts_action <- this.inherit("scripts/factions/faction_action", {
+this.nem_hunting_alps_action <- this.inherit("scripts/factions/faction_action", {
 	m = {},
 	function create()
 	{
-		this.m.ID = "nem_hunting_webknechts_action";
+		this.m.ID = "nem_hunting_alps_action";
 		this.m.Cooldown = this.World.getTime().SecondsPerDay * 14;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
@@ -21,9 +21,7 @@ this.nem_hunting_webknechts_action <- this.inherit("scripts/factions/faction_act
 			return;
 		}
 
-		local village = _faction.getSettlements()[0];
-
-		if (!village.isNearbyForest())
+		if (this.World.Assets.getBusinessReputation() < 350)
 		{
 			return;
 		}
@@ -37,7 +35,7 @@ this.nem_hunting_webknechts_action <- this.inherit("scripts/factions/faction_act
 
 	function onExecute( _faction )
 	{
-		local contract = this.new("scripts/contracts/contracts/hunting_webknechts_contract");
+		local contract = this.new("scripts/contracts/contracts/hunting_alps_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(_faction.getSettlements()[0]);
 		contract.setEmployerID(_faction.getRandomCharacter().getID());

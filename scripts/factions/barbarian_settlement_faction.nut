@@ -61,7 +61,7 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 			}
 			
 			
-			character.m.Name = "Chieftain "+  this.Const.Strings.BarbarianNames[this.Math.rand(0, this.Const.Strings.BarbarianNames.len() - 1)];
+			character.m.Name = "Chieftain "+  ::NorthMod.Utils.barbarianNameOnly();
 			character.assignRandomEquipment();
 			local items = character.getItems();
 			items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Body));

@@ -628,7 +628,7 @@ this.nem_drive_away_bandits_contract <- this.inherit("scripts/contracts/contract
 		
 		_vars.push([
 			"randombarbarian"
-			this.Const.Strings.BarbarianNames[this.Math.rand(0, this.Const.Strings.BarbarianNames.len() - 1)]
+			::NorthMod.Utils.barbarianNameOnly()
 		]);
 	}
 

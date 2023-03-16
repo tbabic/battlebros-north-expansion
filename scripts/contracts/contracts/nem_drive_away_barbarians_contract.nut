@@ -19,7 +19,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 		this.m.Destination = this.WeakTableRef(banditcamp);
 		this.m.Flags.set("DestinationName", banditcamp.getName());
 		this.m.Flags.set("EnemyBanner", banditcamp.getBanner());
-		this.m.Flags.set("ChampionName", this.Const.Strings.BarbarianNames[this.Math.rand(0, this.Const.Strings.BarbarianNames.len() - 1)] + " " + this.Const.Strings.BarbarianTitles[this.Math.rand(0, this.Const.Strings.BarbarianTitles.len() - 1)]);
+		this.m.Flags.set("ChampionName", ::NorthMod.Utils.barbarianNameAndTitle());
 		this.m.Flags.set("ChampionBrotherName", "");
 		this.m.Flags.set("ChampionBrother", 0);
 		this.m.Payment.Pool = 600 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();

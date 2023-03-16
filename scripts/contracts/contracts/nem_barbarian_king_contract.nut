@@ -29,7 +29,7 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 
 	function start()
 	{
-		this.m.Flags.set("KingName", this.Const.Strings.BarbarianNames[this.Math.rand(0, this.Const.Strings.BarbarianNames.len() - 1)] + " " + this.Const.Strings.BarbarianTitles[this.Math.rand(0, this.Const.Strings.BarbarianTitles.len() - 1)]);
+		this.m.Flags.set("KingName", ::NorthMod.Utils.barbarianNameAndTitle());
 	
 		this.m.Payment.Pool = 1700 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();
 
