@@ -74,3 +74,14 @@ for(local i = 3; i<=30; i++)
 
 
 ::NorthMod.Const.EnabledLogging <- true;
+
+
+::NorthMod.Const.BarbarianNames = clone this.Const.Strings.BarbarianNames;
+::NorthMod.Const.BarbarianTitles = clone this.Const.Strings.BarbarianTitles;
+
+::NorthMod.Const.BarbarianNames.extend(["Ansgar","Askel","Birger", "Bodolf", "Brede", "Dreng", 
+	"Eyvind","Gardi","Geirolf", "Gorm", "Gudmund", "Gunnbjorn","Gunnolf", "Hafnar", "Hrolf","Jolgeir", "Jorund", "Jostein"
+	"Magnor", "Modolf", "Mord", "Njall","Roar", "Rune"."Rurik", "Sten", "Skarde","Toke","Trygve", "Vegeir"
+]);
+	
+::NorthMod.Const.BarbarianTitles.extend(["The Bear", "The Wolf", "The Bearclaw", "Giantborn", "Bonesmasher", "Skullsmasher", "Frostborn", "Iceblood", "Ironhead", "Thunderhead", "Skullsplitter"]);

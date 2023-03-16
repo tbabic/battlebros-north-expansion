@@ -85,6 +85,18 @@
 		bro.fillAttributeLevelUpValues(this.Const.XP.MaxLevelWithPerkpoints - 1);
 	}
 	
+	function barbarianNameOnly()
+	{
+		return ::NorthMod.Const.BarbarianNames[Math.rand(0, ::NorthMod.Const.BarbarianNames.len()-1];
+	}
+	
+	function barbarianNameAndTitle()
+	{
+		return this.barbarianNameOnly() + " " ::NorthMod.Const.BarbarianTitles[Math.rand(0, ::NorthMod.Const.BarbarianTitles.len()-1];
+	}
+	
+	
+	
 	
 	function logInfo(_msg)
 	{
