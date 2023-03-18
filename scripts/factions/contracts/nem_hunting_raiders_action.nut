@@ -13,8 +13,12 @@ this.nem_hunting_raiders_action <- this.inherit("scripts/factions/faction_action
 
 	function onUpdate( _faction )
 	{
-		//TODO: for greenskins, bandits, zombies, nobles, mercenaries
 		if (!_faction.isReadyForContract())
+		{
+			return;
+		}
+		
+		if (!_faction.getFlags().get("IsBarbarianFaction"))
 		{
 			return;
 		}
@@ -47,7 +51,7 @@ this.nem_hunting_raiders_action <- this.inherit("scripts/factions/faction_action
 		
 		
 		local potentialEnemies = [];
-		foreach (local ft in factionTypes)
+		foreach(ft in factionTypes)
 		{
 			local enemies = this.getEnemyFactionsWithinDistance(myTile, ft, 20);
 			potentialEnemies.extend(enemies);
@@ -63,7 +67,7 @@ this.nem_hunting_raiders_action <- this.inherit("scripts/factions/faction_action
 	{
 		local foundFactions = [];
 		local factions = this.World.FactionManager.getFactionsOfType(_factionType);
-		foreach (local f in factions)
+		foreach (f in factions)
 		{
 			if (this.isWithinDistance(myTile, f ,20) && !f.isAlliedWithPlayer())
 			{

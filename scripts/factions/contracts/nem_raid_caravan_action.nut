@@ -19,38 +19,52 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 		{
 			return;
 		}
+		
+		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		{
+			return;
+		}
 
 		if (!_faction.isReadyForContract())
 		{
 			return;
 		}
 		
+		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		{
+			return;
+		}
 		
-		potentialEnemies.extend.this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse);
-		potentialEnemies.extend.this.World.FactionManager.getFactionsOfType(this.Const.FactionType.OrientalCityState);
+		local potentialEnemies = [];
+		potentialEnemies.extend(this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse));
+		potentialEnemies.extend(this.World.FactionManager.getFactionsOfType(this.Const.FactionType.OrientalCityState));
 		
 		local startSettlements = [];
 		
-		foreach(e in this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse))
+		foreach(f in this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse))
 		{
-			local f = this.World.FactionManager.getFaction(e);
 			startSettlements.extend(f.getSettlements());
 		}
 		local idx = -1;
 		for (local i = 0; i < startSettlements.len(); i++)
 		{
-			if (startSettlements[i] == this.m.Faction){
+			if (startSettlements[i].getOwner() == this.m.Faction){
 				idx = i;
+				break;
 			}
 		}
-		
+		if (idx < 0)
+		{
+			
+			return;
+		}
 		startSettlements.remove(idx);
 		local startIdx = this.Math.rand(0, startSettlements.len()-1);
 		local start = startSettlements[startIdx];
 		
 		
 		
-		local enemyFaction == null;
+		local enemyFaction = null;
 		if (start.isMilitary())
 		{
 			enemyFaction = start.getOwner();

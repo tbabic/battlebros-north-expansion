@@ -644,14 +644,14 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 	function onPrepareVariables( _vars )
 	{
 		_vars.push([
-				"kingname",
-				this.getFlags().get("kingname")
-			]);
+			"kingname",
+			this.getFlags().get("kingname")
+		]);
 			
-		_vars.push([[
-				"employer_short",
-				this.m.EmployerID != 0 ? this.Tactical.getEntityByID(this.m.EmployerID).getNameOnly() : ""
-			]);
+		_vars.push([
+			"employer_short",
+			this.m.EmployerID != 0 ? this.Tactical.getEntityByID(this.m.EmployerID).getNameOnly() : ""
+		]);
 		if (this.m.Destination != null && !this.m.Destination.isNull() && this.m.Destination.isAlive())
 		{
 			local distance = this.World.State.getPlayer().getTile().getDistanceTo(this.m.Destination.getTile());

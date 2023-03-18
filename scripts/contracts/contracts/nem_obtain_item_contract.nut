@@ -473,7 +473,7 @@ this.nem_obtain_item_contract <- this.inherit("scripts/contracts/contract", {
 
 	function onPrepareVariables( _vars )
 	{
-		_vars.push([[
+		_vars.push([
 			"employer_short",
 			this.m.EmployerID != 0 ? this.Tactical.getEntityByID(this.m.EmployerID).getNameOnly() : ""
 		]);

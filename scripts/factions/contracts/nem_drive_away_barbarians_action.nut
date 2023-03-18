@@ -15,6 +15,11 @@ this.nem_drive_away_barbarians_action <- this.inherit("scripts/factions/faction_
 		{
 			return;
 		}
+		
+		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		{
+			return;
+		}
 
 		if (!_faction.isReadyForContract())
 		{

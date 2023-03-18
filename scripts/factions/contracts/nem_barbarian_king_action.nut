@@ -36,6 +36,11 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 			return;
 		}
 		
+		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		{
+			return;
+		}
+		
 		local settlements = _faction.getSettlements();
 		local barbarians = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getSettlements();
 		local lowestDistance = 9999;

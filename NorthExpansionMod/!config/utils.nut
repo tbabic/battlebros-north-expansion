@@ -87,13 +87,19 @@
 	
 	function barbarianNameOnly()
 	{
-		return ::NorthMod.Const.BarbarianNames[Math.rand(0, ::NorthMod.Const.BarbarianNames.len()-1];
+		return ::NorthMod.Const.BarbarianNames[this.Math.rand(0, ::NorthMod.Const.BarbarianNames.len()-1)];
+	}
+	
+	function barbarianTitle()
+	{
+		return ::NorthMod.Const.BarbarianTitles[this.Math.rand(0, ::NorthMod.Const.BarbarianTitles.len()-1)];
 	}
 	
 	function barbarianNameAndTitle()
 	{
-		return this.barbarianNameOnly() + " " ::NorthMod.Const.BarbarianTitles[Math.rand(0, ::NorthMod.Const.BarbarianTitles.len()-1];
+		return this.barbarianNameOnly() + " " + this.barbarianTitle();
 	}
+	
 	
 	
 	

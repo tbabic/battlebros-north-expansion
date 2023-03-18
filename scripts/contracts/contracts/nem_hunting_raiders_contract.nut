@@ -319,7 +319,7 @@ this.nem_hunting_raiders_contract <- this.inherit("scripts/contracts/contract", 
 
 	function onPrepareVariables( _vars )
 	{		
-		_vars.push([[
+		_vars.push([
 			"employer_short",
 			this.m.EmployerID != 0 ? this.Tactical.getEntityByID(this.m.EmployerID).getNameOnly() : ""
 		]);
@@ -328,7 +328,7 @@ this.nem_hunting_raiders_contract <- this.inherit("scripts/contracts/contract", 
 		local enemyFactionID = this.getEnemyFaction();
 		if (enemyFactionID == null)
 		{
-			_vars.push([[
+			_vars.push([
 				"raiders",
 				"raiders"
 			]);
@@ -364,7 +364,7 @@ this.nem_hunting_raiders_contract <- this.inherit("scripts/contracts/contract", 
 			this.Text += "goblin raiders";
 		}
 		
-		_vars.push([[
+		_vars.push([
 			"raiders",
 			raiders
 		]);

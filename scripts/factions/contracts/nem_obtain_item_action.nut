@@ -16,6 +16,11 @@ this.nem_obtain_item_action <- this.inherit("scripts/factions/faction_action", {
 			return;
 		}
 		
+		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		{
+			return;
+		}
+		
 		local tooFar = true;
 		local myTile = _faction.getSettlements()[0].getTile();
 

@@ -17,11 +17,11 @@
 			else if (f.getType() == this.Const.FactionType.OrientalCityState){
 				combatType = ::NorthMod.Const.CombatTypes.Southern;
 			}
-			else if(!_isLocation && this.String.contains(_entity.getName(), "Trading Caravan")
+			else if(!_isLocation && this.String.contains(_entity.getName(), "Trading Caravan"))
 			{
 				combatType = ::NorthMod.Const.CombatTypes.Caravan;
 			}
-			else if(!_isLocation && this.String.contains(_entity.getName(), "Peasants")
+			else if(!_isLocation && this.String.contains(_entity.getName(), "Peasants"))
 			{
 				combatType = ::NorthMod.Const.CombatTypes.Peasants;
 			}

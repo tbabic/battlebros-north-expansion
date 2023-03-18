@@ -11,6 +11,12 @@ this.nem_return_item_action <- this.inherit("scripts/factions/faction_action", {
 
 	function onUpdate( _faction )
 	{
+	
+		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		{
+			return;
+		}
+		
 		if (!_faction.isReadyForContract())
 		{
 			return;

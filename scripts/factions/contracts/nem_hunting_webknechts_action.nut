@@ -15,6 +15,11 @@ this.nem_hunting_webknechts_action <- this.inherit("scripts/factions/faction_act
 		{
 			return;
 		}
+		
+		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		{
+			return;
+		}
 
 		if (!_faction.isReadyForContract())
 		{

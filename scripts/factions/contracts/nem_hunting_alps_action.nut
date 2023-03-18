@@ -11,6 +11,11 @@ this.nem_hunting_alps_action <- this.inherit("scripts/factions/faction_action", 
 
 	function onUpdate( _faction )
 	{
+		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		{
+			return;
+		}
+		
 		if (!this.Const.DLC.Unhold)
 		{
 			return;

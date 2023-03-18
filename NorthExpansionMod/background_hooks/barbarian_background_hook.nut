@@ -81,4 +81,28 @@
 		}
 		
 	});
+	
+	local onAdded = ::mods_getMember(o, "onAdded");
+	::mods_override(o, "onAdded", function() {
+		if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders") {
+			onAdded();
+			return;
+		}
+		else {
+			if (this.m.IsNew)
+			{
+				this.getContainer().getActor().setName(::NorthMod.Utils.barbarianNameOnly());
+			}
+
+			this.character_background.onAdded();
+			
+			if (this.m.IsNew && !(("State" in this.Tactical) && this.Tactical.State != null && this.Tactical.State.isScenarioMode()))
+			{
+				if (actor.getTitle() != "")
+				{
+					actor.setTitle(::NorthMod.Utils.barbarianTitle());
+				}
+			}
+		}
+	});
 });

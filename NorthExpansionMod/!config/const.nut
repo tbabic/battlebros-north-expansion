@@ -52,10 +52,10 @@
 
 for(local i = 3; i<=30; i++)
 {
-	local troopType = this.Const.World.Spawn.Troops.BarbarianWolf;
+	local troopType = ::NorthMod.Const.Troop.BarbarianWolf
 	local cost = troopType.Cost * i;
 	
-	::NorthMod.Const.Spawn.BarbarianWolves.push(
+	::NorthMod.Const.Spawn.BarbarianWolves.push({
 		Cost = cost,
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
@@ -68,20 +68,19 @@ for(local i = 3; i<=30; i++)
 			}
 		]
 	});
-	
-)
+}
 
 
 
 ::NorthMod.Const.EnabledLogging <- true;
-
-
-::NorthMod.Const.BarbarianNames = clone this.Const.Strings.BarbarianNames;
-::NorthMod.Const.BarbarianTitles = clone this.Const.Strings.BarbarianTitles;
+::NorthMod.Const.BarbarianNames <- [];
+::NorthMod.Const.BarbarianNames.extend(this.Const.Strings.BarbarianNames);
+::NorthMod.Const.BarbarianTitles <- [];
+::NorthMod.Const.BarbarianTitles.extend(this.Const.Strings.BarbarianTitles);
 
 ::NorthMod.Const.BarbarianNames.extend(["Ansgar","Askel","Birger", "Bodolf", "Brede", "Dreng", 
-	"Eyvind","Gardi","Geirolf", "Gorm", "Gudmund", "Gunnbjorn","Gunnolf", "Hafnar", "Hrolf","Jolgeir", "Jorund", "Jostein"
-	"Magnor", "Modolf", "Mord", "Njall","Roar", "Rune"."Rurik", "Sten", "Skarde","Toke","Trygve", "Vegeir"
+	"Eyvind","Gardi","Geirolf", "Gorm", "Gudmund", "Gunnbjorn","Gunnolf", "Hafnar", "Hrolf","Jolgeir", "Jorund", "Jostein",
+	"Magnor", "Modolf", "Mord", "Njall", "Roar", "Rune","Rurik", "Sten", "Skarde","Toke","Trygve", "Vegeir"
 ]);
 	
 ::NorthMod.Const.BarbarianTitles.extend(["The Bear", "The Wolf", "The Bearclaw", "Giantborn", "Bonesmasher", "Skullsmasher", "Frostborn", "Iceblood", "Ironhead", "Thunderhead", "Skullsplitter"]);

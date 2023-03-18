@@ -11,6 +11,11 @@ this.nem_drive_away_bandits_action <- this.inherit("scripts/factions/faction_act
 
 	function onUpdate( _faction )
 	{
+		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		{
+			return;
+		}
+		
 		if (!_faction.isReadyForContract())
 		{
 			return;

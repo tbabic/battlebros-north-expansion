@@ -15,6 +15,11 @@ this.nem_hunting_hexen_action <- this.inherit("scripts/factions/faction_action",
 		{
 			return;
 		}
+		
+		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		{
+			return;
+		}
 
 		if (!_faction.isReadyForContract())
 		{

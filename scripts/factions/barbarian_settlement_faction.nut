@@ -135,14 +135,15 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 	function availableActions() {
 		return [
 			//contracts to convert
-			"scripts/factions/contracts/raze_attached_location_action",
-			"scripts/factions/contracts/free_greenskin_prisoners_action",
-			"scripts/factions/contracts/find_artifact_action",
-			"scripts/factions/contracts/root_out_undead_action",
-			"scripts/factions/contracts/privateering_action", //barbarianize
-			"scripts/factions/contracts/investigate_cemetery_action",
+			
+			// "scripts/factions/contracts/free_greenskin_prisoners_action",
+			// "scripts/factions/contracts/find_artifact_action",
+			// "scripts/factions/contracts/root_out_undead_action",
+			// "scripts/factions/contracts/privateering_action", //barbarianize
+			// "scripts/factions/contracts/investigate_cemetery_action",
 			
 			//converted
+			"scripts/factions/contracts/nem_raid_location_action",
 			"scripts/factions/contracts/nem_barbarian_king_action",
 			"scripts/factions/contracts/nem_drive_away_bandits_action", 
 			"scripts/factions/contracts/nem_drive_away_barbarians_action",
@@ -177,7 +178,6 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 		
 		_c.setFaction(this.getID());
 		this.m.Contracts.push(_c);
-		this.m.LastContractType = _c.getType();
 	}
 	
 	function onSerialize( _out )

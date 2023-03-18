@@ -225,7 +225,7 @@ this.barbarian_village <- this.inherit("scripts/entity/world/settlement", {
 	{
 		foreach (v in this.Const.World.Settlements.Villages_small)
 		{
-			if (this.String.Contains(v.Script, villageType))
+			if (this.String.contains(v.Script, villageType))
 			{
 				return v.isSuitable(_terrain);
 			}
