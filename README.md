@@ -1,9 +1,11 @@
-# battlebros-north
+# battlebros-north-expansion
 
-You\'ve spent most of your years fighting, but after one battle too many and most of your clan and dead, you\'ve decided to lead your few remaining friends south.\
+You are a warrior and a raider. Your whole life has been battle and struggle and it's not about to change now.
 
-**Barbarian Leader:** Start with a leader that has bad relations with most human factions but can hire other barbarians. If the leader dies, the campaign ends.
+**Barbarian Leader:** Start with a leader that has permanently bad relations with civilized factions but friendly with a barbarian settlement. If the leader dies, the campaign ends.
 
-**Pillagers:** You have a higher chance to get any items from slain enemies as loot.
+**Barbarian dozen::** Can not have more than 12 men.
 
-**Furious dozen:** Can never have more than 12 men in your roster.
+**Father's Sword:** Start with a greatsword inherited from your father.
+
+**Mercenary Path:** Make decisions to become mercenary and remove restrictions or stay barbarian.
