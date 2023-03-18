@@ -84,25 +84,32 @@
 	
 	local onAdded = ::mods_getMember(o, "onAdded");
 	::mods_override(o, "onAdded", function() {
+		if(this.World.Assets.getOrigin()== null)
+		{
+			logInfo("origin null");
+			onAdded();
+			return;
+		}
 		if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders") {
 			onAdded();
 			return;
 		}
 		else {
+			local actor = this.getContainer().getActor();
 			if (this.m.IsNew)
 			{
-				this.getContainer().getActor().setName(::NorthMod.Utils.barbarianNameOnly());
+				actor.setName(::NorthMod.Utils.barbarianNameOnly());
 			}
 
-			this.character_background.onAdded();
-			
 			if (this.m.IsNew && !(("State" in this.Tactical) && this.Tactical.State != null && this.Tactical.State.isScenarioMode()))
 			{
-				if (actor.getTitle() != "")
+				if (actor.getTitle() == "" && this.Math.rand(0, 3) == 3)
 				{
 					actor.setTitle(::NorthMod.Utils.barbarianTitle());
 				}
 			}
+			
+			this.character_background.onAdded();
 		}
 	});
 });
