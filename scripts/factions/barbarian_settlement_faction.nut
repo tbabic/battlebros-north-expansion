@@ -134,42 +134,35 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 	
 	function availableActions() {
 		return [
-			//nobles
+			//contracts to convert
 			"scripts/factions/contracts/raze_attached_location_action",
-			"scripts/factions/contracts/destroy_orc_camp_action",
-			"scripts/factions/contracts/destroy_goblin_camp_action",
-			"scripts/factions/contracts/marauding_greenskins_action",
-			"scripts/factions/contracts/b_raid_caravan_action", //barbarianize
-			"scripts/factions/contracts/big_game_hunt_action",
 			"scripts/factions/contracts/free_greenskin_prisoners_action",
-			"scripts/factions/contracts/confront_warlord_action",
 			"scripts/factions/contracts/find_artifact_action",
 			"scripts/factions/contracts/root_out_undead_action",
 			"scripts/factions/contracts/privateering_action", //barbarianize
-			"NorthExpansionMod/contracts/nem_barbarian_king_action",
-			
-			
-			//settlement
-			//"scripts/factions/contracts/drive_away_bandits_action", // leads to ambushed trade routes situation
-			//"scripts/factions/contracts/drive_away_barbarians_action", //barbarianize flavor leads to ambushed trade routes situation
-			"scripts/factions/contracts/nem_drive_away_bandits_action",
-			"scripts/factions/contracts/nem_drive_away_barbarians_action"
-			
-			
 			"scripts/factions/contracts/investigate_cemetery_action",
-			"scripts/factions/contracts/roaming_beasts_action",
-			"scripts/factions/contracts/defend_settlement_bandits_action", //barbarianize
-			"scripts/factions/contracts/defend_settlement_greenskins_action",
-			"scripts/factions/contracts/obtain_item_action",
-			"scripts/factions/contracts/discover_location_action",
-			"scripts/factions/contracts/hunting_webknechts_action",
-			"scripts/factions/contracts/hunting_alps_action",
-			"scripts/factions/contracts/hunting_unholds_action", 
-			"scripts/factions/contracts/hunting_hexen_action", 
-			"scripts/factions/contracts/hunting_schrats_action", 
-			"scripts/factions/contracts/hunting_lindwurms_action", //barbarianize
 			
-			//"scripts/factions/actions/add_random_situation_action" // validate
+			//converted
+			"scripts/factions/contracts/nem_barbarian_king_action",
+			"scripts/factions/contracts/nem_drive_away_bandits_action", 
+			"scripts/factions/contracts/nem_drive_away_barbarians_action",
+			"scripts/factions/contracts/nem_hunting_alps_action",
+			"scripts/factions/contracts/nem_hunting_hexen_action", 
+			"scripts/factions/contracts/nem_hunting_lindwurms_action",
+			"scripts/factions/contracts/nem_hunting_schrats_action", 
+			"scripts/factions/contracts/nem_hunting_unholds_action", 
+			"scripts/factions/contracts/nem_hunting_webknechts_action",
+			"scripts/factions/contracts/nem_obtain_item_action",
+			"scripts/factions/contracts/nem_raid_caravan_action",
+			"scripts/factions/contracts/nem_return_item_action",
+			"scripts/factions/contracts/nem_roaming_beasts_action",
+			
+			// no conversion needed
+			"scripts/factions/contracts/defend_settlement_greenskins_action",
+			"scripts/factions/contracts/destroy_orc_camp_action",
+			"scripts/factions/contracts/destroy_goblin_camp_action",
+			"scripts/factions/contracts/confront_warlord_action",
+			
 	
 		];
 	}

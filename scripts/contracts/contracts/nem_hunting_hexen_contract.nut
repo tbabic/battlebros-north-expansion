@@ -13,11 +13,6 @@ this.nem_hunting_hexen_contract <- this.inherit("scripts/contracts/contract", {
 		
 	}
 
-	function onImportIntro()
-	{
-		this.importSettlementIntro();
-	}
-
 	function start()
 	{
 		local fatherName = this.getFlags().get("father");
@@ -615,15 +610,15 @@ this.nem_hunting_hexen_contract <- this.inherit("scripts/contracts/contract", {
 					{
 						if (this.Flags.get("IsCurse") && candidatesCurse.len() != 0)
 						{
-							this.Contract.setScreen("Curse");
+							return "Curse";
 						}
 						else if (this.Flags.get("IsEnchantedVillager"))
 						{
-							this.Contract.setScreen("EnchantedVillager");
+							return "EnchantedVillager";
 						}
 						else
 						{
-							this.Contract.setScreen("Success");
+							return "Success";
 						}
 					}
 
