@@ -32,7 +32,7 @@
 			onImportIntro();
 			return;
 		}
-		::NorthMod.ContractUtils.importSettlementIntro(o);
+		::NorthMod.ContractUtils.importSettlementIntro(this);
 	
 	});
 	

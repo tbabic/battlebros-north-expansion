@@ -89,9 +89,15 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 		local delay = 5.0 - (this.getSettlements()[0].getSize() - 1);
 		if (this.World.Flags.get("NorthExpansionCivilLevel") == 1)
 		{
-			delay = 1;
+			delay = 3;
 		}
-		return this.m.Contracts.len() < this.m.MaxConcurrentContracts && (this.m.LastContractTime == 0 || this.World.getTime().Days <= 1 || this.Time.getVirtualTimeF() > this.m.LastContractTime + this.World.getTime().SecondsPerDay * delay);
+		
+		local ready = this.m.Contracts.len() < this.m.MaxConcurrentContracts && (this.m.LastContractTime == 0 || this.Time.getVirtualTimeF() > this.m.LastContractTime + this.World.getTime().SecondsPerDay * delay);
+		//logInfo("ready for contract? " + ready);
+		//logInfo(this.m.Contracts.len() + "<" + this.m.MaxConcurrentContracts);
+		//logInfo(this.m.LastContractTime);
+		//logInfo(this.Time.getVirtualTimeF() + " > " + (this.m.LastContractTime +  this.World.getTime().SecondsPerDay * delay));
+		return ready;
 	}
 	
 	function isReadyToSpawnUnit()
@@ -183,15 +189,35 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 	function onSerialize( _out )
 	{
 		this.faction.onSerialize(_out);
+		this.logInfo("lastContractTime: " + this.m.LastContractTime);
+		
 	}
 
 	function onDeserialize( _in )
 	{
 		this.faction.onDeserialize(_in);
+		this.logInfo("lastContractTime: " + this.m.LastContractTime);
 	}
 	
 	
+	function setLastContractTime( _t )
+	{
+		this.logInfo("setting lastContractTime: " + this.m.LastContractTime);
+		this.m.LastContractTime = _t;
+	}
 	
+	function removeContract( _c )
+	{
+		local i = this.m.Contracts.find(_c);
+
+		if (i != null)
+		{
+			this.m.Contracts.remove(i);
+			this.m.LastContractTime = this.Time.getVirtualTimeF();
+			this.logInfo("removing contract: " + this.m.LastContractTime);
+		}
+		
+	}
 	
 
 });

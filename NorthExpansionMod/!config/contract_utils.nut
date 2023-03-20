@@ -2,7 +2,7 @@
 
 	function importSettlementIntro(_contract)
 	{
-		local relation = this.World.FactionManager.getFaction(this.m.Faction).getPlayerRelation();
+		local relation = this.World.FactionManager.getFaction(_contract.getFaction()).getPlayerRelation();
 
 		if (relation <= 35)
 		{

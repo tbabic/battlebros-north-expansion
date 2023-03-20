@@ -281,6 +281,8 @@ this.nem_hunting_raiders_contract <- this.inherit("scripts/contracts/contract", 
 						{
 							this.World.FactionManager.addGreaterEvilStrength(this.Const.Factions.GreaterEvilStrengthOnCommonContract);
 						}
+						
+						this.Contract.m.SituationID = this.Contract.resolveSituation(this.Contract.m.SituationID, this.Contract.m.Home, this.List);
 
 						return 0;
 					}

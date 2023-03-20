@@ -333,12 +333,41 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		{
 			c.addPlayerRelation(-100.0, "You are considered outlaws and barbarians");
 		}
-		this.reassignBanners();
 		
-		local barbarians = createBarbarianSettlement()
+		local barbarians = createBarbarianSettlement();
 		local coords = barbarians.coords;
+		local randomVillageTile = barbarians.settlement.getTile();
 		
-		this.World.State.m.Player = this.World.spawnEntity("scripts/entity/world/player_party", coords.X, coords.Y);
+		logInfo("looking for player tile");
+		do
+		{
+			local x = this.Math.rand(this.Math.max(2, randomVillageTile.SquareCoords.X - 1), this.Math.min(this.Const.World.Settings.SizeX - 2, randomVillageTile.SquareCoords.X + 1));
+			local y = this.Math.rand(this.Math.max(2, randomVillageTile.SquareCoords.Y - 1), this.Math.min(this.Const.World.Settings.SizeY - 2, randomVillageTile.SquareCoords.Y + 1));
+			
+			logInfo("x: " + x + ";y: " + y);
+			if (!this.World.isValidTileSquare(x, y))
+			{
+				logInfo("invalid tile");
+			}
+			else
+			{
+				local tile = this.World.getTileSquare(x, y);
+				if (tile.getDistanceTo(randomVillageTile) == 0)
+				{
+					logInfo("village tile");
+				}
+				else
+				{
+					randomVillageTile = tile;
+					break;
+				}
+			}
+		}
+		while (1);
+		
+		
+		
+		this.World.State.m.Player = this.World.spawnEntity("scripts/entity/world/player_party", randomVillageTile.Coords.X, randomVillageTile.Coords.Y);
 		
 		//this.World.Events.addSpecialEvent("event.survivor_recruits");
 		
@@ -606,58 +635,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		return spawnTile;
 	}
 	
-	function reassignBanners()
-	{
-		local nobles = this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse);
-		
-		
-		local northMost = null;
-		
-		local houses = [];
-		
-		
-		foreach (n in nobles)
-		{
-			local house = {
-				Faction = n,
-				North = 0
-			}
-			local maxY = 0;
-			foreach (s in n.getSettlements())
-			{
-				if (s.getTile().Coords.Y > house.North)
-				{
-					house.North = s.getTile().Coords.Y;
-				}
-			}
-			
-			houses.push(house);
-		}
-		
-		houses.sort(function ( _a, _b )
-		{
-			if (_a.North > _b.North)
-			{
-				return -1;
-			}
-			else if (_a.North < _b.North)
-			{
-				return 1;
-			}
-
-			return 0;
-		});
-		
-		local northBanners = [2, 6, 8];
-		local middleBanners = [3, 5,7];
-		local southBanners = [4, 9, 10];
-		
-		logInfo("banners");
-		
-		houses[0].Faction.setBanner(northBanners[this.Math.rand(0, northBanners.len() - 1)]);
-		houses[1].Faction.setBanner(middleBanners[this.Math.rand(0, middleBanners.len() - 1)]);
-		houses[2].Faction.setBanner(southBanners[this.Math.rand(0, southBanners.len() - 1)]);
-	}
+	
 	
 
 	
