@@ -4,6 +4,7 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 	function create()
 	{
 		this.marketplace_building.create();
+		this.m.IsRepairOffered = true;
 	}
 
 	function onUpdateShopList()

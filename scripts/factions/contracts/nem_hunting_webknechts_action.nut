@@ -25,11 +25,12 @@ this.nem_hunting_webknechts_action <- this.inherit("scripts/factions/faction_act
 		{
 			return;
 		}
-
+		this.logInfo("check: " + this.m.ID);
 		local village = _faction.getSettlements()[0];
 
 		if (!village.isNearbyForest())
 		{
+			this.logInfo("no forest");
 			return;
 		}
 

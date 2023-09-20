@@ -91,12 +91,19 @@ this.barbarian_settlement_faction <- this.inherit("scripts/factions/faction", {
 		{
 			delay = 3;
 		}
+		local activeContracts = 0;
+		if (this.World.Contracts.getActiveContract() != null && this.World.Contracts.getActiveContract().getFaction() == this.getID())
+		{
+			activeContracts++;
+		}
 		
-		local ready = this.m.Contracts.len() < this.m.MaxConcurrentContracts && (this.m.LastContractTime == 0 || this.Time.getVirtualTimeF() > this.m.LastContractTime + this.World.getTime().SecondsPerDay * delay);
-		//logInfo("ready for contract? " + ready);
-		//logInfo(this.m.Contracts.len() + "<" + this.m.MaxConcurrentContracts);
-		//logInfo(this.m.LastContractTime);
-		//logInfo(this.Time.getVirtualTimeF() + " > " + (this.m.LastContractTime +  this.World.getTime().SecondsPerDay * delay));
+		local totalContracts = activeContracts + this.m.Contracts.len();
+		
+		local ready = totalContracts < this.m.MaxConcurrentContracts && (this.m.LastContractTime == 0 || this.Time.getVirtualTimeF() > this.m.LastContractTime + this.World.getTime().SecondsPerDay * delay);
+		// logInfo("ready for contract? " + ready);
+		// logInfo(totalContracts + "<" + this.m.MaxConcurrentContracts);
+		// logInfo(this.m.LastContractTime);
+		// logInfo(this.Time.getVirtualTimeF() + " > " + (this.m.LastContractTime +  this.World.getTime().SecondsPerDay * delay));
 		return ready;
 	}
 	

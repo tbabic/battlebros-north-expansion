@@ -66,7 +66,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 				this.Contract.m.Destination.setDiscovered(true);
 				this.World.uncoverFogOfWar(this.Contract.m.Destination.getTile().Pos, 500.0);
 				local r = this.Math.rand(1, 100);
-
+				this.logInfo("drive away barbarians chance: " + r);
 				if (r <= 20)
 				{
 					if (this.World.getTime().Days >= 10)
@@ -135,24 +135,30 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 
 			function onDestinationAttacked( _dest, _isPlayerAttacking = true )
 			{
+				this.logInfo("on destination attacked");
 				if (this.Flags.get("IsDuel"))
 				{
+					this.logInfo("duel");
 					this.Contract.setScreen("TheDuel1");
 					this.World.Contracts.showActiveContract();
 				}
-				else if (this.Flags.get("Recruit"))
+				else if (this.Flags.get("Recruit") && !this.Flags.get("IsBrotherRevengeShown"))
 				{
+					this.logInfo("bro-revenge");
+					this.Flags.set("IsAttackDialogTriggered", true);
 					this.Contract.setScreen("BrotherRevenge");
 					this.World.Contracts.showActiveContract();
 				}
 				else if (!this.Flags.get("IsAttackDialogTriggered"))
 				{
+					this.logInfo("approaching");
 					this.Flags.set("IsAttackDialogTriggered", true);
 					this.Contract.setScreen("Approaching");
 					this.World.Contracts.showActiveContract();
 				}
 				else
 				{
+					this.logInfo("show combat");
 					this.World.Contracts.showCombatDialog();
 				}
 			}
@@ -288,9 +294,10 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 		this.m.Screens.push({
 			ID = "BrotherRevenge",
 			Title = "As you approach...",
-			Text = "[img]gfx/ui/events/event_138.png[/img]{You\'ve found the clan village and a series of cairns that lead toward it. Before the first of the cairns a large men is standing, as you approach he speaks.%SPEECH_ON%You the ones %employer% sent to kill these bastards?%SPEECH_ON%You nod and say it will be done soon.%SPEECH_ON%Good, because I want to be a part of it. They killed my brother and if you'll have me, I'd join you in this fight. Might even stay afterwards.%SPEECH_OFF%}",
+			Text = "[img]gfx/ui/events/event_138.png[/img]{You\'ve found the clan village and a series of cairns that lead toward it. Before the first of the cairns a large men is standing, as you approach he speaks.%SPEECH_ON%You the ones %employer% sent to kill these bastards?%SPEECH_OFF%You nod and say it will be done soon.%SPEECH_ON%Good, because I want to be a part of it. They killed my brother and if you'll have me, I'd join you in this fight. Might even stay afterwards.%SPEECH_OFF%}",
 			Image = "",
 			List = [],
+			Characters = [],
 			Options = [
 				{
 					Text = "You can join us.",
@@ -302,6 +309,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 						this.Contract.m.Dude = null;
 						
 						this.Contract.getActiveState().onDestinationAttacked(this.Contract.m.Destination);
+						
 						return 0;
 					}
 
@@ -335,6 +343,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 				items.equip(this.new("scripts/items/weapons/crude_polearm"));
 				
 				this.Characters.push(this.Contract.m.Dude.getImagePath());
+				this.Contract.m.Flags.set("IsBrotherRevengeShown", true);
 			}
 
 		});

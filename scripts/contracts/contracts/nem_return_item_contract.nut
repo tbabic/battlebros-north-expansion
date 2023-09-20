@@ -91,7 +91,7 @@ this.nem_return_item_contract <- this.inherit("scripts/contracts/contract", {
 					this.Const.World.TerrainType.Mountains
 				]);
 				local party;
-				if (this.Flags.get("IsBandits", true))
+				if (this.Flags.get("IsBandits"))
 				{
 					party = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).spawnEntity(tile, "Thieves", false, this.Const.World.Spawn.BanditRaiders, 80 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
 					party.setDescription("A group of thieves and bandits.");

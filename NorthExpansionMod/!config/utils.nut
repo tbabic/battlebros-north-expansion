@@ -55,6 +55,7 @@
 		local talents = bro.getTalents();
 		if (talents[talent] > 0 && talents[talent] < number )
 		{
+			this.logInfo("setting talent: " + talent + "to " + number);
 			talents[talent] = number;
 		}
 		else if (talents[talent] == 0) {
@@ -64,7 +65,7 @@
 			for (local i = 0; i < talents.len(); i++) {
 				if (talents[i] > 0) {
 					count++;
-					if (talents[i] < min && i != this.Const.Attributes.MeleeDefense) {
+					if (talents[i] < min && i != this.Const.Attributes.MeleeDefense && i != this.Const.Attributes.MeleeSkill) {
 						min = talents[i];
 						minTalent = i;
 					}
@@ -72,10 +73,10 @@
 				
 			}
 			if(count < 3) {
-				talents[this.Const.Attributes.MeleeSkill] = number;
+				talents[talent] = number;
 			} else {
 				talents[minTalent] = 0;
-				talents[this.Const.Attributes.MeleeSkill] = number;
+				talents[talent] = number;
 			}
 		}
 		

@@ -32,7 +32,7 @@ this.nem_hunting_raiders_action <- this.inherit("scripts/factions/faction_action
 		{
 			return;
 		}
-
+		this.logInfo("check: " + this.m.ID);
 		local myTile = _faction.getSettlements()[0].getTile();
 		
 		local factionTypes = [];

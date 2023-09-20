@@ -5,6 +5,7 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 	},
 	function setItem( _i )
 	{
+		logInfo("setting item: " + _i.m.XP);
 		if (typeof _i == "instance")
 		{
 			this.m.Item = _i;
@@ -13,7 +14,7 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 		{
 			this.m.Item = this.WeakTableRef(_i);
 		}
-		
+		logInfo("item set: " + this.m.Item.m.XP);
 		
 		local extraPerks = this.getExtraPerks();
 		foreach (perk in extraPerks)
@@ -278,19 +279,17 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 
 		if (this.getFaction() == this.Const.Faction.Player || this.getFaction() == this.Const.Faction.PlayerAnimals)
 		{
-			local XPgroup = _actor.getXPValue();
-			if ("XP" in this.m.Item.m)
-			{
-				this.m.Item.m.XP += XPgroup;
-				return;
-			}
+			local xpValue = _actor.getXPValue();
+			local XPgroup = this.Math.round(0.5 * xpValue);
 			
 			
 			local brothers = this.Tactical.Entities.getInstancesOfFaction(this.Const.Faction.Player);
 			if (this.m.Item.m.XP < 15000)
 			{
-				this.m.Item.m.XP += XPgroup;
-				return;
+				this.m.Item.m.XP += this.Math.floor(xpValue - XPgroup);
+			}
+			else {
+				XPgroup = xpValue;
 			}
 
 			foreach( bro in brothers )

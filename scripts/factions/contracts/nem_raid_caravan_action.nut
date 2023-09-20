@@ -29,11 +29,7 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 		{
 			return;
 		}
-		
-		if (!_faction.getFlags().get("IsBarbarianFaction"))
-		{
-			return;
-		}
+		this.logInfo("check: " + this.m.ID);
 		
 		local potentialEnemies = [];
 		potentialEnemies.extend(this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse));
@@ -108,6 +104,7 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 		}
 		if (endSettlements.len() == 0)
 		{
+			this.logInfo("no end settlements");
 			return;
 		}
 		

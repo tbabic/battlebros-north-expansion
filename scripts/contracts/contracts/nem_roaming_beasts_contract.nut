@@ -86,12 +86,13 @@ this.nem_roaming_beasts_contract <- this.inherit("scripts/contracts/contract", {
 					}
 
 					local r = this.Math.rand(1, maxR);
-
+					logInfo("roaming beasts: "+ r + "/" + maxR);
 					foreach( t in twists )
 					{
 						if (r <= t.R)
 						{
 							this.Flags.set(t.F, true);
+							break;
 							  // [346]  OP_JMP            0      5    0    0
 						}
 						else

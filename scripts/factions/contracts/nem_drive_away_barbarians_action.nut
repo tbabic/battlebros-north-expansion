@@ -30,6 +30,7 @@ this.nem_drive_away_barbarians_action <- this.inherit("scripts/factions/faction_
 		{
 			return;
 		}
+		this.logInfo("check: " + this.m.ID);
 
 		local tooFar = true;
 		local myTile = _faction.getSettlements()[0].getTile();
@@ -40,7 +41,7 @@ this.nem_drive_away_barbarians_action <- this.inherit("scripts/factions/faction_
 
 			foreach( b in bandits )
 			{
-				if (myTile.getDistanceTo(b.getTile()) <= 12)
+				if (myTile.getDistanceTo(b.getTile()) <= 20)
 				{
 					tooFar = false;
 					break;

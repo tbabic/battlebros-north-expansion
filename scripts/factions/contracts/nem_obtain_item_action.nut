@@ -20,7 +20,7 @@ this.nem_obtain_item_action <- this.inherit("scripts/factions/faction_action", {
 		{
 			return;
 		}
-		
+		this.logInfo("check: " + this.m.ID);
 		local tooFar = true;
 		local myTile = _faction.getSettlements()[0].getTile();
 

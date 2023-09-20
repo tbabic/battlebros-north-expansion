@@ -14,7 +14,7 @@ this.throwing_mastery_ambition <- this.inherit("scripts/ambitions/ambition", {
 
 	function getUIText()
 	{
-		return this.m.UIText + " (" + this.Math.min(3, this.getBrosWithMastery()) + "/3)";
+		return this.m.UIText + " (" + this.Math.min(3, this.getBrosWithMastery()) + "/4)";
 	}
 
 	function getBrosWithMastery()

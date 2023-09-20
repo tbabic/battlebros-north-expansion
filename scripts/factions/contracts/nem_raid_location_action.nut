@@ -21,7 +21,7 @@ this.nem_raid_location_action <- this.inherit("scripts/factions/faction_action",
 		{
 			return;
 		}
-
+		this.logInfo("check: " + this.m.ID);
 
 		local hasActiveLocation = false;
 

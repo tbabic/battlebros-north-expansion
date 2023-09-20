@@ -21,10 +21,7 @@ this.nem_roaming_beasts_action <- this.inherit("scripts/factions/faction_action"
 			return;
 		}
 
-		if (_faction.getSettlements()[0].isIsolated() || _faction.getSettlements()[0].getSize() > 2)
-		{
-			return;
-		}
+		this.logInfo("check: " + this.m.ID);
 
 		this.m.Score = 1;
 	}

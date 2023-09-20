@@ -30,7 +30,7 @@ this.nem_hunting_lindwurms_action <- this.inherit("scripts/factions/faction_acti
 		{
 			return;
 		}
-
+		this.logInfo("check: " + this.m.ID);
 		local village = _faction.getSettlements()[0];
 
 		if (village.isNearbySnow())

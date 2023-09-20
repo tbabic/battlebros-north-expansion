@@ -73,7 +73,7 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 		this.m.Name = "Ghost"
 		this.m.Friend = "Jon The Crow";
 		//TODO: description
-		this.m.Description = "This large direwolf is loyal to his human friend" + this.m.Friend + ", but will not listen to anyone else";
+		this.m.Description = "This large direwolf is loyal to his human friend " + this.m.Friend + ", but will not listen to anyone else";
 		this.m.SlotType = this.Const.ItemSlot.Accessory;
 		this.m.IsDroppedAsLoot = true;
 		this.m.ShowOnCharacter = false;
@@ -159,14 +159,14 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 	{
 		this.accessory.onSerialize(_out);
 		_out.writeString(this.m.Name);
-		//_out.writeI32(this.m.XP);
+		_out.writeI32(this.m.XP);
 	}
 
 	function onDeserialize( _in )
 	{
 		this.accessory.onDeserialize(_in);
 		this.m.Name = _in.readString();
-		//this.m.XP = _in.readI32();
+		this.m.XP = _in.readI32();
 	}
 	
 	function getXPLevels() {

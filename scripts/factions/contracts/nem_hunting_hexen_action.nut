@@ -30,6 +30,7 @@ this.nem_hunting_hexen_action <- this.inherit("scripts/factions/faction_action",
 		{
 			return;
 		}
+		this.logInfo("check: " + this.m.ID);
 		
 		this.m.Score = 1;
 	}

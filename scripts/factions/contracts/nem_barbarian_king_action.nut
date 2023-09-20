@@ -2,7 +2,7 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 	m = {},
 	function create()
 	{
-		this.m.ID = "barbarian_king_action";
+		this.m.ID = "nem_barbarian_king_action";
 		this.m.Cooldown = this.World.getTime().SecondsPerDay * 30;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
@@ -40,6 +40,7 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 		{
 			return;
 		}
+		this.logInfo("check: " + this.m.ID);
 		
 		local settlements = _faction.getSettlements();
 		local barbarians = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getSettlements();

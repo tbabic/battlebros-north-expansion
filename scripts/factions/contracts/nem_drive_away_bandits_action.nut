@@ -21,10 +21,7 @@ this.nem_drive_away_bandits_action <- this.inherit("scripts/factions/faction_act
 			return;
 		}
 
-		if (_faction.getSettlements()[0].isIsolated())
-		{
-			return;
-		}
+		this.logInfo("check: " + this.m.ID);
 
 		local tooFar = true;
 		local myTile = _faction.getSettlements()[0].getTile();
@@ -35,7 +32,7 @@ this.nem_drive_away_bandits_action <- this.inherit("scripts/factions/faction_act
 
 			foreach( b in bandits )
 			{
-				if (myTile.getDistanceTo(b.getTile()) <= 15)
+				if (myTile.getDistanceTo(b.getTile()) <= 20)
 				{
 					tooFar = false;
 					break;
@@ -45,6 +42,7 @@ this.nem_drive_away_bandits_action <- this.inherit("scripts/factions/faction_act
 
 		if (tooFar)
 		{
+			this.logInfo("too far");
 			return;
 		}
 

@@ -32,7 +32,7 @@ this.nem_hunting_unholds_action <- this.inherit("scripts/factions/faction_action
 		{
 			return;
 		}
-
+		this.logInfo("check: " + this.m.ID);
 		local village = _faction.getSettlements()[0];
 		
 		if (village.isNearbySnow())

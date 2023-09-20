@@ -22,10 +22,7 @@ this.nem_return_item_action <- this.inherit("scripts/factions/faction_action", {
 			return;
 		}
 
-		if (_faction.getSettlements()[0].isIsolatedFromRoads())
-		{
-			return;
-		}
+		this.logInfo("check: " + this.m.ID);
 
 		this.m.Score = 1;
 	}

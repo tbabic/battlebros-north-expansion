@@ -15,11 +15,11 @@ this.nem_hunting_hexen_contract <- this.inherit("scripts/contracts/contract", {
 
 	function start()
 	{
-		local fatherName = this.getFlags().get("father");
-		if(fatherName == null)
+		local fatherName = this.m.Flags.get("father");
+		if(fatherName == false)
 		{
 			fatherName = ::NorthMod.Utils.barbarianNameOnly();
-			this.getFlags().set("father", fatherName);
+			this.m.Flags.set("father", fatherName);
 		}
 		this.m.Payment.Pool = 900 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();
 
@@ -627,7 +627,6 @@ this.nem_hunting_hexen_contract <- this.inherit("scripts/contracts/contract", {
 					Text = "I desire a drink for the body.",
 					function getResult()
 					{
-						this.getFlags().set("spared", true);
 						return "SparedDealBodily";
 					}
 
@@ -636,7 +635,6 @@ this.nem_hunting_hexen_contract <- this.inherit("scripts/contracts/contract", {
 					Text = "I desire a drink for the spirit.",
 					function getResult()
 					{
-						this.getFlags().set("spared", true);
 						return "SparedDealSpiritual";
 					}
 
@@ -645,11 +643,11 @@ this.nem_hunting_hexen_contract <- this.inherit("scripts/contracts/contract", {
 			
 			function start()
 			{
-				if (this.getFlags.get("IsSurvivalOffer"))
+				if (this.Flags.get("IsSurvivalOffer"))
 				{
 					this.Text += "{As your men scour the battlefield %randombrother% yells that one of the witches is still alive. You race towards him and there you see her. An old hag, beaten and bruised, defenseless, but not yet dead. You could finish her off quite easily, but she raises her hand.}"
 				}
-				else if (this.getFlags().get("IsChasedOffer"))
+				else if (this.Flags.get("IsChasedOffer"))
 				{
 					this.Text += "{One of the witches has escaped and you, as well as your men give chase. It\'s not long before you catch up with her and corner her. She still looks beautiful, but not as flawless as when you first saw her. You and your men could finish her off quite easily, but she raises her hand.}"
 				}
@@ -763,11 +761,11 @@ this.nem_hunting_hexen_contract <- this.inherit("scripts/contracts/contract", {
 			"protectee",
 			this.m.Flags.get("ProtecteeName")
 		]);
-		local fatherName = this.getFlags().get("father");
-		if(fatherName == null)
+		local fatherName = this.m.Flags.get("father");
+		if(fatherName == false)
 		{
 			fatherName = ::NorthMod.Utils.barbarianNameOnly()
-			this.getFlags().set("father", fatherName);
+			this.m.Flags.set("father", fatherName);
 		}
 		_vars.push([
 			"father",
