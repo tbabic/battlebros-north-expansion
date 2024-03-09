@@ -71,7 +71,7 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 			return;
 		}
 		
-		if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders" )
+		if (!this.World.Flags.get("NorthExpansionCivilActive") )
 		{
 			return;
 		}
@@ -87,8 +87,8 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 		logInfo("findTown");
 		foreach( s in settlements )
 		{
-			local faction = s.getOwner();
-			if (faction.getFlags().get("IsBarbarianFaction") && s.getTile().getDistanceTo(playerTile) <=4 )
+			local faction = s.getFaction();
+			if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) == faction && s.getTile().getDistanceTo(playerTile) <=4 )
 			{
 				town = s;
 				inBarbarianVillage = true;
@@ -102,15 +102,15 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 		
 		if (this.World.Ambitions.hasActiveAmbition() && this.World.Ambitions.getActiveAmbition().getID() == "ambition.roster_of_12")
 		{
-			multiplier = 4;
+			multiplier = 2;
 		}
 		
 		if(this.World.Flags.get("NorthExpansionCivilLevel") == 1) {
-			multiplier = multiplier * 2;
+			multiplier = multiplier * 5;
 		}
 		
 		this.m.Town = town;
-		this.m.Score = 5 * multiplier;
+		this.m.Score = 1 * multiplier;
 	}
 
 	function onPrepare()

@@ -1,6 +1,7 @@
 this.nem_hunting_unholds_action <- this.inherit("scripts/factions/faction_action", {
 	m = {
-		EnemyType = 0
+		EnemyType = 0,
+		Home = null
 	},
 	function create()
 	{
@@ -10,6 +11,11 @@ this.nem_hunting_unholds_action <- this.inherit("scripts/factions/faction_action
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();
 	}
+	
+	function setHome( _home)
+	{
+		this.m.Home = _home;
+	}
 
 	function onUpdate( _faction )
 	{
@@ -18,7 +24,7 @@ this.nem_hunting_unholds_action <- this.inherit("scripts/factions/faction_action
 			return;
 		}
 		
-		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
 		{
 			return;
 		}
@@ -33,13 +39,12 @@ this.nem_hunting_unholds_action <- this.inherit("scripts/factions/faction_action
 			return;
 		}
 		this.logInfo("check: " + this.m.ID);
-		local village = _faction.getSettlements()[0];
 		
-		if (village.isNearbySnow())
+		if (::NorthMod.Utils.isNearbySnow(this.m.Home))
 		{
 			this.m.EnemyType = 1;
 		}
-		else if (village.isNearbyForest())
+		else if (::NorthMod.Utils.isNearbyForest(this.m.Home))
 		{
 			this.m.EnemyType = 0;
 		}
@@ -57,10 +62,10 @@ this.nem_hunting_unholds_action <- this.inherit("scripts/factions/faction_action
 
 	function onExecute( _faction )
 	{
-		local contract = this.new("scripts/contracts/contracts/hunting_unholds_contract");
+		local contract = this.new("scripts/contracts/contracts/nem_hunting_unholds_contract");
 		contract.setFaction(_faction.getID());
-		contract.setHome(_faction.getSettlements()[0]);
-		contract.setEmployerID(_faction.getRandomCharacter().getID());
+		contract.setHome(this.m.Home);
+		contract.setEmployerID(this.m.Home.getChieftain());
 		contract.setEnemyType(this.m.EnemyType);
 		this.World.Contracts.addContract(contract);
 	}

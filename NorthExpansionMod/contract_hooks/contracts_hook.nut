@@ -10,7 +10,7 @@
 		if (f== null) {
 			return screen;
 		}
-		if (screen != null && f.getFlags().get("IsBarbarianFaction")) {
+		if (screen != null && this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction) {
 			local newText = screen.Text;
 			newText = ::NorthMod.Utils.stringReplace(newText, "mercenary", "warrior");
 			newText = ::NorthMod.Utils.stringReplace(newText, "Mercenary", "Warrior");
@@ -27,7 +27,7 @@
 	// hook settlement intro
 	local onImportIntro = :: mods_getMember(o, "onImportIntro");
 	::mods_override(o, "onImportIntro", function() {
-		if (!this.World.FactionManager.getFaction(this.m.Faction).getFlags().get("IsBarbarianFaction"))
+		if (!this.World.FactionManager.getFaction(this.m.Faction) == this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians))
 		{
 			onImportIntro();
 			return;

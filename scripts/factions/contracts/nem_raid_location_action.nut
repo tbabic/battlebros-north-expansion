@@ -1,5 +1,8 @@
 this.nem_raid_location_action <- this.inherit("scripts/factions/faction_action", {
-	m = {},
+	m = {
+		Home = null,
+		Target = null
+	},
 	function create()
 	{
 		this.m.ID = "raze_attached_location_action";
@@ -8,15 +11,19 @@ this.nem_raid_location_action <- this.inherit("scripts/factions/faction_action",
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();
 	}
+	
+	function setHome( _home)
+	{
+		this.m.Home = _home;
+	}
 
 	function onUpdate( _faction )
 	{
-		
-		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		this.m.Target = null;
+		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
 		{
 			return;
 		}
-
 		if (!_faction.isReadyForContract())
 		{
 			return;
@@ -24,116 +31,54 @@ this.nem_raid_location_action <- this.inherit("scripts/factions/faction_action",
 		this.logInfo("check: " + this.m.ID);
 
 		local hasActiveLocation = false;
-
-		foreach( s in _faction.getSettlements() )
+		
+		local startSettlements = [];
+		foreach(f in this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse))
 		{
-			if (s.isMilitary() || s.getAttachedLocations().len() == 0 || !s.isDiscovered())
+			startSettlements.extend(f.getSettlements());
+		}
+		local targets = [];
+		
+
+		foreach( s in startSettlements )
+		{
+			if (s.getAttachedLocations().len() == 0 )
 			{
 				continue;
 			}
 
 			foreach( a in s.getAttachedLocations() )
 			{
-				if (a.isActive() && a.isUsable() && !a.isMilitary())
+				if (a.isActive() && a.isUsable())
 				{
-					hasActiveLocation = true;
-					break;
+					targets.push(a);
 				}
-			}
-
-			if (hasActiveLocation)
-			{
-				break;
 			}
 		}
 
-		if (!hasActiveLocation)
+		if(targets.len() <= 0)
 		{
 			return;
 		}
-
+		this.m.Target = targets[this.Math.rand(0, targets.len()-1)];
 		this.m.Score = 1;
 	}
 
 	function onClear()
 	{
+		this.m.Target = null;
 	}
 
 	function onExecute( _faction )
 	{
-		local bestDist = 9000;
-		local best;
-
-		foreach( s in _faction.getSettlements() )
-		{
-			if (s.isMilitary() || !s.isDiscovered() || s.getAttachedLocations().len() == 0)
-			{
-				continue;
-			}
-
-			local hasActiveLocation = false;
-
-			foreach( a in s.getAttachedLocations() )
-			{
-				if (a.isActive() && a.isUsable() && !a.isMilitary())
-				{
-					hasActiveLocation = true;
-					break;
-				}
-			}
-
-			if (!hasActiveLocation)
-			{
-				continue;
-			}
-
-			foreach( o in _faction.getSettlements() )
-			{
-				local d = o.getTile().getDistanceTo(s.getTile());
-
-				if (d < bestDist)
-				{
-					bestDist = d;
-					best = s;
-				}
-			}
-		}
-
-		if (best == null)
-		{
-			return;
-		}
-
-		local bestLocation;
-		bestDist = 0;
-
-		foreach( a in best.getAttachedLocations() )
-		{
-			if (!a.isActive() || !a.isUsable() || a.isMilitary())
-			{
-				continue;
-			}
-
-			local d = a.getTile().getDistanceTo(best.getTile());
-
-			if (d > bestDist)
-			{
-				bestDist = d;
-				bestLocation = a;
-			}
-		}
-
-		if (bestLocation == null)
-		{
-			return;
-		}
-
-		local contract = this.new("scripts/contracts/contracts/nem_raze_attached_location_contract");
+		
+		local contract = this.new("scripts/contracts/contracts/nem_raid_location_contract");
 		contract.setFaction(_faction.getID());
-		contract.setEmployerID(_faction.getRandomCharacter().getID());
-		contract.setOrigin(best);
-		contract.setSettlement(best);
-		contract.setLocation(bestLocation);
+		contract.setHome(this.m.Home);
+		contract.setEmployerID(this.m.Home.getChieftain());
+		contract.setOrigin(this.m.Home);
+		contract.setSettlement(this.m.Home);
+		contract.setLocation(this.m.Target);
 		this.World.Contracts.addContract(contract);
 	}
 

@@ -2,12 +2,8 @@
 	local normalizeRelation = ::mods_getMember(o, "normalizeRelation");
 	::mods_override(o, "normalizeRelation", function() {
 		//logInfo("normalize relations:" + this.getName());
-		if (this.getFlags().get("IsBarbarianFaction"))
-		{
-			normalizeRelation();
-			return;
-		}
-		else if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders" )
+		
+		if(this.World.Flags.get("NorthExpansionCivilLevel") >= 2)
 		{
 			normalizeRelation();
 			return;
@@ -30,7 +26,7 @@
 	local makeEveryoneFriendlyToPlayer = ::mods_getMember(o, "makeEveryoneFriendlyToPlayer");
 	::mods_override(o, "makeEveryoneFriendlyToPlayer", function() {
 		logInfo("make friendly relations");
-		if(this.World.Assets.getOrigin().getID() == "scenario.barbarian_raiders" && this.World.Flags.get("NorthExpansionCivilLevel") <= 1)
+		if(this.World.Flags.get("NorthExpansionCivilActive") && this.World.Flags.get("NorthExpansionCivilLevel") <= 1)
 		{
 			logInfo("make friendly relations disabled");
 			return;

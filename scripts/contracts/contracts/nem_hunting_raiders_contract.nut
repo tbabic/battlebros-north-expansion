@@ -4,7 +4,7 @@ this.nem_hunting_raiders_contract <- this.inherit("scripts/contracts/contract", 
 	function create()
 	{
 		this.contract.create();
-		this.m.Type = "contract.hunting_settlement_raiders";
+		this.m.Type = "contract.nem_hunting_raiders";
 		this.m.Name = "Hunt down raiders";
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 5.0;
 		this.m.MakeAllSpawnsResetOrdersOnContractEnd = false;

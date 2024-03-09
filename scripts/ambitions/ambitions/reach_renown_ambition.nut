@@ -24,7 +24,7 @@ this.reach_renown_ambition <- this.inherit("scripts/ambitions/ambition", {
 		{
 			return;
 		}
-		if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders")
+		if (!this.World.Flags.get("NorthExpansionCivilActive"))
 		{
 			return;
 		}

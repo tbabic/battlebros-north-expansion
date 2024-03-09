@@ -47,6 +47,38 @@
 		}
 		return null;
 	}
+	
+	function checkSuitableTerrain(_terrain, villageType)
+	{
+		foreach (v in this.Const.World.Settlements.Villages_small)
+		{
+			if (this.String.contains(v.Script, villageType))
+			{
+				return v.isSuitable(_terrain);
+			}
+		}
+		return false;
+	}
+	
+	function isNearbyForest(location)
+	{
+		if (location.getFlags().has("NEMisNearbyForest")) {
+			return location.getFlags().get("NEMisNearbyForest");
+		}
+		local terrain = worldmap.getTerrainInRegion(location.getTile());
+		local result = checkSuitableTerrain(terrain, "small_lumber_village")
+		location.getFlags().set("NEMisNearbyForest", result);
+	}
+	
+	function isNearbySnow(location)
+	{
+		if (location.getFlags().has("NEMisNearbySnow")) {
+			return location.getFlags().get("NEMisNearbySnow");
+		}
+		local terrain = worldmap.getTerrainInRegion(location.getTile());
+		local result = checkSuitableTerrain(terrain, "small_snow_village")
+		location.getFlags().set("NEMisNearbySnow", result);
+	}
 
 
 	function guaranteedTalents(bro, talent, number)

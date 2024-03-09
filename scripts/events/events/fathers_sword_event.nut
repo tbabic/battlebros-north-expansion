@@ -184,7 +184,7 @@ this.fathers_sword_event <- this.inherit("scripts/events/event", {
 			return;
 		}
 		
-		if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders")
+		if (!this.World.Flags.get("NorthExpansionCivilActive"))
 		{
 			return;
 		}

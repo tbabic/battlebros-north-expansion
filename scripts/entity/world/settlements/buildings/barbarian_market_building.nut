@@ -273,8 +273,13 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 			}
 		}
 		
+		list.push({
+			R = 50,
+			P = 1.0,
+			S = "supplies/roots_and_berries_item"
+		});
 
-		if (this.m.Settlement.getSize() >= 3)
+		if (this.m.Settlement.m.campSize >= 2)
 		{
 			list.push({
 				R = 50,
@@ -286,46 +291,13 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 				P = 1.0,
 				S = "supplies/armor_parts_item"
 			});
-		}
-
-		if (this.m.Settlement.getSize() >= 2 && !this.m.Settlement.hasAttachedLocation("attached_location.fishing_huts"))
-		{
-			list.push({
-				R = 50,
-				P = 1.0,
-				S = "supplies/dried_fish_item"
-			});
-		}
-
-		if (this.m.Settlement.getSize() >= 3 && !this.m.Settlement.hasAttachedLocation("attached_location.beekeeper"))
-		{
-			list.push({
-				R = 50,
-				P = 1.0,
-				S = "supplies/mead_item"
-			});
-		}
-
-		if (this.m.Settlement.getSize() >= 1 && !this.m.Settlement.hasAttachedLocation("attached_location.pig_farm"))
-		{
-			list.push({
-				R = 50,
-				P = 1.0,
-				S = "supplies/smoked_ham_item"
-			});
-		}
-
-		if (this.m.Settlement.getSize() >= 2 && !this.m.Settlement.hasAttachedLocation("attached_location.hunters_cabin"))
-		{
+			
 			list.push({
 				R = 50,
 				P = 1.0,
 				S = "supplies/cured_venison_item"
 			});
-		}
-
-		if (this.m.Settlement.getSize() >= 3 && !this.m.Settlement.hasAttachedLocation("attached_location.goat_herd"))
-		{
+			
 			list.push({
 				R = 50,
 				P = 1.0,
@@ -333,44 +305,14 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 			});
 		}
 
-		if (this.m.Settlement.getSize() >= 3 && !this.m.Settlement.hasAttachedLocation("attached_location.orchard"))
+		if (this.m.Settlement.m.campSize >= 3)
 		{
 			list.push({
-				R = 50,
+				R = 20,
 				P = 1.0,
-				S = "supplies/dried_fruits_item"
+				S = "supplies/mead_item"
 			});
-		}
-
-		if (this.m.Settlement.getSize() >= 2 && !this.m.Settlement.hasAttachedLocation("attached_location.mushroom_grove"))
-		{
-			list.push({
-				R = 50,
-				P = 1.0,
-				S = "supplies/pickled_mushrooms_item"
-			});
-		}
-
-		if (!this.m.Settlement.hasAttachedLocation("attached_location.wheat_farm"))
-		{
-			list.push({
-				R = 30,
-				P = 1.0,
-				S = "supplies/bread_item"
-			});
-		}
-
-		if (this.m.Settlement.getSize() >= 2 && !this.m.Settlement.hasAttachedLocation("attached_location.gatherers_hut"))
-		{
-			list.push({
-				R = 50,
-				P = 1.0,
-				S = "supplies/roots_and_berries_item"
-			});
-		}
-
-		if (this.m.Settlement.getSize() >= 2 && !this.m.Settlement.hasAttachedLocation("attached_location.brewery"))
-		{
+			
 			list.push({
 				R = 50,
 				P = 1.0,
@@ -378,36 +320,11 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 			});
 		}
 
-		if (this.m.Settlement.getSize() >= 3 && !this.m.Settlement.hasAttachedLocation("attached_location.winery"))
-		{
-			list.push({
-				R = 50,
-				P = 1.0,
-				S = "supplies/wine_item"
-			});
-		}
-
-		if (this.m.Settlement.getSize() >= 3)
-		{
-			list.push({
-				R = 60,
-				P = 1.0,
-				S = "supplies/cured_rations_item"
-			});
-		}
-
-		if (this.m.Settlement.getSize() >= 3 || this.m.Settlement.isMilitary())
-		{
-			list.push({
-				R = 90,
-				P = 1.0,
-				S = "accessory/falcon_item"
-			});
-		}
-
 		
-		this.m.Settlement.onUpdateShopList(this.m.ID, list);
 		this.fillStash(list, this.m.Stash, 1.0, true);
+		
+		logInfo("stash list size:"  + list.len());
+		logInfo("stash size:"  + this.m.Stash.getItems().len());
 	}
 
 });

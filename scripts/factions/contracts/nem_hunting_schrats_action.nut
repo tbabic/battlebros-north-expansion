@@ -1,5 +1,7 @@
 this.nem_hunting_schrats_action <- this.inherit("scripts/factions/faction_action", {
-	m = {},
+	m = {
+		Home = null
+	},
 	function create()
 	{
 		this.m.ID = "nem_hunting_schrats_action";
@@ -7,6 +9,11 @@ this.nem_hunting_schrats_action <- this.inherit("scripts/factions/faction_action
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();
+	}
+	
+	function setHome( _home)
+	{
+		this.m.Home = _home;
 	}
 
 	function onUpdate( _faction )
@@ -16,7 +23,7 @@ this.nem_hunting_schrats_action <- this.inherit("scripts/factions/faction_action
 			return;
 		}
 		
-		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
 		{
 			return;
 		}
@@ -31,17 +38,14 @@ this.nem_hunting_schrats_action <- this.inherit("scripts/factions/faction_action
 			return;
 		}
 
-		
 
-		local village = _faction.getSettlements()[0];
-
-		if (!village.isNearbyForest())
+		if (!::NorthMod.Utils.isNearbyForest(this.m.Home))
 		{
 			return;
 		}
 
 		local mapSize = this.World.getMapSize();
-		local villageTile = village.getTile();
+		local villageTile = this.m.Home.getTile();
 		local x = this.Math.max(3, villageTile.SquareCoords.X - 11);
 		local x_max = this.Math.min(mapSize.X - 3, villageTile.SquareCoords.X + 11);
 		local y = this.Math.max(3, villageTile.SquareCoords.Y - 11);
@@ -79,10 +83,10 @@ this.nem_hunting_schrats_action <- this.inherit("scripts/factions/faction_action
 
 	function onExecute( _faction )
 	{
-		local contract = this.new("scripts/contracts/contracts/hunting_schrats_contract");
+		local contract = this.new("scripts/contracts/contracts/nem_hunting_schrats_contract");
 		contract.setFaction(_faction.getID());
-		contract.setHome(_faction.getSettlements()[0]);
-		contract.setEmployerID(_faction.getRandomCharacter().getID());
+		contract.setHome(this.m.Home);
+		contract.setEmployerID(this.m.Home.getChieftain());
 		this.World.Contracts.addContract(contract);
 	}
 

@@ -1,6 +1,6 @@
 ::mods_hookClass("skills/backgrounds/barbarian_background", function(o) {
 	::mods_override(o, "onBuildDescription", function() {
-		if (this.World.Assets.getOrigin().getID() == "scenario.barbarian_raiders")
+		if (this.World.Flags.get("NorthExpansionCivilActive"))
 		{
 			return "{Some men are born to be fight. Well over six feet tall and with arms the size of trees, %name% is definitely one of them. | %name%\'s shadow casts over smaller men - and they seem to only further shrink when he walks by. | When his family was slaughtered, newborn %name% was taken in by the very barbarians who did it. | Years of brutal combat with his equally tough clansmen left %name% a scarred and scary figure. | %name% decided many years ago to take by force from the weak and feeble whatever he desired, and has made his presence known by raiding caravans and villages ever since.} {The barbarian has spent many years raiding and pillaging, but with meager profits. | Exiled from the clan for disagreeing with the chief, the barbarian has wandered for years, doing whatever work for whatever coin. | When in the heat of battle he cleaved five men with one swing, three of which were his clansmen, the barbarian was sent away from his tribe. | When he fought in the single combat as a champion for his tribe, barbarian didn't expect he would be betrayed. He slaughtered his chieftain and then left towards south. | The barbarian has spent many nights sleeping peacefully beneath a pale moon - and just as many days killing ruthlessly beneath a shining sun. | A devoted believer in the old ways, %name% desires to die a glorious warrior\'s death to take his place beside the gods. But slaughtering villagers like cattle won\'t get the attention of the gods, and so he now looks for a greater challenge. | It started with a good raid on a merchant caravan. The few guards were quickly cut down and the fleeing merchant didn\'t run fast enough - a javelin to his back attested to it. The spoils were rich, but before long there was heated argument about how they were to be shared. By evening, most of the raiders had killed each other. %name% only barely escaped and had nothing to show for his day but a limping leg.} {Always on the hunt for more loot, the company of other northmen seemed like a good fit. | Too terrifying to be employed for long, %name% seeks the company of men who will not piss themselves when he grabs a weapon. | Tired of killing women and children, %name% sees mercenary work as something worthy of his skill. | The man is not kind in the least, but he can wield a weapon like it\'s one of his missing fingers.}";
 		} else {
@@ -12,7 +12,7 @@
 	
 	local onAddEquipment = ::mods_getMember(o, "onAddEquipment");
 	::mods_override(o, "onAddEquipment", function() {
-		if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders") {
+		if (!this.World.Flags.get("NorthExpansionCivilActive")) {
 			onAddEquipment();
 			return;
 		}
@@ -90,7 +90,7 @@
 			onAdded();
 			return;
 		}
-		if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders") {
+		if (!this.World.Flags.get("NorthExpansionCivilActive")) {
 			onAdded();
 			return;
 		}

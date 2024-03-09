@@ -273,7 +273,7 @@ this.barbarian_duel_event <- this.inherit("scripts/events/event", {
 			}
 		}
 		
-		if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders" )
+		if (!this.World.Flags.get("NorthExpansionCivilActive") )
 		{
 			return false;
 		}
@@ -292,8 +292,8 @@ this.barbarian_duel_event <- this.inherit("scripts/events/event", {
 		}
 	
 		local day = this.Time.getVirtualTimeF() / this.World.getTime().SecondsPerDay;
-		local duelLostDay = location.getFlags().getAsInt("LastDuel", duelDay)
-		if (location.getFlags().get("DuelLost") && (day - duelLostDay < 30))
+		local duelLostDay = this.m.Location.getFlags().getAsInt("LastDuel")
+		if (this.m.Location.getFlags().get("DuelLost") && (day - duelLostDay < 30))
 		{
 			return false;
 		}

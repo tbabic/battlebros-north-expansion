@@ -32,7 +32,7 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 			return;
 		}
 
-		if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders")
+		if (!this.World.Flags.get("NorthExpansionCivilActive"))
 		{
 			return;
 		}
@@ -62,7 +62,7 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 		
 		for (local i = 0; i < this.World.FactionManager.m.Factions ; i++) {
 			local f = this.World.FactionManager.m.Factions[i];
-			if (f.getFlags().get("isBarbarianFaction"))
+			if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != f)
 			{
 				this.World.FactionManager.m.Factions.remove(i);
 				foreach (s in f.getSettlements())

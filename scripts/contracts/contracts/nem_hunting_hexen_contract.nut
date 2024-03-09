@@ -7,7 +7,7 @@ this.nem_hunting_hexen_contract <- this.inherit("scripts/contracts/contract", {
 	function create()
 	{
 		this.contract.create();
-		this.m.Type = "contract.hunting_hexen";
+		this.m.Type = "contract.nem_hunting_hexen";
 		this.m.Name = "A Pact With Witches";
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 7.0;
 		

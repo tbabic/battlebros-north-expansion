@@ -2,7 +2,7 @@
 	local onWorldEntityDestroyed = ::mods_getMember(o, "onWorldEntityDestroyed");
 	::mods_override(o, "onWorldEntityDestroyed", function(_entity, _isLocation) {
 		onWorldEntityDestroyed(_entity, _isLocation);
-		if (this.World.Assets.getOrigin().getID() == "scenario.barbarian_raiders" && this.World.Flags.get("NorthExpansionCivilLevel") <= 1)
+		if (this.World.Flags.get("NorthExpansionCivilActive") && this.World.Flags.get("NorthExpansionCivilLevel") <= 1)
 		{
 			local combatType = ::NorthMod.Const.CombatTypes.Other;
 			local f = this.World.FactionManager.getFaction(this.World.Statistics.getFlags().getAsInt("LastCombatFaction"));

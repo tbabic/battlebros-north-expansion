@@ -1,6 +1,7 @@
 this.nem_hunting_raiders_action <- this.inherit("scripts/factions/faction_action", {
 	m = {
 		EnemyFaction = null,
+		Home = null
 	},
 	function create()
 	{
@@ -10,6 +11,11 @@ this.nem_hunting_raiders_action <- this.inherit("scripts/factions/faction_action
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();
 	}
+	
+	function setHome( _home)
+	{
+		this.m.Home = _home;
+	}
 
 	function onUpdate( _faction )
 	{
@@ -18,22 +24,18 @@ this.nem_hunting_raiders_action <- this.inherit("scripts/factions/faction_action
 			return;
 		}
 		
-		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
 		{
 			return;
 		}
 
-		if (_faction.getSettlements()[0].isIsolated())
-		{
-			return;
-		}
 
 		if (this.World.Assets.getBusinessReputation() < 500)
 		{
 			return;
 		}
 		this.logInfo("check: " + this.m.ID);
-		local myTile = _faction.getSettlements()[0].getTile();
+		local myTile = this.m.Home.getTile();
 		
 		local factionTypes = [];
 		factionTypes.push(this.Const.FactionType.Barbarians);
@@ -114,8 +116,8 @@ this.nem_hunting_raiders_action <- this.inherit("scripts/factions/faction_action
 	{
 		local contract = this.new("scripts/contracts/contracts/nem_hunting_raiders_contract");
 		contract.setFaction(_faction.getID());
-		contract.setHome(_faction.getSettlements()[0]);
-		contract.setEmployerID(_faction.getRandomCharacter().getID());
+		contract.setHome(this.m.Home);
+		contract.setEmployerID(this.m.Home.getChieftain());
 		contract.setEnemyFaction(this.m.EnemyFaction);
 		this.World.Contracts.addContract(contract);
 	}

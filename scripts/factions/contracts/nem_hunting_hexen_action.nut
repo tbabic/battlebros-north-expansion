@@ -1,5 +1,7 @@
 this.nem_hunting_hexen_action <- this.inherit("scripts/factions/faction_action", {
-	m = {},
+	m = {
+		Home = null
+	},
 	function create()
 	{
 		this.m.ID = "nem_hunting_hexen_action";
@@ -7,6 +9,11 @@ this.nem_hunting_hexen_action <- this.inherit("scripts/factions/faction_action",
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();
+	}
+	
+	function setHome( _home)
+	{
+		this.m.Home = _home;
 	}
 
 	function onUpdate( _faction )
@@ -16,7 +23,7 @@ this.nem_hunting_hexen_action <- this.inherit("scripts/factions/faction_action",
 			return;
 		}
 		
-		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
 		{
 			return;
 		}
@@ -43,8 +50,8 @@ this.nem_hunting_hexen_action <- this.inherit("scripts/factions/faction_action",
 	{
 		local contract = this.new("scripts/contracts/contracts/nem_hunting_hexen_contract");
 		contract.setFaction(_faction.getID());
-		contract.setHome(_faction.getSettlements()[0]);
-		contract.setEmployerID(_faction.getRandomCharacter().getID());
+		contract.setHome(this.m.Home);
+		contract.setEmployerID(this.m.Home.getChieftain());
 		this.World.Contracts.addContract(contract);
 	}
 

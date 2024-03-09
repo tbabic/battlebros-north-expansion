@@ -1,5 +1,7 @@
 this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action", {
-	m = {},
+	m = {
+		Home = null
+	},
 	function create()
 	{
 		this.m.ID = "nem_barbarian_king_action";
@@ -8,10 +10,20 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();
 	}
+	
+	function setHome( _home)
+	{
+		this.m.Home = _home;
+	}
 
 	function onUpdate( _faction )
 	{
 		if (!this.Const.DLC.Wildmen || this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) == null)
+		{
+			return;
+		}
+		
+		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
 		{
 			return;
 		}
@@ -30,43 +42,35 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 		{
 			return;
 		}
-
-		if (!this.World.Ambitions.getAmbition("ambition.make_nobles_aware").isDone())
-		{
-			return;
-		}
 		
-		if (!_faction.getFlags().get("IsBarbarianFaction"))
-		{
-			return;
-		}
+		
 		this.logInfo("check: " + this.m.ID);
 		
 		local settlements = _faction.getSettlements();
 		local barbarians = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getSettlements();
 		local lowestDistance = 9999;
 		local lowestDistanceSettlement;
-
-		foreach( s in settlements )
+		local found = false;
+	
+		foreach( b in barbarians )
 		{
-			foreach( b in barbarians )
+			if (b == this.m.Home || b.isLocationType(this.Const.World.LocationType.Unique))
 			{
-				if (b.isLocationType(this.Const.World.LocationType.Unique))
-				{
-					continue;
-				}
+				continue;
+			}
 
-				local d = s.getTile().getDistanceTo(b.getTile());
 
-				if (d <= 25 && d < lowestDistance)
-				{
-					lowestDistance = d;
-					lowestDistanceSettlement = s;
-				}
+			local d = this.m.Home.getTile().getDistanceTo(b.getTile());
+
+			if (d <= 25 && d < lowestDistance)
+			{
+				lowestDistance = d;
+				found = true;
 			}
 		}
+		
 
-		if (lowestDistanceSettlement == null)
+		if (!found)
 		{
 			return;
 		}
@@ -82,7 +86,8 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 	{
 		local contract = this.new("scripts/contracts/contracts/nem_barbarian_king_contract");
 		contract.setFaction(_faction.getID());
-		contract.setEmployerID(_faction.getRandomCharacter().getID());
+		contract.setHome(this.m.Home);
+		contract.setEmployerID(this.m.Home.getChieftain());
 		this.World.Contracts.addContract(contract);
 	}
 

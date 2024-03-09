@@ -2,7 +2,8 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 	m = {
 		EnemyFaction = null,
 		StartId = null,
-		DestId = null
+		DestId = null,
+		Home = null
 	},
 	function create()
 	{
@@ -12,6 +13,11 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();
 	}
+	
+	function setHome( _home)
+	{
+		this.m.Home = _home;
+	}
 
 	function onUpdate( _faction )
 	{
@@ -20,7 +26,7 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 			return;
 		}
 		
-		if (!_faction.getFlags().get("IsBarbarianFaction"))
+		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
 		{
 			return;
 		}
@@ -30,10 +36,7 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 			return;
 		}
 		this.logInfo("check: " + this.m.ID);
-		
-		local potentialEnemies = [];
-		potentialEnemies.extend(this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse));
-		potentialEnemies.extend(this.World.FactionManager.getFactionsOfType(this.Const.FactionType.OrientalCityState));
+
 		
 		local startSettlements = [];
 		
@@ -128,7 +131,8 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 	{
 		local contract = this.new("scripts/contracts/contracts/nem_raid_caravan_contract");
 		contract.setFaction(_faction.getID());
-		contract.setEmployerID(_faction.getRandomCharacter().getID());
+		contract.setHome(this.m.Home); //TODO: check this
+		contract.setEmployerID(this.m.Home.getChieftain());
 		contract.setCaravanInfo(this.m.EnemyFaction, this.m.StartId, this.m.DestId);
 		this.World.Contracts.addContract(contract);
 	}

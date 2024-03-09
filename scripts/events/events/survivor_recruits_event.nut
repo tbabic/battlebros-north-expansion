@@ -9,6 +9,7 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 	{
 		this.m.ID = "event.survivor_recruits";
 		this.m.Title = "After the battle...";
+		this.m.Cooldown = 99999.0 * this.World.getTime().SecondsPerDay;
 		this.m.IsSpecial = true;
 		this.m.Screens.push({
 			ID = "Civilians",
@@ -364,21 +365,33 @@ this.survivor_recruits_event <- this.inherit("scripts/events/event", {
 	function isValid()
 	{
 		
+		
 		if (!this.Const.DLC.Wildmen)
 		{
 			return;
 		}
-		
-		if (this.World.Assets.getOrigin().getID() != "scenario.barbarian_raiders" )
+
+		if (!this.World.Flags.get("NorthExpansionCivilActive") )
 		{
 			return;
 		}
+		
+		if (!this.m.IsSpecial && this.Time.getVirtualTimeF() < this.m.CooldownUntil)
+		{
+			return;
+		}
+		
+
 		if (this.World.getPlayerRoster().getSize() >= this.World.Assets.getBrothersMax())
 		{
 			return;
 		}
 		
 		if(this.World.Flags.get("NorthExpansionCivilLevel") != 1) {
+			return false;
+		}
+		
+		if(!this.getFlags.get("SurvivorRecruited")) {
 			return false;
 		}
 
