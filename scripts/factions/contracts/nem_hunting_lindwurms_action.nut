@@ -23,7 +23,7 @@ this.nem_hunting_lindwurms_action <- this.inherit("scripts/factions/faction_acti
 			return;
 		}
 		
-		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
+		if (_faction.getType() != this.Const.FactionType.Barbarians)
 		{
 			return;
 		}

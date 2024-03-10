@@ -68,7 +68,6 @@ this.nem_destroy_orc_camp_action <- this.inherit("scripts/factions/faction_actio
 
 	function onClear()
 	{
-		this.m.Origin = null;
 	}
 
 	function onExecute( _faction )

@@ -18,7 +18,7 @@ this.nem_drive_away_bandits_action <- this.inherit("scripts/factions/faction_act
 
 	function onUpdate( _faction )
 	{
-		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
+		if (_faction.getType() != this.Const.FactionType.Barbarians)
 		{
 			return;
 		}

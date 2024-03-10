@@ -23,7 +23,7 @@ this.nem_drive_away_barbarians_action <- this.inherit("scripts/factions/faction_
 			return;
 		}
 		
-		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
+		if (_faction.getType() != this.Const.FactionType.Barbarians)
 		{
 			return;
 		}

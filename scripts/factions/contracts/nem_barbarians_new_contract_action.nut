@@ -14,7 +14,6 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 		foreach(a in this.availableActions())
 		{
 			local card = this.new(a);
-			card.setFaction(this.m.Faction);
 			this.m.ContractActions.push(card);
 		}
 	}
@@ -27,23 +26,50 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 			c.setHome(_home);
 		}
 	}
+	
+	function setFaction( _f )
+	{
+		this.m.Faction = this.WeakTableRef(_f);
+		foreach(contractAction in this.m.ContractActions)
+		{
+			contractAction.setFaction(_f);
+		}
+	}
 
 	function onUpdate( _faction )
 	{
+		this.logInfo("onUpdate new contract");
 		this.m.Score = 0;
 		
 		if (!this.World.Flags.get("NorthExpansionActive"))
 		{
+			this.logInfo("onUpdate new contract return1");
 			return;
 		}
 		
 		if (this.World.Flags.get("NorthExpansionCivilLevel") >= 3)
 		{
+			this.logInfo("onUpdate new contract return2");
 			return;
 		}
-
+		
+		if (_faction.getType() != this.Const.FactionType.Barbarians)
+		{
+			
+			this.logInfo("onUpdate new contract return3");
+			this.logInfo(_faction.getType() + " ?= " + this.Const.FactionType.Barbarians);
+			this.logInfo(_faction.getID());
+			return;
+		}
+		this.logInfo("onUpdate new contract2");
 		foreach(contractAction in this.m.ContractActions)
 		{
+			logInfo("actionfaction:" + contractAction.getFaction());
+			if (contractAction.getFaction() == null)
+			{
+				contractAction.setFaction(getFactionOfType( this.Const.FactionType.Barbarians ));
+			}
+			logInfo("actionfaction2:" + contractAction.getFaction())
 			contractAction.update();
 			if (contractAction.getScore() > 0) {
 				this.m.Score = 1;

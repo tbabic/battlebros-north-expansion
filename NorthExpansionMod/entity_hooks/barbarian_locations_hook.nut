@@ -636,7 +636,7 @@
 		
 		this.getChieftain <- function() {
 			local roster = this.World.getRoster(this.World.FactionManager.getFaction(this.getFaction()).getID());
-			foreach( c in roster.getAll() )
+			foreach( character in roster.getAll() )
 			{
 				if (character.getFlags().get("NorthExpansionChieftain") == this.getID())
 				{
@@ -703,10 +703,15 @@
 			return ret;
 		});
 		
-		this.m.ContractAction = this.new("scripts/factions/contracts/nem_barbarians_new_contract_action");
+		this.m.ContractAction <- this.new("scripts/factions/contracts/nem_barbarians_new_contract_action");
 		this.m.ContractAction.setHome(this);
 		this.getContracts <- function() {
+			logInfo("getContracts: " + this.getID());
+			logInfo("contracts faction: " + this.getFaction());
 			local faction = this.World.FactionManager.getFaction(this.getFaction());
+			if (faction == null) {
+				return [];
+			}
 			local factionContracts = faction.getContracts();
 			local locationContracts = [];
 			foreach (contract in factionContracts)
@@ -719,26 +724,25 @@
 		}
 		
 		this.isReadyForContract <- function() {
+			logInfo("isReadyForContract: " + this.getID());
 			if (this.getContracts().len() >= this.m.campSize)
 			{
 				return false;
 			}
-			this.m.ContractAction.update();
+			local faction = this.World.FactionManager.getFaction(this.getFaction());
+			logInfo("id: " + this.getID() + " - " + this.getTypeID() + "- " + this.getName());
+			logInfo("isReadyForContract:" + faction);
+			this.m.ContractAction.setFaction(faction);
+			this.m.ContractAction.update(false);
+			logInfo("isReadyForContract score:" + this.m.ContractAction.getScore());
 			return this.m.ContractAction.getScore() != 0;
 			
 		}
 		
 		this.createNewContract <- function() {
+			logInfo("createNewContract: " + this.getID());
 			this.m.ContractAction.execute(false);
 		}
-		
-		local onUpdate = ::mods_getMember(o, "onUpdate");
-		::mods_override(o, "onUpdate", function(_f) {
-			onUpdate();
-			if (this.isReadyForContract()) {
-				this.createNewContract();
-			}
-		});
 		
 
 	});

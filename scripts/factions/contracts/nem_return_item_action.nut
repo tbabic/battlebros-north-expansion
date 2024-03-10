@@ -18,17 +18,17 @@ this.nem_return_item_action <- this.inherit("scripts/factions/faction_action", {
 
 	function onUpdate( _faction )
 	{
-	
-		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
+		this.logInfo("nem return item action");
+		if (_faction.getType() != this.Const.FactionType.Barbarians)
 		{
 			return;
 		}
-		
+		this.logInfo("nem return item action");
 		if (!_faction.isReadyForContract())
 		{
 			return;
 		}
-
+		this.logInfo("nem return item action");
 		this.logInfo("check: " + this.m.ID);
 
 		this.m.Score = 1;

@@ -33,17 +33,17 @@
 	function scorePicker(scores)
 	{
 		local totalScore = 0;
-		for (local i = 0; i < totalScore.len(); i++)
+		for (local i = 0; i < scores.len(); i++)
 		{
 			totalScore += scores[i];
 		}
 		local r = this.Math.rand(1, totalScore);
-		for (local i = 0; i < totalScore.len(); i++) {
-			if (score[i] >= totalScore)
+		for (local i = 0; i < scores.len(); i++) {
+			if (scores[i] >= totalScore)
 			{
 				return i;
 			}
-			totalScore -= score[i];
+			totalScore -= scores[i];
 		}
 		return null;
 	}
@@ -65,6 +65,7 @@
 		if (location.getFlags().has("NEMisNearbyForest")) {
 			return location.getFlags().get("NEMisNearbyForest");
 		}
+		local worldmap = this.MapGen.get("world.worldmap_generator");
 		local terrain = worldmap.getTerrainInRegion(location.getTile());
 		local result = checkSuitableTerrain(terrain, "small_lumber_village")
 		location.getFlags().set("NEMisNearbyForest", result);

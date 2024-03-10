@@ -18,7 +18,7 @@ this.nem_hunting_alps_action <- this.inherit("scripts/factions/faction_action", 
 
 	function onUpdate( _faction )
 	{
-		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
+		if (_faction.getType() != this.Const.FactionType.Barbarians)
 		{
 			return;
 		}

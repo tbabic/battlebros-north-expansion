@@ -23,7 +23,7 @@ this.nem_hunting_webknechts_action <- this.inherit("scripts/factions/faction_act
 			return;
 		}
 		
-		if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != _faction)
+		if (_faction.getType() != this.Const.FactionType.Barbarians)
 		{
 			return;
 		}
