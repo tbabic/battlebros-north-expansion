@@ -43,7 +43,7 @@ this.nem_return_item_action <- this.inherit("scripts/factions/faction_action", {
 		local contract = this.new("scripts/contracts/contracts/nem_return_item_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(this.m.Home);
-		contract.setEmployerID(this.m.Home.getChieftain());
+		contract.setEmployerID(this.m.Home.getChieftain().getID());
 		this.World.Contracts.addContract(contract);
 	}
 

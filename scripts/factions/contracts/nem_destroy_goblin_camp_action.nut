@@ -74,7 +74,7 @@ this.nem_destroy_goblin_camp_action <- this.inherit("scripts/factions/faction_ac
 		local contract = this.new("scripts/contracts/contracts/nem_destroy_goblin_camp_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(this.m.Home);
-		contract.setEmployerID(this.m.Home.getChieftain());
+		contract.setEmployerID(this.m.Home.getChieftain().getID());
 		contract.setOrigin(this.m.Home);
 		this.World.Contracts.addContract(contract);
 	}

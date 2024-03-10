@@ -87,8 +87,8 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 		logInfo("findTown");
 		foreach( s in settlements )
 		{
-			local faction = s.getFaction();
-			if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) == faction && s.getTile().getDistanceTo(playerTile) <=4 )
+			local faction = this.World.FactionManager.getFaction(s.getFaction());
+			if (faction.getType() == this.Const.FactionType.Barbarian && s.getTile().getDistanceTo(playerTile) <=4 )
 			{
 				town = s;
 				inBarbarianVillage = true;

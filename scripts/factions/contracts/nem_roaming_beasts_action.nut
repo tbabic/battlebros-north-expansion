@@ -42,7 +42,7 @@ this.nem_roaming_beasts_action <- this.inherit("scripts/factions/faction_action"
 		local contract = this.new("scripts/contracts/contracts/nem_roaming_beasts_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(this.m.Home);
-		contract.setEmployerID(this.m.Home.getChieftain());
+		contract.setEmployerID(this.m.Home.getChieftain().getID());
 		this.World.Contracts.addContract(contract);
 	}
 

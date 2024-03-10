@@ -188,9 +188,10 @@
 					Icon = situation.getIcon()
 				});
 			}
-
-			/*local contracts = this.getContracts();
-
+			logInfo("get contracts for location");
+			local contracts = this.getContracts();
+			logInfo("location contracts:" + this.getID() + " - " + contracts.len());
+			
 			foreach( i, contract in contracts )
 			{
 				if (i > 9)
@@ -211,11 +212,7 @@
 				};
 				result.Contracts.push(c);
 			}
-
-			if (result.Contracts.len() == 0 && this.m.IsMilitary && !this.World.Ambitions.getAmbition("ambition.make_nobles_aware").isDone())
-			{
-				result.IsContractsLocked = true;
-			}*/
+			
 
 			return result;
 		}
@@ -433,6 +430,11 @@
 			return this.m.Modifiers;
 		}
 		
+		getProduceAsString <- function()
+		{
+			return "goods";
+		}
+			
 		hasBuilding <- function( _id )
 		{
 			foreach( b in this.m.Buildings )
@@ -716,7 +718,9 @@
 			local locationContracts = [];
 			foreach (contract in factionContracts)
 			{
-				if (contract.getHome() == this) {
+				logInfo("evaluate home: " + contract.getHome() + " ?=" + this);
+				logInfo("evaluate home ids: " + contract.getHome().getID() + " ?=" + this.getID());
+				if (contract.getHome().getID() == this.getID()) {
 					locationContracts.push(contract);
 				}
 			}
@@ -742,6 +746,45 @@
 		this.createNewContract <- function() {
 			logInfo("createNewContract: " + this.getID());
 			this.m.ContractAction.execute(false);
+		}
+		
+		this.getUIContractInformation <- function() {
+			this.m.Modifiers.reset();
+
+			foreach( s in this.m.Situations )
+			{
+				s.onUpdate(this.m.Modifiers);
+			}
+
+			local result = {
+				Contracts = [],
+				IsContractActive = this.World.Contracts.getActiveContract() != null,
+				IsContractsLocked = false
+			};
+			local contracts = this.getContracts();
+
+			foreach( i, contract in contracts )
+			{
+				if (i > 9)
+				{
+					break;
+				}
+
+				if (contract.isActive())
+				{
+					continue;
+				}
+
+				local c = {
+					Icon = contract.getBanner(),
+					ID = contract.getID(),
+					IsNegotiated = contract.isNegotiated(),
+					DifficultyIcon = contract.getUIDifficultySmall()
+				};
+				result.Contracts.push(c);
+			}
+
+			return result;
 		}
 		
 

@@ -106,7 +106,7 @@ this.nem_defend_settlement_greenskins_action <- this.inherit("scripts/factions/f
 		local contract = this.new("scripts/contracts/contracts/nem_defend_settlement_greenskins_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(this.m.Home);
-		contract.setEmployerID(this.m.Home.getChieftain());
+		contract.setEmployerID(this.m.Home.getChieftain().getID());
 		this.World.Contracts.addContract(contract);
 	}
 

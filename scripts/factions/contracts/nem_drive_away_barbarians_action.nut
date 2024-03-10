@@ -70,7 +70,7 @@ this.nem_drive_away_barbarians_action <- this.inherit("scripts/factions/faction_
 		local contract = this.new("scripts/contracts/contracts/nem_drive_away_barbarians_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(this.m.Home);
-		contract.setEmployerID(this.m.Home.getChieftain());
+		contract.setEmployerID(this.m.Home.getChieftain().getID());
 		this.World.Contracts.addContract(contract);
 	}
 

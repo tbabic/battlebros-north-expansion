@@ -132,7 +132,7 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 		local contract = this.new("scripts/contracts/contracts/nem_raid_caravan_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(this.m.Home); //TODO: check this
-		contract.setEmployerID(this.m.Home.getChieftain());
+		contract.setEmployerID(this.m.Home.getChieftain().getID());
 		contract.setCaravanInfo(this.m.EnemyFaction, this.m.StartId, this.m.DestId);
 		this.World.Contracts.addContract(contract);
 	}

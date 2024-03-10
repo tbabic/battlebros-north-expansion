@@ -60,20 +60,8 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 		this.World.Ambitions.getAmbition("ambition.contracts").setDone(true);
 		this.World.Flags.set("NorthExpansionCivilLevel", 3);
 		
-		for (local i = 0; i < this.World.FactionManager.m.Factions ; i++) {
-			local f = this.World.FactionManager.m.Factions[i];
-			if (this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians) != f)
-			{
-				this.World.FactionManager.m.Factions.remove(i);
-				foreach (s in f.getSettlements())
-				{
-					s.fadeOutAndDie();
-				}
-				
-			}
-			
-			break;
-		}
+		local faction= this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
+		faction.setPlayerRelation(0);
 		
 		this.World.Assets.m.BrothersMax = 20;
 		

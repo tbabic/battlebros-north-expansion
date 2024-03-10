@@ -89,7 +89,7 @@ this.nem_confront_warlord_action <- this.inherit("scripts/factions/faction_actio
 		local contract = this.new("scripts/contracts/contracts/nem_confront_warlord_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(this.m.Home);
-		contract.setEmployerID(this.m.Home.getChieftain());
+		contract.setEmployerID(this.m.Home.getChieftain().getID());
 		this.World.Contracts.addContract(contract);
 	}
 

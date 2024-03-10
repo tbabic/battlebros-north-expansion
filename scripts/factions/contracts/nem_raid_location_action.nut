@@ -75,7 +75,7 @@ this.nem_raid_location_action <- this.inherit("scripts/factions/faction_action",
 		local contract = this.new("scripts/contracts/contracts/nem_raid_location_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(this.m.Home);
-		contract.setEmployerID(this.m.Home.getChieftain());
+		contract.setEmployerID(this.m.Home.getChieftain().getID());
 		contract.setOrigin(this.m.Home);
 		contract.setSettlement(this.m.Home);
 		contract.setLocation(this.m.Target);
