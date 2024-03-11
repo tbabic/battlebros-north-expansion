@@ -271,7 +271,7 @@
 
 			lastRosterUpdate = this.Time.getVirtualTimeF();
 			this.getFlags().set("lastRosterUpdate", lastRosterUpdate);
-			local roster = this.World.getRoster(this.getID());
+			local roster = this.getHireRoster();
 			local current = roster.getAll();
 			local iterations = this.Math.max(1, daysPassed / 2);
 			local activeLocations = 0;
@@ -611,6 +611,15 @@
 			}
 			this.World.Flags.set("NorthExpansionBarbarianRoster", true);
 			local roster = this.World.getRoster(faction.getID());
+			
+			foreach( character in roster.getAll() )
+			{
+				if (character.getFlags().get("NorthExpansionChieftain") == this.getID())
+				{
+					return character;
+				}
+			}
+			
 			local character = roster.create("scripts/entity/tactical/humans/barbarian_champion");
 			character.setAppearance();
 			if (character.getTitle() != "")
@@ -634,6 +643,7 @@
 			character.m.Name = ::NorthMod.Utils.barbarianNameOnly();
 			character.assignRandomEquipment();
 			character.getFlags().set("NorthExpansionChieftain", this.getID());
+			return character;
 		}
 		
 		this.getChieftain <- function() {
@@ -645,7 +655,8 @@
 					return character;
 				}
 			}
-			return null;
+			
+			return updateChieftain();
 		}
 		
 		this.changeChieftain <- function (){
@@ -655,10 +666,19 @@
 			character.assignRandomEquipment();
 		}
 		
+		this.getHireRoster <- function() {
+			if(this.getFlags().get("NEMLocationRoster")) {
+				return this.World.getRoster(this.getID());
+			}
+			this.getFlags().set("NEMLocationRoster", true);
+			this.World.createRoster(this.getID());
+			return this.World.getRoster(this.getID());
+		}
+		
 		local onInit = ::mods_getMember(o, "onInit");
 		::mods_override(o, "onInit", function() {
 			onInit();
-			this.World.createRoster(this.getID());
+			this.getHireRoster();
 		});
 		
 		local addFaction = ::mods_getMember(o, "addFaction");
@@ -667,49 +687,71 @@
 			this.updateChieftain();
 		});
 		
-		local getTooltip = ::mods_getMember(o, "getTooltip");
-		::mods_override(o, "getTooltip", function() {
-			local ret = getTooltip();
-			if (this.isAlliedWithPlayer()) {
-				if (this.isShowingDefenders() && !this.isHiddenToPlayer() && this.m.Troops.len() != 0 && this.getFaction() != 0)
+		//local getTooltip = ::mods_getMember(o, "getTooltip");
+		::mods_override(this, "getTooltip", function() {
+			this.logInfo("get tooltip:" + this.isShowingDefenders() + " - " + this.m.Troops.len());
+			if (this.m.IsSpawningDefenders && this.m.DefenderSpawnList != null && this.m.Resources != 0)
+			{
+				if (!(this.m.Troops.len() != 0 && this.m.DefenderSpawnDay != 0 && this.World.getTime().Days - this.m.DefenderSpawnDay < 10))
 				{
-					ret.extend(this.getTroopComposition());
-				}
-				else
-				{
-					ret.push({
-						id = 20,
-						type = "text",
-						icon = "ui/orientation/player_01_orientation.png",
-						text = "Unknown garrison"
-					});
-				}
-
-				ret.push({
-					id = 21,
-					type = "hint",
-					icon = "ui/orientation/terrain_orientation.png",
-					text = "This location is " + this.Const.Strings.TerrainAlternative[this.getTile().Type]
-				});
-
-				if (this.isShowingDefenders() && this.getCombatLocation().Template[0] != null && this.getCombatLocation().Fortification != 0 && !this.getCombatLocation().ForceLineBattle)
-				{
-					ret.push({
-						id = 20,
-						type = "hint",
-						icon = "ui/orientation/palisade_01_orientation.png",
-						text = "This location has fortifications"
-					});
+					this.createDefenders();
 				}
 			}
+
+			local ret = [
+				{
+					id = 1,
+					type = "title",
+					text = this.getName()
+				},
+				{
+					id = 2,
+					type = "description",
+					text = this.getDescription()
+				}
+			];
+
+			
+			if (this.isShowingDefenders() && !this.isHiddenToPlayer() && this.m.Troops.len() != 0 && this.getFaction() != 0)
+			{
+				ret.extend(this.getTroopComposition());
+			}
+			else
+			{
+				ret.push({
+					id = 20,
+					type = "text",
+					icon = "ui/orientation/player_01_orientation.png",
+					text = "Unknown garrison"
+				});
+			}
+
+			ret.push({
+				id = 21,
+				type = "hint",
+				icon = "ui/orientation/terrain_orientation.png",
+				text = "This location is " + this.Const.Strings.TerrainAlternative[this.getTile().Type]
+			});
+
+			if (this.isShowingDefenders() && this.getCombatLocation().Template[0] != null && this.getCombatLocation().Fortification != 0 && !this.getCombatLocation().ForceLineBattle)
+			{
+				ret.push({
+					id = 20,
+					type = "hint",
+					icon = "ui/orientation/palisade_01_orientation.png",
+					text = "This location has fortifications"
+				});
+			}
+			
+
 			return ret;
 		});
 		
 		this.m.ContractAction <- this.new("scripts/factions/contracts/nem_barbarians_new_contract_action");
 		this.m.ContractAction.setHome(this);
 		this.getContracts <- function() {
-			logInfo("getContracts: " + this.getID());
-			logInfo("contracts faction: " + this.getFaction());
+			//logInfo("getContracts: " + this.getID());
+			//logInfo("contracts faction: " + this.getFaction());
 			local faction = this.World.FactionManager.getFaction(this.getFaction());
 			if (faction == null) {
 				return [];
@@ -718,8 +760,8 @@
 			local locationContracts = [];
 			foreach (contract in factionContracts)
 			{
-				logInfo("evaluate home: " + contract.getHome() + " ?=" + this);
-				logInfo("evaluate home ids: " + contract.getHome().getID() + " ?=" + this.getID());
+				//logInfo("evaluate home: " + contract.getHome() + " ?=" + this);
+				//logInfo("evaluate home ids: " + contract.getHome().getID() + " ?=" + this.getID());
 				if (contract.getHome().getID() == this.getID()) {
 					locationContracts.push(contract);
 				}
@@ -728,17 +770,17 @@
 		}
 		
 		this.isReadyForContract <- function() {
-			logInfo("isReadyForContract: " + this.getID());
+			//logInfo("isReadyForContract: " + this.getID());
 			if (this.getContracts().len() >= this.m.campSize)
 			{
 				return false;
 			}
 			local faction = this.World.FactionManager.getFaction(this.getFaction());
-			logInfo("id: " + this.getID() + " - " + this.getTypeID() + "- " + this.getName());
-			logInfo("isReadyForContract:" + faction);
+			//logInfo("id: " + this.getID() + " - " + this.getTypeID() + "- " + this.getName());
+			//logInfo("isReadyForContract:" + faction);
 			this.m.ContractAction.setFaction(faction);
 			this.m.ContractAction.update(false);
-			logInfo("isReadyForContract score:" + this.m.ContractAction.getScore());
+			//logInfo("isReadyForContract score:" + this.m.ContractAction.getScore());
 			return this.m.ContractAction.getScore() != 0;
 			
 		}

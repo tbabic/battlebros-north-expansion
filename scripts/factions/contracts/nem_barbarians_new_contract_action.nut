@@ -38,18 +38,18 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 
 	function onUpdate( _faction )
 	{
-		this.logInfo("onUpdate new contract");
+		//this.logInfo("onUpdate new contract");
 		this.m.Score = 0;
 		
 		if (!this.World.Flags.get("NorthExpansionActive"))
 		{
-			this.logInfo("onUpdate new contract return1");
+			//this.logInfo("onUpdate new contract return1");
 			return;
 		}
 		
 		if (this.World.Flags.get("NorthExpansionCivilLevel") >= 3)
 		{
-			this.logInfo("onUpdate new contract return2");
+			//this.logInfo("onUpdate new contract return2");
 			return;
 		}
 		
@@ -64,12 +64,12 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 		this.logInfo("onUpdate new contract2");
 		foreach(contractAction in this.m.ContractActions)
 		{
-			logInfo("actionfaction:" + contractAction.getFaction());
+			//logInfo("actionfaction:" + contractAction.getFaction());
 			if (contractAction.getFaction() == null)
 			{
 				contractAction.setFaction(getFactionOfType( this.Const.FactionType.Barbarians ));
 			}
-			logInfo("actionfaction2:" + contractAction.getFaction())
+			//logInfo("actionfaction2:" + contractAction.getFaction())
 			contractAction.update();
 			if (contractAction.getScore() > 0) {
 				this.m.Score = 1;

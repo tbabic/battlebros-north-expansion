@@ -3,7 +3,7 @@ this.barbarian_crowd_building <- this.inherit("scripts/entity/world/settlements/
 	function getUIImage()
 	{
 		logInfo("crowd - settlement id:" + this.m.Settlement.getID());
-		local roster = this.World.getRoster(this.m.Settlement.getID());
+		local roster = this.m.Settlement.getHireRoster();
 
 		if (roster.getSize() == 0 || !this.World.getTime().IsDaytime)
 		{
