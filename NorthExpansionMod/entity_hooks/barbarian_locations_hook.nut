@@ -13,6 +13,7 @@
 			this.getTypeID() != "location.barbarian_sanctuary") {
 			return;
 		}
+		
 		logInfo("barbarian camp conversion: " + this.getTypeID());
 		if (this.getTypeID() == "location.barbarian_shelter") 
 		{
@@ -76,6 +77,7 @@
 			{
 				_location.updateRoster();
 				_location.updateShop();
+				this.logInfo("enter location:")
 				this.World.State.showTownScreen();
 			}
 			
@@ -329,7 +331,7 @@
 			}
 
 			this.World.Assets.getOrigin().onUpdateHiringRoster(roster);
-			logInfo("roster size: " + roster.getSize());
+			//logInfo("roster size: " + roster.getSize());
 		}
 		
 		updateShop <-function ()
@@ -675,21 +677,20 @@
 			return this.World.getRoster(this.getID());
 		}
 		
-		local onInit = ::mods_getMember(o, "onInit");
-		::mods_override(o, "onInit", function() {
-			onInit();
+		local _onInit = ::mods_getMember(this, "onInit");
+		::mods_override(this, "onInit", function() {
+			_onInit();
 			this.getHireRoster();
 		});
 		
-		local addFaction = ::mods_getMember(o, "addFaction");
-		::mods_override(o, "addFaction", function(_f) {
-			addFaction(_f);
+		local _addFaction = ::mods_getMember(this, "addFaction");
+		::mods_override(this, "addFaction", function(_f) {
+			_addFaction(_f);
 			this.updateChieftain();
 		});
 		
-		//local getTooltip = ::mods_getMember(o, "getTooltip");
 		::mods_override(this, "getTooltip", function() {
-			this.logInfo("get tooltip:" + this.isShowingDefenders() + " - " + this.m.Troops.len());
+			//this.logInfo("get tooltip:" + this.isShowingDefenders() + " - " + this.m.Troops.len());
 			if (this.m.IsSpawningDefenders && this.m.DefenderSpawnList != null && this.m.Resources != 0)
 			{
 				if (!(this.m.Troops.len() != 0 && this.m.DefenderSpawnDay != 0 && this.World.getTime().Days - this.m.DefenderSpawnDay < 10))
@@ -786,7 +787,7 @@
 		}
 		
 		this.createNewContract <- function() {
-			logInfo("createNewContract: " + this.getID());
+			//logInfo("createNewContract: " + this.getID());
 			this.m.ContractAction.execute(false);
 		}
 		
