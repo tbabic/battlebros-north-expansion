@@ -9,7 +9,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 		this.m.Settlement = this.WeakTableRef(_s);
 	}
 
-	function setLocation( _l )
+	function setTarget( _l )
 	{
 		this.m.Destination = this.WeakTableRef(_l);
 		this.m.Flags.set("DestinationName", _l.getName());
@@ -19,10 +19,8 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 	{
 		this.contract.create();
 		this.m.Type = "contract.nem_raid_location";
-		this.m.Name = "Raze Location";
+		this.m.Name = "Raid Location";
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 7.0;
-		local s = this.World.EntityManager.getSettlements()[this.Math.rand(0, this.World.EntityManager.getSettlements().len() - 1)];
-		this.m.Destination = this.WeakTableRef(s.getAttachedLocations()[this.Math.rand(0, s.getAttachedLocations().len() - 1)]);
 		this.m.Flags.set("IsDone", false);
 	}
 
@@ -42,8 +40,10 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 			function start()
 			{
 				this.Contract.m.BulletpointsObjectives = [
-					"Raze " + this.Flags.get("DestinationName") + " near " + this.Flags.get("SettlementName")
+					"Raid " + this.Flags.get("DestinationName") + " near " + this.Flags.get("SettlementName")
 				];
+				
+				
 
 				if (this.Math.rand(1, 100) <= this.Const.Contracts.Settings.IntroChance)
 				{
@@ -60,7 +60,12 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
 				this.Contract.m.Destination.setDiscovered(true);
 				this.World.uncoverFogOfWar(this.Contract.m.Destination.getTile().Pos, 500.0);
-
+				
+				if(this.Contract.m.Settlement.isMilitary())
+				{
+					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.Noble, 150 * this.Contract.getScaledDifficultyMult());
+				}
+				
 				if (this.Math.rand(1, 100) <= 25)
 				{
 					this.Flags.set("IsNoblesReady", true);
@@ -122,7 +127,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 					this.onCombatVictory("RazeLocation");
 					return;
 				}
-				else if (!this.Flags.get("IsAttackDialogTriggered"))
+				else if (!this.Flags.get("IsAttackDialogTriggered") && !this.Contract.m.Settlement.isMilitary())
 				{
 					this.Flags.set("IsAttackDialogTriggered", true);
 
@@ -214,7 +219,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 		this.m.Screens.push({
 			ID = "Task",
 			Title = "Negotiations",
-			Text = "[img]gfx/ui/events/event_61.png[/img]{%You approach the %employer% and he welocomes you.%SPEECH_ON%Ah, just the man I needed. Here at %townname% we are getting a bit scarce on resources. I'm organizing a raiding party, but now that you are here, maybe you could do it instead?%SPEECH_OFF%You ask about the details, location, defenses.%SPEECH_ON%I need you to plunder the %settlement%, the %location% seems like a particularly good target. There won\'t be many defenders, most likely peasants and militia, weak and poorly trained. Nothing you can\'t handle. Besides what you plunder for yourself, I\'ll add a bit of reward myself. What do you say?%SPEECH_OFF%}",
+			Text = "[img]gfx/ui/events/event_61.png[/img]{You approach the %employer% and he welocomes you.%SPEECH_ON%Ah, just the man I needed. Here at %townname% we are getting a bit scarce on resources. I'm organizing a raiding party, but now that you are here, maybe you could do it instead?%SPEECH_OFF%You ask about the details, location, defenses.%SPEECH_ON%I need you to plunder the %settlement%, the %location% seems like a particularly good target. There won\'t be many defenders, most likely peasants and militia, weak and poorly trained. Nothing you can\'t handle. Besides what you plunder for yourself, I\'ll add a bit of reward myself. What do you say?%SPEECH_OFF%}",
 			Image = "",
 			List = [],
 			ShowEmployer = true,
@@ -328,7 +333,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 		this.m.Screens.push({
 			ID = "NoblesReady",
 			Title = "As you approach...",
-			Text = "[img]gfx/ui/events/event_78.png[/img]{You get to the %location% only to be greeted by a heavily armed group of men. One of them steps forward, his thumbs hooked into a belt holding up a sword.%SPEECH_ON%Well, well, we've heard some barbarians might be coming into %noblehousename% terriotry to raid and here you are. Good, let us see if you are as tough as they say. Charge!%SPEECH_OFF%With that final word, all the men behind the lieutenant charge forward and you have barely the time to prepare your men for battle. | You walk into the %location%, but the villagers seem prepared: you see windows shuttering and doors clapping closed. Just as you are about to order the company to start the slaughter, a group of men walk out from behind a building.\n\nThey are... considerably more armed than a group of laymen. In fact, they\'re carrying %noblehousename%\'s banner. You realize this will become much harder than expected. The soldiers charge at you and you barely have the time to ready your men for battle.}",
+			Text = "[img]gfx/ui/events/event_78.png[/img]{You get to the %location% only to be greeted by a heavily armed group of men. One of them steps forward, his thumbs hooked into a belt holding up a sword.%SPEECH_ON%Well, well, we've heard some barbarians might be coming into %noblehousename% territory to raid and here you are. Good, let us see if you are as tough as they say. Charge!%SPEECH_OFF%With that final word, all the men behind the lieutenant charge forward and you have barely the time to prepare your men for battle. | You walk into the %location%, but the villagers seem prepared: you see windows shuttering and doors clapping closed. Just as you are about to order the company to start the slaughter, a group of men walk out from behind a building.\n\nThey are... considerably more armed than a group of laymen. In fact, they\'re carrying %noblehousename%\'s banner. You realize this will become much harder than expected. The soldiers charge at you and you barely have the time to ready your men for battle.}",
 			Image = "",
 			List = [],
 			Options = [
@@ -396,7 +401,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 			this.m.Flags.get("DestinationName")
 		]);
 		_vars.push([
-			"settlementname",
+			"settlement",
 			this.m.Flags.get("SettlementName")
 		]);
 		_vars.push([
@@ -428,6 +433,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 
 	function onIsValid()
 	{
+		
 		if (this.m.Destination == null || this.m.Destination.isNull() || !this.m.Destination.isActive())
 		{
 			return false;

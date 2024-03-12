@@ -17,17 +17,17 @@
 		logInfo("barbarian camp conversion: " + this.getTypeID());
 		if (this.getTypeID() == "location.barbarian_shelter") 
 		{
-			this.m.campSize <- 1;
+			this.m.CampSize <- 1;
 		}
 		
 		if (this.getTypeID() == "location.barbarian_camp") 
 		{
-			this.m.campSize <- 2;
+			this.m.CampSize <- 2;
 		}
 		
 		if (this.getTypeID() == "location.barbarian_sanctuary") 
 		{
-			this.m.campSize <- 3;
+			this.m.CampSize <- 3;
 		}
 		this.m.combatForced <- false;
 		
@@ -279,8 +279,8 @@
 			local activeLocations = 0;
 
 
-			local rosterMin = this.m.campSize;
-			local rosterMax = rosterMin + this.m.campSize -1;
+			local rosterMin = this.m.CampSize;
+			local rosterMax = rosterMin + this.m.CampSize -1;
 
 			if (this.World.FactionManager.getFaction(this.getFaction()).getPlayerRelation() < 50)
 			{
@@ -425,6 +425,11 @@
 		getFoodPriceMult <- function()
 		{
 			return this.m.Modifiers.FoodPriceMult;
+		}
+		
+		getBeastPartsPriceMult <- function()
+		{
+			return this.m.Modifiers.BeastPartsPriceMult;
 		}
 		
 		getModifiers <- function()
@@ -771,8 +776,8 @@
 		}
 		
 		this.isReadyForContract <- function() {
-			//logInfo("isReadyForContract: " + this.getID());
-			if (this.getContracts().len() >= this.m.campSize)
+			logInfo("isReadyForContract: " + this.getID());
+			if (this.getContracts().len() >= this.m.CampSize)
 			{
 				return false;
 			}
@@ -830,18 +835,69 @@
 			return result;
 		}
 		
+		local _onSerialize = ::mods_getMember(this, "onSerialize");
+		::mods_override(this, "onSerialize", function(_out) {
+			_onSerialize(_out);
+			_out.writeU8(this.m.Situations.len());
+
+			foreach( s in this.m.Situations )
+			{
+				_out.writeI32(s.ClassNameHash);
+				s.onSerialize(_out);
+			}
+			
+			_out.writeF32(this.m.ContractAction.getCooldownUntil());
+			local actions = this.m.ContractAction.m.ContractActions;
+			_out.writeU16(actions.len());
+			
+			foreach( a in actions)
+			{
+				_out.writeI32(a.ClassNameHash);
+				_out.writeF32(a.getCooldownUntil());	
+			}
+		});
+		
+		local _onDeserialize = ::mods_getMember(this, "onDeserialize");
+		::mods_override(this, "onDeserialize", function(_in) {
+			_onDeserialize(_in);
+			local numSituations = _in.readU8();
+			this.m.Situations.resize(numSituations);
+
+			for( local i = 0; i < numSituations; i = ++i )
+			{
+				this.m.Situations[i] = this.new(this.IO.scriptFilenameByHash(_in.readU32()));
+				this.m.Situations[i].onDeserialize(_in);
+			}
+
+			this.m.Modifiers.reset();
+			local cooldownUntil = _in.readF32();
+			this.m.ContractAction.setCooldownUntil(cooldownUntil);
+			this.m.ContractAction.setCooldownUntil(0); //remove
+			local actions = this.m.ContractAction.m.ContractActions;
+			
+			local numCooldowns = _in.readU16();
+			local cooldowns = [];
+			
+			for( local i = 0; i != numCooldowns; i = ++i )
+			{
+				local actionID = _in.readI32();
+				local cooldownUntil = _in.readF32();
+
+				for( local j = 0; j != actions.len(); j = ++j )
+				{
+					if (actions[j].ClassNameHash == actionID)
+					{
+						actions[j].setCooldownUntil(cooldownUntil);
+						actions[j].setCooldownUntil(0); // remove
+						break;
+					}
+				}
+		}
+			
+		});
+		
 
 	});
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 });

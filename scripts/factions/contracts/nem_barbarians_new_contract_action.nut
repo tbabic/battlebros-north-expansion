@@ -6,7 +6,7 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 	function create()
 	{
 		this.m.ID = "nem_barbarians_new_contract_action";
-		this.m.Cooldown = this.World.getTime().SecondsPerDay * 5;
+		this.m.Cooldown = this.World.getTime().SecondsPerDay * 3;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();
@@ -87,14 +87,18 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 		local scores = [];
 		foreach(contractAction in this.m.ContractActions)
 		{
+			this.logInfo("score: " + contractAction.getID() + " -> " + contractAction.getScore() + " / " + this.m.Home.getName() + " - " + this.m.Home.getID());
 			scores.push(contractAction.getScore());
 		}
-		
+		logInfo("calling score picker");
 		local i = ::NorthMod.Utils.scorePicker(scores);
 		if (i == null) {
 			return;
 		}
-		this.m.ContractActions[i].execute();
+		
+		this.logInfo("picked action:" + i + " - " + this.m.ContractActions[i].getID() + "/" + this.m.Home.getID());
+		
+		this.m.ContractActions[0].execute();
 	}
 	
 	function availableActions() {

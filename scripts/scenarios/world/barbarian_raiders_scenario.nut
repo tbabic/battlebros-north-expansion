@@ -174,7 +174,9 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Mainhand));
 		items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Offhand));
 		items.equip(this.new("scripts/items/armor/barbarians/scrap_metal_armor"));
-		items.equip(this.new("scripts/items/helmets/barbarians/leather_headband"));
+		local helmet = this.new("scripts/items/helmets/barbarians/leather_headband");
+		helmet.setVariant(188);
+		items.equip(helmet);
 		
 		local item = this.new("scripts/items/weapons/named/fathers_sword");
 		items.equip(item);
@@ -621,6 +623,11 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		local f = this.World.Flags.get("NorthExpansionCivilLevel");
 		logInfo("flag:" + f);
 		local barbarians = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
+		this.logInfo(barbarians);
+		if (barbarians == null)
+		{
+			return;
+		}
 		barbarians.setPlayerRelation(50);
 		if (this.World.Flags.get("NorthExpansionCivilLevel") >= 3)
 		{

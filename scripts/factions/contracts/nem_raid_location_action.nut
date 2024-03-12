@@ -1,11 +1,12 @@
 this.nem_raid_location_action <- this.inherit("scripts/factions/faction_action", {
 	m = {
 		Home = null,
+		Settlement = null,
 		Target = null
 	},
 	function create()
 	{
-		this.m.ID = "raze_attached_location_action";
+		this.m.ID = "nem_raid_location_action";
 		this.m.Cooldown = this.World.getTime().SecondsPerDay * 14;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
@@ -16,10 +17,12 @@ this.nem_raid_location_action <- this.inherit("scripts/factions/faction_action",
 	{
 		this.m.Home = _home;
 	}
+	
 
 	function onUpdate( _faction )
 	{
 		this.m.Target = null;
+		this.m.Settlement = null;
 		if (_faction.getType() != this.Const.FactionType.Barbarians)
 		{
 			return;
@@ -37,22 +40,36 @@ this.nem_raid_location_action <- this.inherit("scripts/factions/faction_action",
 		{
 			startSettlements.extend(f.getSettlements());
 		}
-		local targets = [];
 		
+		local targetSettlements = [];
+		local myTile = this.m.Home.getTile();
 
 		foreach( s in startSettlements )
 		{
-			if (s.getAttachedLocations().len() == 0 )
+			if (s.getAttachedLocations().len() == 0 || s.isMilitary())
 			{
 				continue;
 			}
-
-			foreach( a in s.getAttachedLocations() )
+			if (myTile.getDistanceTo(s.getTile()) > 50 || s.getTile().Coords.Y < (this.World.getMapSize().Y * 0.5))
 			{
-				if (a.isActive() && a.isUsable())
-				{
-					targets.push(a);
-				}
+				continue;
+			}
+			targetSettlements.push(s);
+		}
+		if(targetSettlements.len() <= 0)
+		{
+			return;
+		}
+		
+		this.m.Settlement = targetSettlements[this.Math.rand(0, targetSettlements.len()-1)];
+		
+		
+		local targets = [];
+		foreach( a in this.m.Settlement.getAttachedLocations() )
+		{
+			if (a.isActive() && a.isUsable())
+			{
+				targets.push(a);
 			}
 		}
 
@@ -67,18 +84,19 @@ this.nem_raid_location_action <- this.inherit("scripts/factions/faction_action",
 	function onClear()
 	{
 		this.m.Target = null;
+		this.m.Settlement = null;
 	}
 
 	function onExecute( _faction )
 	{
-		
+		this.logInfo("execute contract:" + this.m.ID + " for " + this.m.Home.getID());
 		local contract = this.new("scripts/contracts/contracts/nem_raid_location_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(this.m.Home);
 		contract.setEmployerID(this.m.Home.getChieftain().getID());
 		contract.setOrigin(this.m.Home);
-		contract.setSettlement(this.m.Home);
-		contract.setLocation(this.m.Target);
+		contract.setSettlement(this.m.Settlement);
+		contract.setTarget(this.m.Target);
 		this.World.Contracts.addContract(contract);
 	}
 

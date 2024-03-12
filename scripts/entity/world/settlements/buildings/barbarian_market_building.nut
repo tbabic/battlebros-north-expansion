@@ -279,7 +279,7 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 			S = "supplies/roots_and_berries_item"
 		});
 
-		if (this.m.Settlement.m.campSize >= 2)
+		if (this.m.Settlement.m.CampSize >= 2)
 		{
 			list.push({
 				R = 50,
@@ -305,7 +305,7 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 			});
 		}
 
-		if (this.m.Settlement.m.campSize >= 3)
+		if (this.m.Settlement.m.CampSize >= 3)
 		{
 			list.push({
 				R = 20,

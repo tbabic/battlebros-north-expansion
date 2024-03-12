@@ -32,18 +32,21 @@
 
 	function scorePicker(scores)
 	{
+		this.logInfo("executing score picker");
 		local totalScore = 0;
 		for (local i = 0; i < scores.len(); i++)
 		{
 			totalScore += scores[i];
 		}
 		local r = this.Math.rand(1, totalScore);
+		this.logInfo("score picked:" + r + ":" +totalScore);
 		for (local i = 0; i < scores.len(); i++) {
-			if (scores[i] >= totalScore)
+			this.logInfo("scores[" + i + "](" + r +") <= "+ scores[i]);
+			if (scores[i] > 0 && r <= scores[i])
 			{
 				return i;
 			}
-			totalScore -= scores[i];
+			r = r - scores[i];
 		}
 		return null;
 	}
@@ -133,16 +136,5 @@
 	{
 		return this.barbarianNameOnly() + " " + this.barbarianTitle();
 	}
-	
-	
-	
-	
-	
-	function logInfo(_msg)
-	{
-		if (::NorthMod.Const.EnabledLogging)
-		{
-			logInfo(_msg);
-		}
-	}
+
 }
