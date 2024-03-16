@@ -1,11 +1,12 @@
 this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action", {
 	m = {
-		Home = null
+		Home = null,
+		Settlement = null
 	},
 	function create()
 	{
 		this.m.ID = "nem_barbarian_king_action";
-		this.m.Cooldown = this.World.getTime().SecondsPerDay * 30;
+		this.m.Cooldown = this.World.getTime().SecondsPerDay * 90;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();
@@ -42,6 +43,11 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 		{
 			return;
 		}
+		if(_faction.getFlags().has("NEMkingHunt") && this.Time.getVirtualTimeF() < _faction.getFlags().get("NEMkingHunt"))
+		{
+			return;
+		}
+		
 		
 		
 		this.logInfo("check: " + this.m.ID);
@@ -54,8 +60,14 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 	
 		foreach( b in barbarians )
 		{
-			if (b == this.m.Home || b.isLocationType(this.Const.World.LocationType.Unique))
+			if (b == this.m.Home || b.getID() == this.m.Home.getID() || b.isLocationType(this.Const.World.LocationType.Unique))
 			{
+				continue;
+			}
+			
+			if (b.getTypeID() != "location.barbarian_camp" && 
+				b.getTypeID() != "location.barbarian_shelter" && 
+				b.getTypeID() != "location.barbarian_sanctuary") {
 				continue;
 			}
 
@@ -65,6 +77,7 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 			if (d <= 25 && d < lowestDistance)
 			{
 				lowestDistance = d;
+				lowestDistanceSettlement = b;
 				found = true;
 			}
 		}
@@ -74,20 +87,23 @@ this.nem_barbarian_king_action <- this.inherit("scripts/factions/faction_action"
 		{
 			return;
 		}
-
 		this.m.Score = 1;
 	}
 
 	function onClear()
 	{
+		this.logInfo("clear");
+		this.m.Settlement = null;
 	}
 
 	function onExecute( _faction )
 	{
+		this.logInfo("execute");
 		local contract = this.new("scripts/contracts/contracts/nem_barbarian_king_contract");
 		contract.setFaction(_faction.getID());
 		contract.setHome(this.m.Home);
 		contract.setEmployerID(this.m.Home.getChieftain().getID());
+		_faction.getFlags().set("NEMkingHunt", this.m.CooldownUntil);
 		this.World.Contracts.addContract(contract);
 	}
 

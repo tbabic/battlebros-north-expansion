@@ -63,16 +63,21 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 				
 				if(this.Contract.m.Settlement.isMilitary())
 				{
-					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.Noble, 150 * this.Contract.getScaledDifficultyMult());
+					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.Noble, 150 * this.Contract.getDifficultyMult() *this.Contract.getScaledDifficultyMult());
 				}
 				
-				if (this.Math.rand(1, 100) <= 25)
+				if (this.Contract.getDifficultyMult() >= 0.95 && this.Math.rand(1, 100) <= 25)
 				{
 					this.Flags.set("IsNoblesReady", true);
 				}
+				else if (this.Contract.getDifficultyMult() <= 0.85 && this.Math.rand(1, 100) <= 50 && !this.Contract.m.Destination.isMilitary())
+				{
+					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.PeasantsArmed, this.Math.min(300, 80 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult()));
+				}
 				else
 				{
-					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.Militia, this.Math.min(300, 80 * this.Contract.getScaledDifficultyMult()));
+					this.Flags.set("IsMilitiaPresent", true)
+					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.Militia, this.Math.min(300, 80 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult()));
 				}
 
 				this.Contract.setScreen("Overview");
@@ -350,7 +355,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 						p.PlayerDeploymentType = this.Const.Tactical.DeploymentType.Line;
 						p.EnemyDeploymentType = this.Const.Tactical.DeploymentType.Line;
 						p.Music = this.Const.Music.NobleTracks;
-						this.Const.World.Common.addUnitsToCombat(p.Entities, this.Const.World.Spawn.Noble, 150 * this.Contract.getScaledDifficultyMult(), this.Contract.getFaction());
+						this.Const.World.Common.addUnitsToCombat(p.Entities, this.Const.World.Spawn.Noble, 150 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult(), this.Contract.getFaction());
 						this.World.Contracts.startScriptedCombat(p, false, true, true);
 						return 0;
 					}

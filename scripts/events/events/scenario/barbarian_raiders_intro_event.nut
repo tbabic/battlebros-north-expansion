@@ -31,6 +31,7 @@ this.barbarian_raiders_intro_event <- this.inherit("scripts/events/event", {
 				local nearest = barbarians.getNearestSettlement(playerTile);
 				logInfo("nearest:"+ nearest.getTypeID());
 				nearest.setDiscovered(true);
+				this.World.uncoverFogOfWar(nearest.getTile().Pos, 500.0)
 				
 			}
 

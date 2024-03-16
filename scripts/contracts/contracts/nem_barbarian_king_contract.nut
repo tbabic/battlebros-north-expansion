@@ -25,11 +25,10 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 5.0;
 		this.m.MakeAllSpawnsAttackableByAIOnceDiscovered = true;
 	}
-
-
+	
 	function start()
 	{
-		this.m.Flags.set("KingName", ::NorthMod.Utils.barbarianNameAndTitle());
+		this.m.Flags.set("kingname", ::NorthMod.Utils.barbarianNameAndTitle());
 	
 		this.m.Payment.Pool = 1700 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();
 
@@ -63,11 +62,70 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
 				local f = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
-				local nearest_base = f.getNearestSettlement(this.World.State.getPlayer().getTile());
-				local party = f.spawnEntity(nearest_base.getTile(), "Barbarian King", false, this.Const.World.Spawn.Barbarians, 125 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
+				local nearest_base = null;
+				
+				if (nearest_base == null)
+				{
+					local lowestDistance = 9999;
+					local lowestDistanceSettlement;
+					local camps = f.getSettlements();
+					
+					foreach( b in camps )
+					{
+						if (b == this.Contract.m.Home || b.getID() == this.Contract.m.Home.getID() || b.isLocationType(this.Const.World.LocationType.Unique))
+						{
+							continue;
+						}
+						if (b.getTypeID() != "location.barbarian_camp" && 
+							b.getTypeID() != "location.barbarian_shelter" && 
+							b.getTypeID() != "location.barbarian_sanctuary") {
+							continue;
+						}
+
+
+						local d = this.Contract.m.Home.getTile().getDistanceTo(b.getTile());
+
+						if (d < lowestDistance)
+						{
+							lowestDistance = d;
+							lowestDistanceSettlement = b;
+						}
+					}
+					nearest_base = lowestDistanceSettlement;
+					
+				}
+
+				
+				
+				
+				local party = f.spawnEntity(nearest_base.getTile(), "Barbarian King", false, this.Const.World.Spawn.Barbarians, 125 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());				
+
+				
 				party.setDescription("A mighty warhost of barbarian tribes, united by a self-proclaimed barbarian king.");
 				party.getSprite("body").setBrush("figure_wildman_04");
 				party.setVisibilityMult(2.0);
+				party.getFlags().set("hostile", true);
+				local _isAlliedWithPlayer = ::mods_getMember(party, "isAlliedWithPlayer") 
+				::mods_override(party, "isAlliedWithPlayer", function() {
+					if (this.getFlags().get("hostile")) {
+						return false;
+					}
+					return _isAlliedWithPlayer()
+				});	
+				
+				local _isAlliedWith = ::mods_getMember(party, "isAlliedWith") 
+				::mods_override(party, "isAlliedWith", function(_p) {
+					if (_p.getFaction() == this.Const.Faction.Player && this.getFlags().get("hostile"))
+					{
+						return false;
+					}
+					return _isAlliedWith(_p)
+				});	
+				
+				
+				party.setAttackable(true);
+				party.updatePlayerRelation();
+				
 				this.Contract.addUnitsToEntity(party, this.Const.World.Spawn.BarbarianKing, 100);
 				this.Contract.m.Destination = this.WeakTableRef(party);
 				party.getLoot().Money = this.Math.rand(150, 250);
@@ -87,13 +145,13 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 				this.Contract.m.LastHelpTime = this.Time.getVirtualTimeF() + this.Math.rand(10, 40);
 				this.Flags.set("HelpReceived", 0);
 				local r = this.Math.rand(1, 100);
-
+				
 				if (r <= 15)
 				{
 					this.Flags.set("IsAGreaterThreat", true);
 					c.getBehavior(this.Const.World.AI.Behavior.ID.Attack).setEnabled(false);
 				}
-
+				
 				this.Contract.setScreen("Overview");
 				this.World.Contracts.setActiveContract(this.Contract);
 			}
@@ -160,6 +218,9 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 					_dest.getController().getBehavior(this.Const.World.AI.Behavior.ID.Attack).setEnabled(true);
 					local properties = this.World.State.getLocalCombatProperties(this.World.State.getPlayer().getPos());
 					properties.Music = this.Const.Music.BarbarianTracks;
+					properties.TemporaryEnemies = [
+						this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID()
+					];
 					this.World.Contracts.startScriptedCombat(properties, this.Contract.m.IsPlayerAttacking, true, true);
 				}
 			}
@@ -362,6 +423,8 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 					{
 						this.Flags.increment("HelpReceived", 1);
 						this.Contract.m.Destination.setVisibleInFogOfWar(true);
+						this.Contract.m.Destination.setDiscovered(true)
+						this.World.uncoverFogOfWar(this.Contract.m.Destination.getTile().Pos, 500.0)
 						this.World.getCamera().moveTo(this.Contract.m.Destination);
 						this.Contract.getActiveState().start();
 						this.World.Contracts.updateActiveContract();
@@ -506,6 +569,7 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 				local wait = this.new("scripts/ai/world/orders/wait_order");
 				wait.setTime(99999);
 				c.addOrder(wait);
+				this.Contract.m.Destination.getFlags().set("hostile", false);
 				this.Contract.m.Destination.setFaction(2);
 				this.Contract.m.Destination.getSprite("selection").Visible = false;
 				this.Contract.m.Destination.setOnCombatWithPlayerCallback(null);
@@ -645,7 +709,7 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 	{
 		_vars.push([
 			"kingname",
-			this.getFlags().get("kingname")
+			this.m.Flags.get("kingname")
 		]);
 			
 		_vars.push([

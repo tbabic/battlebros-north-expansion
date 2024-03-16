@@ -97,8 +97,8 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 		}
 		
 		this.logInfo("picked action:" + i + " - " + this.m.ContractActions[i].getID() + "/" + this.m.Home.getID());
-		
-		this.m.ContractActions[0].execute();
+		//this.m.ContractActions[i].execute();
+		this.m.ContractActions[1].execute();
 	}
 	
 	function availableActions() {
