@@ -15,7 +15,8 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 
 	function start()
 	{
-		local banditcamp = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getNearestSettlement(this.m.Home.getTile());
+		local nearest = ::NorthMod.Utils.nearestBarbarianNeighbour(this.m.Home);
+		local banditcamp = nearest.settlement;
 		this.m.Destination = this.WeakTableRef(banditcamp);
 		this.m.Flags.set("DestinationName", banditcamp.getName());
 		this.m.Flags.set("EnemyBanner", banditcamp.getBanner());
@@ -59,7 +60,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 				{
 					this.Contract.m.Destination.getLoot().clear();
 				}
-
+				::NorthMod.Utils.setIsHostile(this.Contract.m.Destination, true);
 				this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.Barbarians, 110 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
 				this.Contract.m.Destination.setLootScaleBasedOnResources(110 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
 				this.Contract.m.Destination.setResources(this.Math.min(this.Contract.m.Destination.getResources(), 70 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult()));
@@ -240,7 +241,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 		this.m.Screens.push({
 			ID = "Task",
 			Title = "Negotiations",
-			Text = "[img]gfx/ui/events/event_20.png[/img]{You find %employer% with a dirtied and mudslaked woman sat beside his chair. Her hair is matted and her flesh stricken with all manner of punishment. She sneers at you as if it was all your doing. %employer% kicks her over.%SPEECH_ON%Don\'t mind this wench, warrior. We caught her and her friends raiding our supplies. Killed the lot of the bastards, I\'d say we spared her for the fun of it but beating on her is about as fun as doing it to a dog.%SPEECH_OFF%He kicks her again and she snarls back.%SPEECH_ON%See? Well, I have news! We have located the stain she came from and I have every intention of burning it to the ground. That\'s where you come in. Their village is %direction% of here. Stomp it out and you\'ll be rewarded very well. You interested or do I have to find a man of meaner character?%SPEECH_OFF% | %employer% has a crowd of clansmen in his room. More of them than any man should be comfortable with in such proximity, but they surprisingly don\'t seem to be interested in lynching him. Seeing you, %employer% calls you forward.%SPEECH_ON%Ah, finally! Our answer is here! Warriior, the clan %direction% of here have been pillaging our village and raping anything with a hole. We\'re sick of it we\'ll not take it anymore.%SPEECH_OFF%The crowd of peons jeers, one man yelling out that the barbarians {cut the head off his mother | also murdered his pet goats | stole all his dogs, the bastards | ate the liver of his youngest son}. %employer% nods.%SPEECH_ON%Aye. Aye, men, aye! And so I say, warrior, that you plot a path to their village and treat them to measured, appropriate revenge.%SPEECH_OFF% | %employer% waves you into his jurt. He\'s holding a spear with a bloodied tip.%SPEECH_ON%One of the clans sent me this today. A head was spiked to it. %randombarbarian%\'s son. They took the eyes and tongue out of. They are sending us a message, without speaking a word. And so I have a feeling I shall return the favor with your help, warrior. Go %direction% of here, find their little village, and burn it to the ground.%SPEECH_OFF% | %employer% welcomes you in his jurt, his face is grim as if weighed by thousand stones. He speaks succinctly.%SPEECH_ON%There is a clan, their village %direction% of here from which they are sending raiding parties. They rape, they pillage, they are nothing but insects and varmints in the shape of men. I want them all gone, to the very last. Are you willing to take on this task?%SPEECH_OFF%}",
+			Text = "[img]gfx/ui/events/event_20.png[/img]{You find %employer% with a dirtied and mudslaked woman sat beside his chair. Her hair is matted and her flesh stricken with all manner of punishment. She sneers at you as if it was all your doing. %employer% kicks her over.%SPEECH_ON%Don\'t mind this wench, warrior. We caught her and her friends raiding our supplies. Killed the lot of the bastards, I\'d say we spared her for the fun of it but beating on her is about as fun as doing it to a dog.%SPEECH_OFF%He kicks her again and she snarls back.%SPEECH_ON%See? Well, I have news! We have located the stain she came from and I have every intention of burning it to the ground. That\'s where you come in. Their village is %direction% of here. Stomp it out and you\'ll be rewarded very well. You interested or do I have to find a man of meaner character?%SPEECH_OFF% | %employer% has a crowd of clansmen in his room. More of them than any man should be comfortable with in such proximity, but they surprisingly don\'t seem to be interested in lynching him. Seeing you, %employer% calls you forward.%SPEECH_ON%Ah, finally! Our answer is here! Warrior, the clan %direction% of here have been pillaging our village and raping anything with a hole. We\'re sick of it we\'ll not take it anymore.%SPEECH_OFF%The crowd of peons jeers, one man yelling out that the barbarians {cut the head off his mother | also murdered his pet goats | stole all his dogs, the bastards | ate the liver of his youngest son}. %employer% nods.%SPEECH_ON%Aye. Aye, men, aye! And so I say, warrior, that you plot a path to their village and treat them to measured, appropriate revenge.%SPEECH_OFF% | %employer% waves you into his jurt. He\'s holding a spear with a bloodied tip.%SPEECH_ON%One of the clans sent me this today. A head was spiked to it. %randombarbarian%\'s son. They took the eyes and tongue out of. They are sending us a message, without speaking a word. And so I have a feeling I shall return the favor with your help, warrior. Go %direction% of here, find their little village, and burn it to the ground.%SPEECH_OFF% | %employer% welcomes you in his jurt, his face is grim as if weighed by thousand stones. He speaks succinctly.%SPEECH_ON%There is a clan, their village %direction% of here from which they are sending raiding parties. They rape, they pillage, they are nothing but insects and varmints in the shape of men. I want them all gone, to the very last. Are you willing to take on this task?%SPEECH_OFF%}",
 			Image = "",
 			List = [],
 			ShowEmployer = true,
@@ -859,6 +860,11 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/contr
 				s.setValidForDays(4);
 			}
 		}
+	}
+	
+	function onCancel()
+	{
+		::NorthMod.Utils.setIsHostile(this.m.Destination, false);
 	}
 
 	function onIsValid()

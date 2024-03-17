@@ -37,29 +37,8 @@ this.nem_defend_settlement_greenskins_action <- this.inherit("scripts/factions/f
 			return;
 		}
 
-		local locations = _faction.getSettlements()[0].getAttachedLocations();
-		local targets = 0;
-
-		foreach( l in locations )
-		{
-			if (l.isActive() && l.isMilitary())
-			{
-				return;
-			}
-
-			if (l.isUsable())
-			{
-				targets = ++targets;
-			}
-		}
-
-		if (targets < 2)
-		{
-			return;
-		}
-
 		local tooFar = true;
-		local myTile = _faction.getSettlements()[0].getTile();
+		local myTile = this.m.Home.getTile();
 
 		if (tooFar)
 		{

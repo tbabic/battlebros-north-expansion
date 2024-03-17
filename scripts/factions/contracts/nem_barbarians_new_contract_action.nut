@@ -98,7 +98,7 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 		
 		this.logInfo("picked action:" + i + " - " + this.m.ContractActions[i].getID() + "/" + this.m.Home.getID());
 		//this.m.ContractActions[i].execute();
-		this.m.ContractActions[1].execute();
+		this.m.ContractActions[14].execute();
 	}
 	
 	function availableActions() {
@@ -117,7 +117,7 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 			"scripts/factions/contracts/nem_drive_away_bandits_action", 
 			"scripts/factions/contracts/nem_drive_away_barbarians_action",
 			"scripts/factions/contracts/nem_hunting_alps_action",
-			"scripts/factions/contracts/nem_hunting_hexen_action", 
+			"scripts/factions/contracts/nem_hunting_hexen_action", //TODO: win scenario test
 			"scripts/factions/contracts/nem_hunting_lindwurms_action",
 			"scripts/factions/contracts/nem_hunting_schrats_action", 
 			"scripts/factions/contracts/nem_hunting_unholds_action", 
@@ -127,7 +127,7 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 			"scripts/factions/contracts/nem_return_item_action",
 			"scripts/factions/contracts/nem_roaming_beasts_action",
 			
-	
+			//TODO: test
 			"scripts/factions/contracts/nem_defend_settlement_greenskins_action",
 			"scripts/factions/contracts/nem_destroy_orc_camp_action",
 			"scripts/factions/contracts/nem_destroy_goblin_camp_action",

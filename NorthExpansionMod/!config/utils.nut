@@ -136,5 +136,51 @@
 	{
 		return this.barbarianNameOnly() + " " + this.barbarianTitle();
 	}
+	
+	function nearestBarbarianNeighbour(_home)
+	{
+		local lowestDistance = 9999;
+		local lowestDistanceSettlement;
+		local f = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
+		local camps = f.getSettlements();
+		
+		foreach( b in camps )
+		{
+			if (b == _home || b.getID() == _home.getID() || b.isLocationType(this.Const.World.LocationType.Unique))
+			{
+				continue;
+			}
+			if (b.getTypeID() != "location.barbarian_camp" && 
+				b.getTypeID() != "location.barbarian_shelter" && 
+				b.getTypeID() != "location.barbarian_sanctuary") {
+				continue;
+			}
+
+
+			local d = _home.getTile().getDistanceTo(b.getTile());
+
+			if (d < lowestDistance)
+			{
+				lowestDistance = d;
+				lowestDistanceSettlement = b;
+			}
+		}
+		return {
+			settlement = lowestDistanceSettlement,
+			distance = lowestDistance
+		};
+			
+		
+	}
+	
+	function setIsHostile(_entity, _isHostile)
+	{
+		_entity.getFlags().set("NEM_isHostile", _isHostile);
+	}
+	
+	function isHostile(_entity)
+	{
+		return _entity.getFlags().get("NEM_isHostile");
+	}
 
 }

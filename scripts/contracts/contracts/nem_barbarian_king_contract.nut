@@ -62,42 +62,10 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
 				local f = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
-				local nearest_base = null;
 				
-				if (nearest_base == null)
-				{
-					local lowestDistance = 9999;
-					local lowestDistanceSettlement;
-					local camps = f.getSettlements();
-					
-					foreach( b in camps )
-					{
-						if (b == this.Contract.m.Home || b.getID() == this.Contract.m.Home.getID() || b.isLocationType(this.Const.World.LocationType.Unique))
-						{
-							continue;
-						}
-						if (b.getTypeID() != "location.barbarian_camp" && 
-							b.getTypeID() != "location.barbarian_shelter" && 
-							b.getTypeID() != "location.barbarian_sanctuary") {
-							continue;
-						}
-
-
-						local d = this.Contract.m.Home.getTile().getDistanceTo(b.getTile());
-
-						if (d < lowestDistance)
-						{
-							lowestDistance = d;
-							lowestDistanceSettlement = b;
-						}
-					}
-					nearest_base = lowestDistanceSettlement;
-					
-				}
-
+				local nearest = ::NorthMod.Utils.nearestBarbarianNeighbour(this.m.Home);
 				
-				
-				
+				local nearest_base = nearest.settlement;
 				local party = f.spawnEntity(nearest_base.getTile(), "Barbarian King", false, this.Const.World.Spawn.Barbarians, 125 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());				
 
 				

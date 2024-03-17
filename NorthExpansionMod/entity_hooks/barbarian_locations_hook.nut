@@ -334,6 +334,19 @@
 			//logInfo("roster size: " + roster.getSize());
 		}
 		
+		resetRoster <- function( _soft = false )
+		{
+			if (_soft)
+			{
+				local lastRosterUpdate = this.Time.getVirtualTimeF() - 10.0 * this.World.getTime().SecondsPerDay;
+				this.getFlags().set("lastRosterUpdate", lastRosterUpdate);
+			}
+			else
+			{
+				this.getFlags().set("lastRosterUpdate", -9000.0);
+			}
+		}
+		
 		updateShop <-function ()
 		{
 			local lastShopUpdate = this.getFlags().getAsInt("lastShopUpdate");
@@ -379,6 +392,11 @@
 		
 		this.hasAttachedLocation <- function(attachedLocation) {
 			false;
+		}
+		
+		resetShop <- function()
+		{
+			this.getFlags().set("lastShopUpdate", -9000.0)
 		}
 		
 		getSellPriceMult <- function()
@@ -834,6 +852,25 @@
 
 			return result;
 		}
+		
+		local _isAlliedWithPlayer = ::mods_getMember(this, "isAlliedWithPlayer") 
+		::mods_override(this, "isAlliedWithPlayer", function() {
+			local isHostile = ::NorthMod.Utils.isHostile(this)
+			if (isHostile) {
+				return false;
+			}
+			return _isAlliedWithPlayer()
+		});	
+		
+		local _isAlliedWith = ::mods_getMember(this, "isAlliedWith") 
+		::mods_override(this, "isAlliedWith", function(_p) {
+			local isHostile = ::NorthMod.Utils.isHostile(this);
+			if (_p.getFaction() == this.Const.Faction.Player && isHostile)
+			{
+				return false;
+			}
+			return _isAlliedWith(_p)
+		});	
 		
 		local _onSerialize = ::mods_getMember(this, "onSerialize");
 		::mods_override(this, "onSerialize", function(_out) {
