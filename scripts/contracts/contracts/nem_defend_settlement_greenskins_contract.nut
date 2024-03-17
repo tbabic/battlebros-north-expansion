@@ -133,10 +133,6 @@ this.nem_defend_settlement_greenskins_contract <- this.inherit("scripts/contract
 				
 				local r = this.Math.rand(1, 100);
 
-				if (r <= 100)
-				{
-					this.Flags.set("IsMilitia", true);			
-				}
 			}
 
 		});
