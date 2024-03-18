@@ -63,7 +63,7 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
 				local f = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
 				
-				local nearest = ::NorthMod.Utils.nearestBarbarianNeighbour(this.m.Home);
+				local nearest = ::NorthMod.Utils.nearestBarbarianNeighbour(this.Contract.m.Home);
 				
 				local nearest_base = nearest.settlement;
 				local party = f.spawnEntity(nearest_base.getTile(), "Barbarian King", false, this.Const.World.Spawn.Barbarians, 125 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());				
