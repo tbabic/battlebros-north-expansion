@@ -23,11 +23,6 @@ this.nem_confront_warlord_contract <- this.inherit("scripts/contracts/contract",
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 7.0;
 	}
 
-	function onImportIntro()
-	{
-		this.importNobleIntro();
-	}
-
 	function start()
 	{
 		this.m.Payment.Pool = 1800 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();
