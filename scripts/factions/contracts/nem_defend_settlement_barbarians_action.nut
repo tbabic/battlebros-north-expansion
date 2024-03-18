@@ -1,4 +1,4 @@
-this.nem_defend_settlement_bandits_action <- this.inherit("scripts/factions/faction_action", {
+this.nem_defend_settlement_barbarians_action <- this.inherit("scripts/factions/faction_action", {
 	m = {
 		Home = null
 	},
@@ -32,49 +32,25 @@ this.nem_defend_settlement_bandits_action <- this.inherit("scripts/factions/fact
 		{
 			return;
 		}
-
+		
 		if (this.Math.rand(1, 100) > 10)
 		{
 			return;
 		}
 
-	
-		local tooFar = true;
 		local myTile = this.m.Home.getTile();
-
-		if (tooFar)
+		
+		local nearest = ::NorthMod.Utils.nearestBarbarianNeighbour(this.m.Home);
+		if (nearest.settlement == null)
 		{
-			local bandits = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).getSettlements();
-
-			foreach( b in bandits )
-			{
-				if (myTile.getDistanceTo(b.getTile()) <= 20)
-				{
-					tooFar = false;
-					break;
-				}
-			}
-		}
-
-		if (tooFar)
-		{
-			local zombies = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Zombies).getSettlements();
-
-			foreach( b in zombies )
-			{
-				if (myTile.getDistanceTo(b.getTile()) <= 20)
-				{
-					tooFar = false;
-					break;
-				}
-			}
-		}
-
-		if (tooFar)
-		{
+			this.logInfo("no settlement found");
 			return;
 		}
-
+		if (nearest.distance > 20)
+		{
+			this.logInfo("camp " + nearest.settlement.getName() + " too far: " + nearest.distance);
+			return;
+		}
 		this.m.Score = 1;
 	}
 

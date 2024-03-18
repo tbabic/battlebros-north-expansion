@@ -1,11 +1,12 @@
-this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_defend_settlement_barbarians_contract <- this.inherit("scripts/contracts/contract", {
 	m = {
-		Reward = 0
+		Reward = 0,
+		Kidnapper = null
 	},
 	function create()
 	{
 		this.contract.create();
-		this.m.Type = "contract.nem_defend_settlement_bandits";
+		this.m.Type = "contract.nem_defend_settlement_barbarians";
 		this.m.Name = "Defend Settlement";
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 5.0;
 		this.m.MakeAllSpawnsResetOrdersOnContractEnd = false;
@@ -57,32 +58,21 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
-				local nearestBandits = this.Contract.getNearestLocationTo(this.Contract.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).getSettlements());
-				local nearestZombies = this.Contract.getNearestLocationTo(this.Contract.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Zombies).getSettlements());
+				
+				local r = this.Math.rand(1, 100);
 
-				if (nearestZombies.getTile().getDistanceTo(this.Contract.m.Home.getTile()) <= 20 && nearestBandits.getTile().getDistanceTo(this.Contract.m.Home.getTile()) > 20)
+				if (r <= 20)
 				{
-					this.Flags.set("IsUndead", true);
+					this.Flags.set("IsKidnapping", true);
 				}
-				else
+				else if (r <= 40)
 				{
-					local r = this.Math.rand(1, 100);
-
-					if (r <= 20)
+					if (this.Contract.getDifficultyMult() >= 0.95)
 					{
-						if (this.Contract.getDifficultyMult() >= 0.95)
-						{
-							this.Flags.set("IsMilitia", true);
-						}
-					}
-					else if (r <= 30 || this.World.FactionManager.isUndeadScourge() && r <= 50)
-					{
-						if (nearestZombies.getTile().getDistanceTo(this.Contract.m.Home.getTile()) <= 20)
-						{
-							this.Flags.set("IsUndead", true);
-						}
+						this.Flags.set("IsMilitia", true);
 					}
 				}
+				
 
 				local number = 1;
 
@@ -96,23 +86,20 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 					number = number + 1;
 				}
 
+			
+
 				for( local i = 0; i != number; i = ++i )
 				{
-					local party;
-
-					if (this.Flags.get("IsUndead"))
-					{
-						party = this.Contract.spawnEnemyPartyAtBase(this.Const.FactionType.Zombies, this.Math.rand(80, 110) * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
-					}
-					else
-					{
-						party = this.Contract.spawnEnemyPartyAtBase(this.Const.FactionType.Bandits, this.Math.rand(80, 110) * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
-					}
+					local nearest = ::NorthMod.Utils.nearestBarbarianNeighbour(this.m.Home);
+					local nearest_base = nearest.settlement;
+					local party = f.spawnEntity(nearest_base.getTile(), "Raiders", false, this.Const.World.Spawn.Barbarians, this.Math.rand(80, 110) * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());				
+					this.Contract.m.UnitsSpawned.push(party.getID());
 
 					party.setAttackableByAI(false);
 					local c = party.getController();
 					c.getBehavior(this.Const.World.AI.Behavior.ID.Attack).setEnabled(false);
 					c.getBehavior(this.Const.World.AI.Behavior.ID.Flee).setEnabled(false);
+					local t = this.Math.rand(0, targets.len() - 1);
 
 					if (i > 0)
 					{
@@ -122,11 +109,11 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 					}
 
 					local move = this.new("scripts/ai/world/orders/move_order");
-					move.setDestination(this.Contract.m.Home.getTile());
+					move.setDestination(targets[t].getTile());
 					c.addOrder(move);
 					local raid = this.new("scripts/ai/world/orders/raid_order");
 					raid.setTime(40.0);
-					raid.setTargetTile(this.Contract.m.Home.getTile());
+					raid.setTargetTile(targets[t].getTile());
 					c.addOrder(raid);
 				}
 
@@ -141,6 +128,7 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 			function start()
 			{
 				this.Contract.m.Home.getSprite("selection").Visible = true;
+				this.World.FactionManager.getFaction(this.Contract.getFaction()).setActive(false);
 			}
 
 			function update()
@@ -163,7 +151,6 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 						}
 					}
 				}
-				
 				
 				if (this.Contract.m.UnitsSpawned.len() == 0)
 				{
@@ -199,19 +186,85 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 					if (isEnemyHere)
 					{
 						this.Flags.set("IsEnemyHereDialogShown", true);
-						
-						if (this.Flags.get("IsUndead"))
-						{
-							this.Contract.setScreen("UndeadAttack");
-						}
-						else
-						{
-							this.Contract.setScreen("DefaultAttack");
-						}
-						
+						this.Contract.setScreen("DefaultAttack");
 						this.World.Contracts.showActiveContract();
 					}
 					return;
+				}
+				
+				
+				
+				if (this.Contract.m.UnitsSpawned.len() == 1 && this.Flags.get("IsKidnapping") && !this.Flags.get("IsKidnappingInProgress") && this.Flags.get("IsRaided"))
+				{
+					local p = this.World.getEntityByID(this.Contract.m.UnitsSpawned[0]);
+
+					if (p != null && p.isAlive() && !p.isHiddenToPlayer() && !p.getController().hasOrders())
+					{
+						local c = p.getController();
+						c.getBehavior(this.Const.World.AI.Behavior.ID.Attack).setEnabled(true);
+						c.getBehavior(this.Const.World.AI.Behavior.ID.Flee).setEnabled(true);
+						this.Contract.m.Kidnapper = this.WeakTableRef(p);
+						this.Flags.set("IsKidnappingInProgress", true);
+						this.Flags.set("KidnappingTooLate", this.Time.getVirtualTimeF() + 60.0);
+						this.Contract.setScreen("Kidnapping1");
+						this.World.Contracts.showActiveContract();
+						this.Contract.setState("Kidnapping");
+					}
+				}
+				
+				
+			}
+
+			function onRetreatedFromCombat( _combatID )
+			{
+				this.Flags.set("HadCombat", true);
+			}
+
+			function onCombatVictory( _combatID )
+			{
+				this.Flags.set("HadCombat", true);
+			}
+
+		});
+		this.m.States.push({
+			ID = "Kidnapping",
+			function start()
+			{
+				this.Contract.m.BulletpointsObjectives = [
+					"Rescue prisoners being hauled away",
+					"Return to " + this.Contract.m.Home.getName()
+				];
+				this.Contract.m.Home.getSprite("selection").Visible = false;
+				this.World.FactionManager.getFaction(this.Contract.getFaction()).setActive(false);
+
+				if (this.Contract.m.Kidnapper != null && !this.Contract.m.Kidnapper.isNull())
+				{
+					this.Contract.m.Kidnapper.getSprite("selection").Visible = true;
+				}
+			}
+
+			function update()
+			{
+				if (this.Contract.m.Kidnapper == null || this.Contract.m.Kidnapper.isNull() || !this.Contract.m.Kidnapper.isAlive())
+				{
+					if (this.Time.getVirtualTimeF() - this.World.Events.getLastBattleTime() <= 5.0)
+					{
+						this.Flags.set("IsKidnapping", false);
+						this.Contract.setScreen("Kidnapping2");
+					}
+					else
+					{
+						this.Contract.setScreen("Kidnapping3");
+					}
+
+					this.World.Contracts.showActiveContract();
+					this.Contract.setState("Return");
+				}
+				else if (this.Contract.m.Kidnapper.isHiddenToPlayer() && this.Time.getVirtualTimeF() > this.Flags.get("KidnappingTooLate"))
+				{
+					this.Contract.setScreen("Kidnapping3");
+					this.World.Contracts.showActiveContract();
+					this.Contract.setState("Return");
 				}
 			}
 
@@ -234,13 +287,29 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 					"Return to " + this.Contract.m.Home.getName()
 				];
 				this.Contract.m.Home.getSprite("selection").Visible = true;
+				this.World.FactionManager.getFaction(this.Contract.getFaction()).setActive(true);
+
+				if (this.Contract.m.Kidnapper != null && !this.Contract.m.Kidnapper.isNull())
+				{
+					this.Contract.m.Kidnapper.getSprite("selection").Visible = false;
+				}
 			}
 
 			function update()
 			{
 				if (this.Contract.isPlayerAt(this.Contract.m.Home))
 				{
-					if(this.Flags.get("IsRaided"))
+					
+					
+					if (this.Flags.get("IsKidnapping") && this.Flags.get("IsKidnappingInProgress"))
+					{
+						this.Contract.setScreen("Failure2");
+					}
+					else if (this.Flags.get("IsKidnappingInProgress"))
+					{
+						this.Contract.setScreen("Failure1");
+					}
+					else if(this.Flags.get("IsRaided"))
 					{
 						this.Contract.setScreen("Failure1");
 					}
@@ -263,7 +332,7 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 		this.m.Screens.push({
 			ID = "Task",
 			Title = "Negotiations",
-			Text = "[img]gfx/ui/events/event_20.png[/img]{%employer%\'s looking out the window. He waves you to join him.%SPEECH_ON%Look at those people.%SPEECH_OFF%There\'s a throng of people below, wailing about this or that.%SPEECH_ON%Raiders have been roaming these parts for awhile now and people believe that they are about to attack us in great numbers.%SPEECH_OFF%The man throws the curtains closed and goes to light a candle. He speaks over it, his breath flicking the flame.%SPEECH_ON%We need you to protect us, warrior. If you can stop these raiders, you\'ll be paid handsomely. Are you interested?%SPEECH_OFF% | A few clansmen are roaming outside the halls of the room. You can hear their shouting and it is of a nervous tone. %employer% pours a drink and sips it with a shaking hand.%SPEECH_ON%I\'ll just be clear with you, warrior. We have many, many reports that raiders are about to attack this camp. If you want to know, those reports came by way of dead women and children. Clearly, we\'ve no reason to doubt the seriousness of these reports. So, the question is, will you protect us?%SPEECH_OFF% | %employer%\'s looking at some papers on his desk. You take a seat and ask what it is he wants.%SPEECH_ON%Hello, warrior. We have a problem I think you will... excel at taking care of.%SPEECH_OFF%You ask him to be straight with you and he jumps right to the point.%SPEECH_ON%Raiders have burned down some homes and hovels just outside town. News is that they are preparing a much larger, gustier attack. I need you here to stop them. Do you think you can handle this task?%SPEECH_OFF% | %employer%\'s got two papers in hand. There are faces sketched onto them.%SPEECH_ON%We caught these two the other day. Hanged \'em, burned the remains.%SPEECH_OFF%You shrug.%SPEECH_ON%Congratulations?%SPEECH_OFF%The man is not very amused.%SPEECH_ON%Now we\'ve gotten word that their raider friends are coming to exact revenge on us! And, yes, we need your help to fight them off. Are you interested?%SPEECH_OFF% | You settle into %employer%\'s room, taking a seat, rubbing your hands along the wooden frame. It\'s a good oak. A once-tree worth sitting in.%SPEECH_ON%Glad you\'re comfortable, warrior, but I sure as hell ain\'t. We have many, many warnings that a large group of raiders are about to attack our town. We\'re quite short on defense, but not short on crowns. Obviously, that\'s where you come in. Are you interested?%SPEECH_OFF% | %employer% slams a cup against the wall. It scatters, turning and pinwheeling, flecks of wine dotting your cheek.%SPEECH_ON%Vagabonds! Raiders! Marauders! It never ends!%SPEECH_OFF%He absently hands you a napkin.%SPEECH_ON%Now I\'m getting news that a large group of these thugs are coming to burn this camp to the ground! Well, I\'ve gotten something in store for them: you. What do you say, warrior? Will you defend us?%SPEECH_OFF% | A few grieving women can be hear wailing just outside %employer%\'s room. He turns to you.%SPEECH_ON%Hear that? That\'s what happens when raiders come here. They steal, they rape, and they murder.%SPEECH_OFF%You nod. It is, after all, the way of the raider.%SPEECH_ON%Now some folk in the hinterland say the thugs are preparing for a massive assault on our camp. You must do something to help us, warrior. Heh, of course I say \'must\'. What I really mean is that we\'ll pay you to help us...%SPEECH_OFF%}",
+			ext = "[img]gfx/ui/events/event_20.png[/img]{%employer%\'s looking out the window. He waves you to join him.%SPEECH_ON%Look at those people.%SPEECH_OFF%There\'s a throng of people below, wailing about this or that.%SPEECH_ON%Raiders have been roaming these parts for awhile now and people believe that they are about to attack us in great numbers.%SPEECH_OFF%The man throws the curtains closed and goes to light a candle. He speaks over it, his breath flicking the flame.%SPEECH_ON%We need you to protect us, warrior. If you can stop these raiders, you\'ll be paid handsomely. Are you interested?%SPEECH_OFF% | A few clansmen are roaming outside the halls of the room. You can hear their shouting and it is of a nervous tone. %employer% pours a drink and sips it with a shaking hand.%SPEECH_ON%I\'ll just be clear with you, warrior. We have many, many reports that raiders are about to attack this camp. If you want to know, those reports came by way of dead women and children. Clearly, we\'ve no reason to doubt the seriousness of these reports. So, the question is, will you protect us?%SPEECH_OFF% | %employer%\'s looking at some papers on his desk. You take a seat and ask what it is he wants.%SPEECH_ON%Hello, warrior. We have a problem I think you will... excel at taking care of.%SPEECH_OFF%You ask him to be straight with you and he jumps right to the point.%SPEECH_ON%Raiders have burned down some homes and hovels just outside town. News is that they are preparing a much larger, gustier attack. I need you here to stop them. Do you think you can handle this task?%SPEECH_OFF% | %employer%\'s got two papers in hand. There are faces sketched onto them.%SPEECH_ON%We caught these two the other day. Hanged \'em, burned the remains.%SPEECH_OFF%You shrug.%SPEECH_ON%Congratulations?%SPEECH_OFF%The man is not very amused.%SPEECH_ON%Now we\'ve gotten word that their raider friends are coming to exact revenge on us! And, yes, we need your help to fight them off. Are you interested?%SPEECH_OFF% | You settle into %employer%\'s room, taking a seat, rubbing your hands along the wooden frame. It\'s a good oak. A once-tree worth sitting in.%SPEECH_ON%Glad you\'re comfortable, warrior, but I sure as hell ain\'t. We have many, many warnings that a large group of raiders are about to attack our town. We\'re quite short on defense, but not short on crowns. Obviously, that\'s where you come in. Are you interested?%SPEECH_OFF% | %employer% slams a cup against the wall. It scatters, turning and pinwheeling, flecks of wine dotting your cheek.%SPEECH_ON%Vagabonds! Raiders! Marauders! It never ends!%SPEECH_OFF%He absently hands you a napkin.%SPEECH_ON%Now I\'m getting news that a large group of these thugs are coming to burn this camp to the ground! Well, I\'ve gotten something in store for them: you. What do you say, warrior? Will you defend us?%SPEECH_OFF% | A few grieving women can be hear wailing just outside %employer%\'s room. He turns to you.%SPEECH_ON%Hear that? That\'s what happens when raiders come here. They steal, they rape, and they murder.%SPEECH_OFF%You nod. It is, after all, the way of the raider.%SPEECH_ON%Now some folk in the hinterland say the thugs are preparing for a massive assault on our camp. You must do something to help us, warrior. Heh, of course I say \'must\'. What I really mean is that we\'ll pay you to help us...%SPEECH_OFF%}",
 			Image = "",
 			List = [],
 			ShowEmployer = true,
@@ -302,7 +371,7 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 		this.m.Screens.push({
 			ID = "Plea",
 			Title = "Negotiations",
-			Text = "[img]gfx/ui/events/event_43.png[/img]{As you\'re leaving %employer% with a rejection, you come outside to find a throng of peasants standing around. Each is holding some sort of oddity, the sort of wealth that the laymen could scrounge together as best they could: chickens, cheap necklaces, worn clothes, rusted blacksmith gear, the list of belongings go on and on. One steps forward, a chicken tucked under each arm.%SPEECH_ON%Please! You can\'t leave! You have to help us!%SPEECH_OFF%%randombrother% laughs, but you have to admit that the poor folk do know how to pull a heartstring or two. Maybe you should stay and help after all? | When you leave %employer%, you come outside to find a woman standing there with a mob of her spawn running around and between her legs and a babe sucking her teat.%SPEECH_ON%Warrior, please, you mustn\'t leave us like this! This camp needs you! The children need you!%SPEECH_OFF%She pauses, then lowers the other side of her shirt, revealing a rather salacious and seductive temptation.%SPEECH_ON%I need you...%SPEECH_OFF%You hold a hand up, both to stop her and wipe your suddenly sweaty brow. Maybe helping this pair, uh, poor people out wouldn\'t be so bad after all? | Getting ready to leave %townname%, a small puppy runs up to you barking and licking your boots. An even smaller child is in chase, practically on the coattails of its literal tail. The kid falls to the mutt and wraps his arms around its nappy fur.%SPEECH_ON%Oh {Marley | Yeller | Jo-Jo}, I love you so much!%SPEECH_OFF%An image of brigands slaughtering the child and his pet runs across your mind. You\'ve better things to do than play sheriff and constable against common thieves, but the dog just keeps licking the boy\'s face and the kid just seems so happy.%SPEECH_ON%Haha! We\'re going to live forever and ever, aren\'t we? Forever and ever!%SPEECH_OFF%Goddammit. | A man walks up to you as you leave %employer%\'s abode.%SPEECH_ON%Sir, I heard you turn that man\'s offer down. It\'s a shame, that\'s all I wanted to say. I thought there were plenty of good men in this world, but I suppose I was wrong on that. Godspeed on your journey, and I do hope you pray for us in your travels.%SPEECH_OFF%}",
+			Text = "[img]gfx/ui/events/event_43.png[/img]{As you\'re leaving %employer% with a rejection, you come outside to find a throng of peasants standing around. Each is holding some sort of oddity, the sort of wealth that the laymen could scrounge together as best they could: chickens, cheap necklaces, worn clothes, rusted blacksmith gear, the list of belongings go on and on. One steps forward, a chicken tucked under each arm.%SPEECH_ON%Please! You can\'t leave! You have to help us!%SPEECH_OFF%%randombrother% laughs, but you have to admit that the poor folk do know how to pull a heartstring or two. Maybe you should stay and help after all? | When you leave %employer%, you come outside to find a woman standing there with a mob of her spawn running around and between her legs and a babe sucking her teat.%SPEECH_ON%Warrior, please, you mustn\'t leave us like this! This camp needs you! The children need you!%SPEECH_OFF%She pauses, then lowers the other side of her shirt, revealing a rather salacious and seductive temptation.%SPEECH_ON%I need you...%SPEECH_OFF%You hold a hand up, both to stop her and wipe your suddenly sweaty brow. Maybe helping this pair, uh, poor people out wouldn\'t be so bad after all? | Getting ready to leave %townname%, a small puppy runs up to you barking and licking your boots. An even smaller child is in chase, practically on the coattails of its literal tail. The kid falls to the mutt and wraps his arms around its nappy fur.%SPEECH_ON%Oh {Marley | Yeller | Jo-Jo}, I love you so much!%SPEECH_OFF%An image of raiders slaughtering the child and his pet runs across your mind. You\'ve better things to do than play sheriff and constable against common thieves, but the dog just keeps licking the boy\'s face and the kid just seems so happy.%SPEECH_ON%Haha! We\'re going to live forever and ever, aren\'t we? Forever and ever!%SPEECH_OFF%Goddammit. | A man walks up to you as you leave %employer%\'s abode.%SPEECH_ON%Sir, I heard you turn that man\'s offer down. It\'s a shame, that\'s all I wanted to say. I thought there were plenty of good men in this world, but I suppose I was wrong on that. Godspeed on your journey, and I do hope you pray for us in your travels.%SPEECH_OFF%}",
 			Image = "",
 			List = [],
 			ShowEmployer = false,
@@ -330,23 +399,6 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 			{
 			}
 
-		});
-		this.m.Screens.push({
-			ID = "UndeadAttack",
-			Title = "Near %townname%",
-			Text = "[img]gfx/ui/events/event_29.png[/img]{While standing guard, a crazed man comes running up to you. He\'s slackjawed, out of breath. Hands on his knees, he damn near vomits out the words:%SPEECH_ON%The dead... they\'re coming!%SPEECH_OFF%Peering over him, you do indeed see a throng of rather pale creatures shuffling in the distance. | No brigands here, but undead! While waiting for the thugs and miscreants to come storming into the town, you instead spot a large throng of shambling creatures coming your way. Just because the target changes doesn\'t mean the contract does - prepare yourself! | Alarm bells sound off from the camp chapel. You listen to them while eyeing the horizon. They keep ringing. A local stands by your side.%SPEECH_ON%One... two... three rings... four...%SPEECH_OFF%He begins to sweat. Then his eyes widen as the bells toll one final time.%SPEECH_ON%That\'s... that can\'t be.%SPEECH_OFF%You inquire as to what he\'s so scared of. He backs away.%SPEECH_ON%The dead walk the earth again!%SPEECH_OFF%Great, just when you thought a contract was going to be easy. | Groaning, moaning, the undead shuffle into view. There are no brigands here - maybe these foul creatures ate them - but the contract isn\'t null: protect the town!}",
-			Image = "",
-			List = [],
-			Options = [
-				{
-					Text = "To arms!",
-					function getResult()
-					{
-						return 0;
-					}
-
-				}
-			]
 		});
 		this.m.Screens.push({
 			ID = "DefaultAttack",
@@ -456,8 +508,57 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 				}
 			]
 		});
-		
-		
+		this.m.Screens.push({
+			ID = "Kidnapping1",
+			Title = "Near %townname%",
+			Text = "[img]gfx/ui/events/event_30.png[/img]{While keeping watch for the raiders, a clansman comes up telling you that a group of the thugs attacked nearby, taking off with a group of hostages. You shake your head in disbelief. How were they able to sneak in and do this? The layman shakes his head, too.%SPEECH_ON%I thought y\'all were supposed to help us. Why didn\'t you do anything?%SPEECH_OFF%You ask if the raiders have gone far. The clansman shakes his head. Looks like you still have a shot to get them back. | A man wearing rags and carrying a broken pitchfork sprints up to your men. He drops and wails at your feet.%SPEECH_ON%The raiders attacked! Where were you? They killed people... burned some... and... and they took some prisoner! Please, go save them!%SPEECH_OFF%You eye %randombrother% and nod.%SPEECH_ON%Get the men ready. We need to chase these thugs down before they escape entirely.%SPEECH_OFF% | You have your eyes peeled to the horizons, looking for any sight or sound of vagabond or vagathief. Suddenly, %randombrother% comes to you with a woman by his side. She tells a story that the raiders have already attacked, killing a great number of clansmen and those they didn\'t kill they made off with. The warrior nods.%SPEECH_ON%Looks like they snuck past us, sir.%SPEECH_OFF%You\'ve only one choice now - go get those people back! | Stationing yourself close to %townname%, you anticipate the raiders\' attack. You thought this would be easy, but the sudden arrival of a crazed layman says otherwise. The clansman explains that the marauders have already ambushed the outskirts. They slaughtered everyone they could, then made off with a few men, women, and children. The man, either drunk or in shock, slurs his pleas.%SPEECH_ON%Get... get them back, would ya?%SPEECH_OFF% | Keeping watch, a few angry clansmen take the roads, storming toward you in a swirl of mob anger.%SPEECH_ON%I thought we were paying you to protect us! Where were you!%SPEECH_OFF%They are covered in blood. Some are half-clothed. A woman hangs a breast, too angry to care about the indecency. You ask the group what it is they are talking about. A man, clutching a cane close to his chest, explains that the raiders and thugs had already attacked, taking to a nearby hamlet. They slaughtered everything in sight then, with their bloodlust satiated, took as many prisoners as they could.\n\nYou nod.%SPEECH_ON%We\'ll get them back.%SPEECH_OFF%}",
+			Image = "",
+			List = [],
+			Options = [
+				{
+					Text = "Let\'s get them!",
+					function getResult()
+					{
+						return 0;
+					}
+
+				}
+			]
+		});
+		this.m.Screens.push({
+			ID = "Kidnapping2",
+			Title = "After the battle...",
+			Text = "[img]gfx/ui/events/event_22.png[/img]{Sheathing your sword, you order %randombrother% to go free the prisoners. A litany of bewildered clansmen are freed from leather leashes, chains, and dog cages. They thank you for your timely arrival, and for the violence you brought to the raiders. | The raiders are slaughtered to a man. You set your men out to go rescue every clansman and woman they can find. Each one comes together, hugging and crying, mad with happiness that they have survived this horrifying ordeal. | After killing the last raider around, you tell the men to go around freeing the hostages the vagabonds had taken. Each one comes to you in turn, some kissing your hand, others your feet. You only tell them to get back to %townname% as you will do yourself.}",
+			Image = "",
+			List = [],
+			Options = [
+				{
+					Text = "Looks like this is over.",
+					function getResult()
+					{
+						return 0;
+					}
+
+				}
+			]
+		});
+		this.m.Screens.push({
+			ID = "Kidnapping3",
+			Title = "Near %townname%",
+			Text = "[img]gfx/ui/events/event_53.png[/img]{Unfortunately, the raiders got away with the hostages. May the gods be with those sorry souls now. | You couldn\'t do it - you couldn\'t save those poor folk. Now only the gods know what will happen to them. | Sadly, the marauders got away with their human cargo in tow. Those poor folks will have to fend for themselves now. The stories you hear, however, tell you they will not fare well at all. | The raiders got away, their prisoners alongside with them. You\'ve no idea what will happen to those people now, but you know it isn\'t good. Slavery. Torture. Death. You\'re not sure which is the worst.}",
+			Image = "",
+			List = [],
+			Options = [
+				{
+					Text = "{They won\'t like that in %townname%... | Maybe they can be bought back...}",
+					function getResult()
+					{
+						return 0;
+					}
+
+				}
+			]
+		});
 		this.m.Screens.push({
 			ID = "Success1",
 			Title = "On your return...",
@@ -473,14 +574,8 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 					{
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractSuccess);
 						this.World.Assets.addMoney(this.Contract.m.Payment.getOnCompletion());
-						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Defended the camp against brigands");
+						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Defended the camp against raiders");
 						this.World.Contracts.finishActiveContract();
-
-						if (this.Flags.get("IsUndead") && this.World.FactionManager.isUndeadScourge())
-						{
-							this.World.FactionManager.addGreaterEvilStrength(this.Const.Factions.GreaterEvilStrengthOnCommonContract);
-						}
-
 						return 0;
 					}
 
@@ -510,7 +605,33 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 					function getResult()
 					{
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractFail);
-						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractFail, "Failed to defend the camp against brigands");
+						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractFail, "Failed to defend the camp against raiders");
+						this.World.Contracts.finishActiveContract(true);
+						return 0;
+					}
+
+				}
+			],
+			function start()
+			{
+				this.Contract.addSituation(this.new("scripts/entity/world/settlements/situations/raided_situation"), 3, this.Contract.m.Home, this.List);
+			}
+
+		});
+		this.m.Screens.push({
+			ID = "Failure2",
+			Title = "On your return...",
+			Text = "[img]gfx/ui/events/event_30.png[/img]{When you enter %employer%\'s room, he tells you to close the door behind you. Just as the latch clicks, the man slams you with a stream of obscenities which you couldn\'t hope to keep track of. Calming down, his voice - and language - return to some level of normalcy.%SPEECH_ON%Every bit of our camp is raided. People were even taken to the old gods know what ends! What is it, exactly, did you think I was paying you for? Get out of here.%SPEECH_OFF% | %employer%\'s slamming back goblets of wine when you enter. There\'s the din of angry clansmen squalling outside his window.%SPEECH_ON%Hear that? They\'ll have my head if I pay you, warrior. You had one job, one job! Protect this town. And you couldn\'t do it. Hell, you couldn\'t even save those poor folk thatgot kidnapped! So now you could do one thing and it comes free: get the hell out of my sight.%SPEECH_OFF% | %employer% clasps his hands over his desk.%SPEECH_ON%What is it, exactly, are you expecting to get here? I\'m surprised you returned to me at all. Half the camp is on fire and the other half is already ash. Survivors tell me that their family members were even kidnapped! Do you know what happens to those taken by raiders? I didn\'t hire you to produce smoke and desolation, warrior. Get the hell out of here.%SPEECH_OFF% | When you return to %employer%, he\'s holding a mug of ale. His hand his shaking. His face is red.%SPEECH_ON%It\'s taking everything in me to not throw this in your face right now.%SPEECH_OFF%Just in case his rage gets the best of him, the man finishes the drink in one big gulp. He slams it on his desk.%SPEECH_ON%We expected you protect us. Instead, the raiders swarmed us like they were taking a goddam leisure trip! I\'m not in the business of giving marauders a good time, warrior. Get the farkin\' hell out of here!%SPEECH_OFF% | %employer% laughs when you step into his room.%SPEECH_ON%Our camp is completely raided. The people of %townname% are in an uproar, at least those alive to be angry in the first place, that is. And what\'s more? You let a few of our folk get taken by these monsters!%SPEECH_OFF%The man shakes his head and points his hand to the door.%SPEECH_ON%I don\'t know what you expected me to pay you for, but it wasn\'t this.%SPEECH_OFF%}",
+			Image = "",
+			List = [],
+			ShowEmployer = true,
+			Options = [
+				{
+					Text = "{Damn this peasantfolk! | We should have asked for more payment in advance... | Damnit!}",
+					function getResult()
+					{
+						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractFail);
+						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractFail, "Failed to defend the camp against raiders");
 						this.World.Contracts.finishActiveContract(true);
 						return 0;
 					}
@@ -547,11 +668,12 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 	{
 		if (this.m.IsActive)
 		{
+			this.World.FactionManager.getFaction(this.getFaction()).setActive(true);
 			this.m.Home.getSprite("selection").Visible = false;
 
-			if (this.m.Militia != null && !this.m.Militia.isNull())
+			if (this.m.Kidnapper != null && !this.m.Kidnapper.isNull())
 			{
-				this.m.Militia.getController().clearOrders();
+				this.m.Kidnapper.getSprite("selection").Visible = false;
 			}
 
 			this.World.getGuestRoster().clear();
@@ -560,27 +682,19 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 
 	function onIsValid()
 	{
-		local nearestBandits = this.getNearestLocationTo(this.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).getSettlements());
-		local nearestZombies = this.getNearestLocationTo(this.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Zombies).getSettlements());
-
-		if (nearestZombies.getTile().getDistanceTo(this.m.Home.getTile()) > 20 && nearestBandits.getTile().getDistanceTo(this.m.Home.getTile()) > 20)
-		{
-			return false;
-		}
-
 		return true;
 	}
 
 	function onSerialize( _out )
 	{
 		this.m.Flags.set("KidnapperID", this.m.Kidnapper != null && !this.m.Kidnapper.isNull() ? this.m.Kidnapper.getID() : 0);
-		this.m.Flags.set("MilitiaID", this.m.Militia != null && !this.m.Militia.isNull() ? this.m.Militia.getID() : 0);
 		this.contract.onSerialize(_out);
 	}
 
 	function onDeserialize( _in )
 	{
 		this.contract.onDeserialize(_in);
+		this.m.Kidnapper = this.WeakTableRef(this.World.getEntityByID(this.m.Flags.get("KidnapperID")));
 	}
 
 });
