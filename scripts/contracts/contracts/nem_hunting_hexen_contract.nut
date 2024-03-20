@@ -78,22 +78,12 @@ this.nem_hunting_hexen_contract <- this.inherit("scripts/contracts/contract", {
 
 				this.Flags.set("StartTime", this.Time.getVirtualTimeF());
 				this.Flags.set("Delay", this.Math.rand(10, 30) * 1.0);
-				local envoy = this.World.getGuestRoster().create("scripts/entity/tactical/humans/firstborn");
-				envoy.m.Faces = this.Const.Faces.SmartMale;
-				envoy.m.Hairs = this.Const.Hair.WildMale;
-				envoy.m.HairColors = this.Const.HairColors.Young;
-				envoy.m.Beards = this.Const.Beards.WildExtended;
-				envoy.setAppearance();
+				local envoy = this.World.getGuestRoster().create("scripts/entity/tactical/humans/barbarian_firstborn");
 				envoy.setName(this.Flags.get("ProtecteeName"));
 				envoy.setTitle("");
 				envoy.setFaction(1);
-				local items = envoy.getItems();
-				items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Body));
-				items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Head));
-				items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Mainhand));
-				items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Offhand));
-				items.equip(this.new("scripts/items/armor/barbarians/thick_furs_armor"));
 				this.Flags.set("ProtecteeID", envoy.getID());
+				this.Contract.positionGuests();
 				this.Contract.m.Home.setLastSpawnTimeToNow();
 				this.Contract.setScreen("Overview");
 				this.World.Contracts.setActiveContract(this.Contract);

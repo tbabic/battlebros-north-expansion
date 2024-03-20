@@ -410,13 +410,15 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 					Text = "Fall in line, you\'ll be under my command.",
 					function getResult()
 					{
+						local roster = this.World.getGuestRoster();
+						
 						for( local i = 0; i != 4; i = ++i )
 						{
-							local militia = this.World.getGuestRoster().create("scripts/entity/tactical/humans/barbarian_thrall_guest");
+							local militia = roster.create("scripts/entity/tactical/humans/barbarian_thrall_guest");
 							militia.setFaction(1);
-							militia.setPlaceInFormation(19 + i);
 							militia.assignRandomEquipment();
 						}
+						this.Contract.positionGuests();
 						return 0;
 					}
 

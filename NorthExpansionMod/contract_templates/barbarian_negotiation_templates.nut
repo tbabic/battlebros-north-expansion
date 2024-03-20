@@ -111,6 +111,43 @@
 
 			});
 			
+			this.Options.push({
+				Text = this.Flags.getAsFloat("NEM_unitOffer") > 0 ? "We'll need more of your men for this." : "We'll need some of your men for this."
+				function getResult()
+				{
+					this.Contract.m.Payment.Annoyance += this.Math.maxf(1.0, this.Math.rand(this.Const.Contracts.Settings.NegotiationAnnoyanceGainMin, this.Const.Contracts.Settings.NegotiationAnnoyanceGainMax) * this.World.Assets.m.NegotiationAnnoyanceMult);
+					local unitCosts = [];
+					local units = [];
+										
+					if (this.Contract.m.Payment.Annoyance > this.Const.Contracts.Settings.NegotiationMaxAnnoyance)
+					{
+						return "Negotiation.Fail";
+					}
+					
+					local oldOffer = this.Flags.getAsFloat("NEM_unitOffer");
+					this.Contract.moreHelp();
+					local currentOffer = this.Flags.getAsFloat("NEM_unitOffer");
+					
+
+					if (currentOffer == oldOffer || this.Math.rand(1, 100) <= this.Const.Contracts.Settings.NegotiationRefuseChance * this.Contract.m.Payment.Annoyance )
+					{
+						this.Contract.m.Payment.IsFinal = true;
+						local oldOffer = this.Flags.set("NEM_unitOffer", oldOffer);
+						
+					}
+					else
+					{
+						local totalUnitCost = this.Contract.calculateHelpUnits();
+						this.Contract.m.Payment.IsFinal = false;
+						this.Contract.m.Payment.Advance = 0;
+						this.Contract.m.Payment.Completion = 1 - this.Math.minf(1.0, totalUnitCost/this.Contract.m.Payment.Pool);
+						this.logInfo("Completion: " + this.Contract.m.Payment.Completion);
+					}
+
+					return "Negotiation";
+				}
+
+			});
 
 			if (this.Contract.m.Payment.Advance < 1.0)
 			{
@@ -118,6 +155,14 @@
 					Text = this.Contract.m.Payment.Advance == 0 ? "We need payment in advance." : "We need more payment in advance.",
 					function getResult()
 					{
+						
+						if(this.Flags.getAsFloat("NEM_unitOffer") > 0)
+						{
+							this.Contract.m.Payment.Advance = 0;
+							this.Contract.m.Payment.Completion = 1;
+							this.Flags.set("NEM_unitOffer", 0)
+						}
+						
 						this.Contract.m.Payment.Annoyance += this.Math.maxf(1.0, this.Math.rand(this.Const.Contracts.Settings.NegotiationAnnoyanceGainMin, this.Const.Contracts.Settings.NegotiationAnnoyanceGainMax) * this.World.Assets.m.NegotiationAnnoyanceMult);
 
 						if (this.Contract.m.Payment.Advance >= this.World.Assets.m.AdvancePaymentCap || this.Contract.m.Payment.Annoyance > this.Const.Contracts.Settings.NegotiationMaxAnnoyance)
@@ -149,15 +194,26 @@
 					function getResult()
 					{
 						this.Contract.m.Payment.Annoyance += this.Math.maxf(1.0, this.Math.rand(this.Const.Contracts.Settings.NegotiationAnnoyanceGainMin, this.Const.Contracts.Settings.NegotiationAnnoyanceGainMax) * this.World.Assets.m.NegotiationAnnoyanceMult);
-
+						
 						if (this.Contract.m.Payment.Annoyance > this.Const.Contracts.Settings.NegotiationMaxAnnoyance)
 						{
 							return "Negotiation.Fail";
 						}
-
+						
+						local oldOffer = this.Flags.getAsFloat("NEM_unitOffer");
+						
 						if (this.Math.rand(1, 100) <= this.Const.Contracts.Settings.NegotiationRefuseChance * this.Contract.m.Payment.Annoyance)
 						{
 							this.Contract.m.Payment.IsFinal = true;
+						}
+						else if (oldOffer > 0)
+						{
+							this.Contract.lessHelp();
+							local totalUnitCost = this.Contract.calculateHelpUnits();
+							local currentOffer = this.Flags.getAsFloat("NEM_unitOffer");
+							
+							this.Contract.m.Payment.Advance = 0.0;
+							this.Contract.m.Payment.Completion = 1 - this.Math.minf(1.0, totalUnitCost/this.Contract.m.Payment.Pool);
 						}
 						else
 						{
@@ -199,7 +255,39 @@
 
 			if (this.Contract.m.Payment.Completion != 0 && this.Contract.m.Payment.Advance == 0)
 			{
-				this.Text += "{You\'ll get | You are to receive | You\'ll be paid | It\'s} %reward_completion% crowns when the contract is done.%SPEECH_OFF%";
+				this.Text += "{You\'ll get | You are to receive | You\'ll be paid | It\'s} %reward_completion% crowns when the contract is done."
+				if (this.Flags.getAsFloat("NEM_unitOffer") > 0)
+				{
+					local thralls = this.Flags.getAsInt("NEM_thralls");
+					local marauders = this.Flags.getAsInt("NEM_marauders");
+					local champions = this.Flags.getAsInt("NEM_champions");
+					this.Text += " I will also send to help you "
+					if (thralls > 0)
+					{
+						this.Text += thralls + " thrall" + ((thralls > 1) ? "s" : "" );
+						if (marauders > 0 && champions > 0) {
+							this.Text +=", "
+						}
+						else if (marauders > 0 || champions > 0)
+						{
+							this.Text += " and "
+						}
+					}
+					if (marauders > 0)
+					{
+						this.Text += marauders + " reaver" + ((marauders > 1) ? "s" : "" );
+						if (champions > 0) {
+							this.Text += " and "
+						}
+					}
+					if (champions > 0)
+					{
+						this.Text += champions + " chosen";
+					}
+					this.Text += "."
+				}
+				
+				this.Text +="%SPEECH_OFF%";
 			}
 			else if (this.Contract.m.Payment.Completion == 0 && this.Contract.m.Payment.Advance != 0)
 			{

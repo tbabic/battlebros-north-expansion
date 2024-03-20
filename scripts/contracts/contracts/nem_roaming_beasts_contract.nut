@@ -1,4 +1,4 @@
-this.nem_roaming_beasts_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_roaming_beasts_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 		Target = null,
 		IsPlayerAttacking = true
@@ -41,6 +41,7 @@ this.nem_roaming_beasts_contract <- this.inherit("scripts/contracts/contract", {
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 
 				if (this.Math.rand(1, 100) <= 5 && this.World.Assets.getBusinessReputation() > 500)
 				{
@@ -289,8 +290,8 @@ this.nem_roaming_beasts_contract <- this.inherit("scripts/contracts/contract", {
 
 	function createScreens()
 	{
-		this.importScreens(this.Const.Contracts.NegotiationDefault);
-		this.importScreens(this.Const.Contracts.Overview);
+		this.importScreens(::NorthMod.Const.Contracts.NegotiationDefault);
+		this.importScreens(::NorthMod.Const.Contracts.Overview);
 		this.m.Screens.push({
 			ID = "Task",
 			Title = "Negotiations",

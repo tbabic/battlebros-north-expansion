@@ -1,14 +1,14 @@
-this.barbarian_chosen_guest <- this.inherit("scripts/entity/tactical/player", {
+this.barbarian_champion <- this.inherit("scripts/entity/tactical/human", {
 	m = {},
 	function create()
 	{
-		this.m.Type = this.Const.EntityType.BarbarianChosen;
+		this.m.Type = this.Const.EntityType.BarbarianChampion;
 		this.m.BloodType = this.Const.BloodType.Red;
-		this.m.XP = this.Const.Tactical.Actor.BarbarianChosen.XP;
+		this.m.XP = this.Const.Tactical.Actor.BarbarianChampion.XP;
 		this.human.create();
 		this.m.Faces = this.Const.Faces.WildMale;
 		this.m.Hairs = this.Const.Hair.WildMale;
-		this.m.HairColors = this.Const.HairColors.Old;
+		this.m.HairColors = this.Const.HairColors.All;
 		this.m.Beards = this.Const.Beards.WildExtended;
 		this.m.SoundPitch = 0.95;
 		this.m.AIAgent = this.new("scripts/ai/tactical/player_agent");
@@ -41,7 +41,7 @@ this.barbarian_chosen_guest <- this.inherit("scripts/entity/tactical/player", {
 		}
 
 		local b = this.m.BaseProperties;
-		b.setValues(this.Const.Tactical.Actor.BarbarianChosen);
+		b.setValues(this.Const.Tactical.Actor.BarbarianChampion);
 		this.m.ActionPoints = b.ActionPoints;
 		this.m.Hitpoints = b.Hitpoints;
 		this.m.CurrentProperties = clone b;
@@ -63,8 +63,6 @@ this.barbarian_chosen_guest <- this.inherit("scripts/entity/tactical/player", {
 		this.m.Skills.add(this.new("scripts/skills/perks/perk_anticipation"));
 		this.m.Skills.add(this.new("scripts/skills/perks/perk_battle_forged"));
 		this.m.Skills.add(this.new("scripts/skills/perks/perk_berserk"));
-		this.m.Skills.add(this.new("scripts/skills/perks/perk_killing_frenzy"));
-		this.m.Skills.add(this.new("scripts/skills/perks/perk_devastating_strikes"));
 		this.m.Skills.add(this.new("scripts/skills/perks/perk_crippling_strikes"));
 		this.m.Skills.add(this.new("scripts/skills/perks/perk_coup_de_grace"));
 		this.m.Skills.add(this.new("scripts/skills/perks/perk_hold_out"));
@@ -73,42 +71,50 @@ this.barbarian_chosen_guest <- this.inherit("scripts/entity/tactical/player", {
 		this.m.Skills.add(this.new("scripts/skills/perks/perk_pathfinder"));
 	}
 
-	function onDeath( _killer, _skill, _tile, _fatalityType )
-	{
-		if (!this.Tactical.State.isScenarioMode() && _killer != null && _killer.isPlayerControlled())
-		{
-			this.updateAchievement("KingOfTheNorth", 1, 1);
-		}
-
-		this.human.onDeath(_killer, _skill, _tile, _fatalityType);
-	}
-
 	function assignRandomEquipment()
 	{
 		if (this.m.Items.hasEmptySlot(this.Const.ItemSlot.Mainhand))
 		{
 			local weapons = [
+				"weapons/barbarians/skull_hammer",
+				"weapons/barbarians/two_handed_spiked_mace",
 				"weapons/barbarians/rusty_warblade",
 				"weapons/barbarians/heavy_rusty_axe"
 			];
 			this.m.Items.equip(this.new("scripts/items/" + weapons[this.Math.rand(0, weapons.len() - 1)]));
 		}
 
+		if (this.getIdealRange() == 1 && this.Math.rand(1, 100) <= 50)
+		{
+			local weapons = [
+				"weapons/throwing_axe",
+				"weapons/javelin"
+			];
+
+			if (this.Const.DLC.Unhold)
+			{
+				weapons.push("weapons/throwing_spear");
+			}
+
+			this.m.Items.equip(this.new("scripts/items/" + weapons[this.Math.rand(0, weapons.len() - 1)]));
+		}
+
 		if (this.m.Items.hasEmptySlot(this.Const.ItemSlot.Body))
 		{
 			local armor = [
+				"armor/barbarians/rugged_scale_armor",
+				"armor/barbarians/heavy_iron_armor",
 				"armor/barbarians/thick_plated_barbarian_armor"
 			];
-			local a = this.new("scripts/items/" + armor[this.Math.rand(0, armor.len() - 1)]);
-			local u = this.new("scripts/items/armor_upgrades/barbarian_horn_upgrade");
-			a.setUpgrade(u);
-			this.m.Items.equip(a);
+			this.m.Items.equip(this.new("scripts/items/" + armor[this.Math.rand(0, armor.len() - 1)]));
 		}
 
 		if (this.m.Items.hasEmptySlot(this.Const.ItemSlot.Head))
 		{
 			local helmet = [
-				"helmets/barbarians/heavy_horned_plate_helmet"
+				"helmets/barbarians/crude_faceguard_helmet",
+				"helmets/barbarians/closed_scrap_metal_helmet",
+				"helmets/barbarians/crude_metal_helmet"
 			];
 			this.m.Items.equip(this.new("scripts/items/" + helmet[this.Math.rand(0, helmet.len() - 1)]));
 		}
@@ -117,6 +123,7 @@ this.barbarian_chosen_guest <- this.inherit("scripts/entity/tactical/player", {
 			item.m.IsDroppedAsLoot = false
 		}
 	}
+
 
 });
 
