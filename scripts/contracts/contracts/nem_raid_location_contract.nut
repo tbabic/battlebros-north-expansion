@@ -1,4 +1,4 @@
-this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 		Destination = null,
 		Settlement = null
@@ -58,6 +58,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/contract", {
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 				this.Contract.m.Destination.setDiscovered(true);
 				this.World.uncoverFogOfWar(this.Contract.m.Destination.getTile().Pos, 500.0);
 				

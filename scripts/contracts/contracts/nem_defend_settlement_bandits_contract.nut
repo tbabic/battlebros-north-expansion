@@ -1,4 +1,4 @@
-this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 		Reward = 0
 	},
@@ -57,6 +57,7 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/c
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 				local nearestBandits = this.Contract.getNearestLocationTo(this.Contract.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).getSettlements());
 				local nearestZombies = this.Contract.getNearestLocationTo(this.Contract.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Zombies).getSettlements());
 

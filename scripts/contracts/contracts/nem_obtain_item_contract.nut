@@ -1,4 +1,4 @@
-this.nem_obtain_item_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_obtain_item_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 		Destination = null,
 		RiskItem = null,
@@ -62,6 +62,7 @@ this.nem_obtain_item_contract <- this.inherit("scripts/contracts/contract", {
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 				this.Contract.m.Destination.clearTroops();
 				this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.UndeadArmy, 100 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
 				this.Contract.m.Destination.setLootScaleBasedOnResources(100 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());

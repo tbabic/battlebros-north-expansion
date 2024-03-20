@@ -1,4 +1,4 @@
-this.nem_hunting_raiders_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_hunting_raiders_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 	},
 	function create()
@@ -56,6 +56,7 @@ this.nem_hunting_raiders_contract <- this.inherit("scripts/contracts/contract", 
 				local enemyFactionID = this.getEnemyFaction();
 				local enemyFaction = this.World.FactionManager.getFaction(enemyFaction);
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 				local nearestBandits = this.Contract.getNearestLocationTo(this.Contract.m.Home, enemyFaction.getSettlements());
 				
 				local originTile = this.Contract.m.Home.getTile();

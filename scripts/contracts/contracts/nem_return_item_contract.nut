@@ -1,4 +1,4 @@
-this.nem_return_item_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_return_item_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 		Target = null,
 		IsPlayerAttacking = true
@@ -55,6 +55,7 @@ this.nem_return_item_contract <- this.inherit("scripts/contracts/contract", {
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 				local r = this.Math.rand(1, 100);
 
 				if (r <= 5)

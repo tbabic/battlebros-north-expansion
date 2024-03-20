@@ -1,4 +1,4 @@
-this.nem_hunting_schrats_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_hunting_schrats_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 		Target = null,
 		Dude = null,
@@ -57,6 +57,7 @@ this.nem_hunting_schrats_contract <- this.inherit("scripts/contracts/contract", 
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 				local r = this.Math.rand(1, 100);
 
 				if (r <= 20)

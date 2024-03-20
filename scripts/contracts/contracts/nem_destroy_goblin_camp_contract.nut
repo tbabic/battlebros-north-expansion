@@ -1,4 +1,4 @@
-this.nem_destroy_goblin_camp_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_destroy_goblin_camp_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 		Destination = null
 	},
@@ -59,6 +59,7 @@ this.nem_destroy_goblin_camp_contract <- this.inherit("scripts/contracts/contrac
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 				this.Contract.m.Destination.clearTroops();
 				this.Contract.m.Destination.setLastSpawnTimeToNow();
 

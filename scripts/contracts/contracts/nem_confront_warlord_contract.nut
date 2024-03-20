@@ -1,4 +1,4 @@
-this.nem_confront_warlord_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_confront_warlord_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 		Destination = null,
 		Dude = null,
@@ -66,6 +66,7 @@ this.nem_confront_warlord_contract <- this.inherit("scripts/contracts/contract",
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 				this.Flags.set("MaxScore", 10 * this.Contract.getDifficultyMult());
 				this.Flags.set("LastRandomTime", 0.0);
 				local r = this.Math.rand(1, 100);

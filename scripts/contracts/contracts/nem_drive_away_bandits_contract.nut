@@ -1,4 +1,4 @@
-this.nem_drive_away_bandits_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_drive_away_bandits_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 		Destination = null,
 		Dude = null,
@@ -64,6 +64,7 @@ this.nem_drive_away_bandits_contract <- this.inherit("scripts/contracts/contract
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 				this.Contract.m.Destination.clearTroops();
 				this.Contract.m.Destination.setLastSpawnTimeToNow();
 

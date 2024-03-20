@@ -1,4 +1,4 @@
-this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 		Destination = null,
 		Threat = null,
@@ -61,6 +61,7 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/contract", {
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 				local f = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
 				
 				local nearest = ::NorthMod.Utils.nearestBarbarianNeighbour(this.Contract.m.Home);

@@ -1,4 +1,4 @@
-this.nem_defend_settlement_greenskins_contract <- this.inherit("scripts/contracts/contract", {
+this.nem_defend_settlement_greenskins_contract <- this.inherit("scripts/contracts/barbarian_contract", {
 	m = {
 		Reward = 0
 	},
@@ -57,6 +57,7 @@ this.nem_defend_settlement_greenskins_contract <- this.inherit("scripts/contract
 			function end()
 			{
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
+				this.Contract.addGuests();
 				local r = this.Math.rand(1, 100);
 				local nearestOrcs = this.Contract.getNearestLocationTo(this.Contract.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Orcs).getSettlements());
 				local nearestGoblins = this.Contract.getNearestLocationTo(this.Contract.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Goblins).getSettlements());
