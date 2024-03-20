@@ -10,7 +10,7 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 			"sounds/combat/unleash_wardog_04.wav"
 		],
 		Friend = null,
-		XP = 0
+		Level = 1
 	},
 	function isAllowedInBag()
 	{
@@ -46,17 +46,9 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 
 	function getDescription()
 	{
-	
-		local xp = this.m.XP;
-		local nextLevel = this.getNextLevel();
-		local xpDesc = "";
-		if (nextLevel != null)
-		{
-			xpDesc = "\n\nXP: " + xp + " / " + nextLevel;
-		}
 		if (this.m.Entity == null)
 		{
-			return this.item.getDescription() + xpDesc;
+			return this.item.getDescription();
 		}
 		else
 		{

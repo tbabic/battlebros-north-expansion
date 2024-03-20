@@ -5,7 +5,6 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 	},
 	function setItem( _i )
 	{
-		logInfo("setting item: " + _i.m.XP);
 		if (typeof _i == "instance")
 		{
 			this.m.Item = _i;
@@ -14,41 +13,23 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 		{
 			this.m.Item = this.WeakTableRef(_i);
 		}
-		logInfo("item set: " + this.m.Item.m.XP);
-		
-		local extraPerks = this.getExtraPerks();
-		foreach (perk in extraPerks)
+		if (this.m.Item.m.Level == 2)
 		{
-			this.m.Skills.add(this.new(perk));
+			
+			local b = this.m.BaseProperties;
+			b.setValues(this.Const.Tactical.Actor.FrenziedDirewolf);
+			b.IsAffectedByNight = false;
+			b.TargetAttractionMult = 0.1;
+			b.IsAffectedByInjuries = false;
+			b.IsImmuneToDisarm = true;
+			this.m.ActionPoints = b.ActionPoints;
+			this.m.Hitpoints = b.Hitpoints;
+			this.m.CurrentProperties = clone b;
+			
+			
+			this.m.Skills.add(this.new("scripts/skills/perks/perk_overwhelm"));
+			this.m.Skills.add(this.new("scripts/skills/perks/perk_relentless"));
 		}
-	}
-	
-	function getExtraPerks()
-	{
-		local xp = this.m.Item.m.XP;
-		local perks = [];
-		local xpLevels = this.m.Item.getXPLevels();
-		local allPerks = [
-			"scripts/skills/perks/perk_colossus",
-			"scripts/skills/perks/perk_fortified_mind",
-			"scripts/skills/perks/perk_relentless",
-			"scripts/skills/perks/perk_overwhelm",
-			"scripts/skills/perks/perk_steel_brow",
-			"scripts/skills/perks/perk_nimble",
-			"scripts/skills/perks/perk_lone_wolf"
-		];
-		
-		
-		for (local i = 0; i < allPerks.len() && i < xpLevels.len(); i++)
-		{
-			if (xp >= xpLevels[i])
-			{
-				perks.push(allPerks[i]);
-			}
-		}
-		
-		return perks;
-		
 	}
 
 	function setName( _n )
@@ -279,18 +260,8 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 
 		if (this.getFaction() == this.Const.Faction.Player || this.getFaction() == this.Const.Faction.PlayerAnimals)
 		{
-			local xpValue = _actor.getXPValue();
-			local XPgroup = this.Math.round(0.5 * xpValue);
-			
-			
+			local XPgroup = _actor.getXPValue();
 			local brothers = this.Tactical.Entities.getInstancesOfFaction(this.Const.Faction.Player);
-			if (this.m.Item.m.XP < 15000)
-			{
-				this.m.Item.m.XP += this.Math.floor(xpValue - XPgroup);
-			}
-			else {
-				XPgroup = xpValue;
-			}
 
 			foreach( bro in brothers )
 			{
@@ -298,7 +269,7 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 				{
 					return;
 				}
-				
+
 				bro.addXP(this.Math.max(1, this.Math.floor(XPgroup / brothers.len())));
 			}
 		}

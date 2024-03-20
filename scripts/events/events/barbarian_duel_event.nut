@@ -265,7 +265,7 @@ this.barbarian_duel_event <- this.inherit("scripts/events/event", {
 		local activeContract = this.World.Contracts.getActiveContract();
 		
 		//TODO: check if part of contract
-		if (activeContract != null && activeContract.getID() == "contract.drive_away_barbarians")
+		if (activeContract != null && (activeContract.getID() == "contract.drive_away_barbarians" || activeContract.getID() == "contract.nem_drive_away_barbarians" ))
 		{	
 			if (activeContract.m.Destination == this.m.Location)
 			{

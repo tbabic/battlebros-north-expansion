@@ -98,12 +98,17 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 			return;
 		}
 		
+		if(this.World.Flags.getAsInt("NorthExpansionCivilLevel") <= 1)
+		{
+			return false;
+		}
+		
 		if (!this.World.Ambitions.hasActiveAmbition() || this.World.Ambitions.getActiveAmbition().getID() != "ambition.make_civil_friends")
 		{
 			return;
 		}
 		
-		if(this.World.Statistics.getFlags().get("NorthExpansionRedemptionAccepted"))
+		if(this.World.getFlags().get("NorthExpansionRedemptionAccepted"))
 		{
 			return;
 		}
@@ -137,25 +142,14 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 		
 		
 		local nobles = this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse);
-		local totalScore = 0;
+		local scores = [];
 		foreach (n in nobles)
 		{
-			totalScore += 5 + n.getPlayerRelation();
+			scores.push( 5 + n.getPlayerRelation());
 		}
 		
-		local r = this.Math.rand(1, totalScore);
-		foreach (n in nobles)
-		{
-			if (r <= 5 + n.getPlayerRelation())
-			{
-				this.m.Faction = n;
-				break;
-			}
-			totalScore -= 5 + n.getPlayerRelation();
-		}
-		
-		
-		
+		local picked = ::NorthMod.Utils.scorePicker(scores);
+		this.m.Faction = nobles[picked];
 		
 		this.m.Score = 100;
 	}

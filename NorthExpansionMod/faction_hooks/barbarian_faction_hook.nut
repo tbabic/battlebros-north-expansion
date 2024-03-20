@@ -13,17 +13,4 @@
         }
     });
     
-    ::mods_override(o, "addContract", function(_c)
-	{
-        logInfo("adding contract");
-        _c.setFaction(this.getID());
-		this.m.Contracts.push(_c);
-    });
-    
-    ::mods_override(o, "isReadyForContract", function() {
-        //TODO: barbairans ready for contract
-        
-        return true;
-    });
-    
 });
