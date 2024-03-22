@@ -273,7 +273,7 @@ this.barbarian_duel_event <- this.inherit("scripts/events/event", {
 			}
 		}
 		
-		if (!this.World.Flags.get("NorthExpansionCivilActive") )
+		if (!this.World.Flags.get("NorthExpansionActive") )
 		{
 			return false;
 		}

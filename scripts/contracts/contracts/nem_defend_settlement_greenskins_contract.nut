@@ -246,8 +246,8 @@ this.nem_defend_settlement_greenskins_contract <- this.inherit("scripts/contract
 
 	function createScreens()
 	{
-		this.importScreens(this.Const.Contracts.NegotiationDefault);
-		this.importScreens(this.Const.Contracts.Overview);
+		this.importScreens(::NorthMod.Const.Contracts.NegotiationDefault);
+		this.importScreens(::NorthMod.Const.Contracts.Overview);
 		this.m.Screens.push({
 			ID = "Task",
 			Title = "Negotiations",

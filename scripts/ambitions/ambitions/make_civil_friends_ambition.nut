@@ -24,7 +24,7 @@ this.make_civil_friends_ambition <- this.inherit("scripts/ambitions/ambition", {
 		{
 			return;
 		}
-		if (!this.World.Flags.get("NorthExpansionCivilActive"))
+		if (!this.World.Flags.get("NorthExpansionActive"))
 		{
 			return;
 		}

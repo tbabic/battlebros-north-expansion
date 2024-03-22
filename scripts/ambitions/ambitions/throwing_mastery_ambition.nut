@@ -37,7 +37,7 @@ this.throwing_mastery_ambition <- this.inherit("scripts/ambitions/ambition", {
 
 	function onUpdateScore()
 	{
-		if (!this.World.Flags.get("NorthExpansionCivilActive"))
+		if (!this.World.Flags.get("NorthExpansionActive"))
 		{
 			return;
 		}

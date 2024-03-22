@@ -26,7 +26,7 @@
 	local makeEveryoneFriendlyToPlayer = ::mods_getMember(o, "makeEveryoneFriendlyToPlayer");
 	::mods_override(o, "makeEveryoneFriendlyToPlayer", function() {
 		logInfo("make friendly relations");
-		if(this.World.Flags.get("NorthExpansionCivilActive") && this.World.Flags.get("NorthExpansionCivilLevel") <= 1)
+		if(this.World.Flags.get("NorthExpansionActive") && this.World.Flags.get("NorthExpansionCivilLevel") <= 1)
 		{
 			logInfo("make friendly relations disabled");
 			return;

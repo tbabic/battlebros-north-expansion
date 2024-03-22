@@ -14,6 +14,14 @@
 			return;
 		}
 		
+		if (this.World.Flags.get("NorthExpansionActive") && this.World.Flags.getAsInt("NorthExpansionCivilLevel") < 3)
+		{
+			this.getFlags().set("NEM_locationActive", true);
+		}
+		
+		
+
+		
 		logInfo("barbarian camp conversion: " + this.getTypeID());
 		if (this.getTypeID() == "location.barbarian_shelter") 
 		{
@@ -101,9 +109,9 @@
 				return false;
 			}
 			
-			if (this.World.Flags.get("NorthExpansionCivilLevel") > 1)
+			if (this.World.Flags.getAsInt("NorthExpansionCivilLevel") > 1)
 			{
-				this.logInfo("civil level: " + this.World.Flags.get("NorthExpansionCivilLevel"));
+				this.logInfo("civil level: " + this.World.Flags.getAsInt("NorthExpansionCivilLevel"));
 				return false;
 			}
 
@@ -459,6 +467,11 @@
 		{
 			return "goods";
 		}
+		
+		getCulture <- function()
+		{
+			this.Const.World.Culture.Northern;
+		}
 			
 		hasBuilding <- function( _id )
 		{
@@ -615,6 +628,14 @@
 			{
 				this.m.Situations[g].onRemoved(this);
 				this.m.Situations.remove(g);
+			}
+			
+			foreach( building in this.m.Buildings )
+			{
+				if (building != null)
+				{
+					building.onSettlementEntered();
+				}
 			}
 		}
 
@@ -794,7 +815,7 @@
 		}
 		
 		this.isReadyForContract <- function() {
-			logInfo("isReadyForContract: " + this.getID());
+			//logInfo("isReadyForContract: " + this.getID());
 			if (this.getContracts().len() >= this.m.CampSize)
 			{
 				return false;
@@ -875,6 +896,26 @@
 		local _onSerialize = ::mods_getMember(this, "onSerialize");
 		::mods_override(this, "onSerialize", function(_out) {
 			_onSerialize(_out);
+				
+			if (!this.getFlags().get("NEM_locationActive"))
+			{
+				return;
+			}
+			
+			_out.writeU8(this.m.Buildings.len());
+			foreach( building in this.m.Buildings )
+			{
+				if (building == null)
+				{
+					_out.writeU32(0);
+				}
+				else
+				{
+					_out.writeI32(building.ClassNameHash);
+					building.onSerialize(_out);
+				}
+			}
+			
 			_out.writeU8(this.m.Situations.len());
 
 			foreach( s in this.m.Situations )
@@ -897,6 +938,28 @@
 		local _onDeserialize = ::mods_getMember(this, "onDeserialize");
 		::mods_override(this, "onDeserialize", function(_in) {
 			_onDeserialize(_in);
+			
+			if (!this.getFlags().get("NEM_locationActive"))
+			{
+				return;
+			}
+			
+			this.m.Buildings = [];
+			this.m.Buildings.resize(6, null);
+			local numBuildings = _in.readU8();
+
+			for( local i = 0; i < numBuildings; i = ++i )
+			{
+				local id = _in.readU32();
+
+				if (id != 0)
+				{
+					this.m.Buildings[i] = this.new(this.IO.scriptFilenameByHash(id));
+					this.m.Buildings[i].setSettlement(this);
+					this.m.Buildings[i].onDeserialize(_in);
+				}
+			}
+			
 			local numSituations = _in.readU8();
 			this.m.Situations.resize(numSituations);
 
@@ -909,7 +972,7 @@
 			this.m.Modifiers.reset();
 			local cooldownUntil = _in.readF32();
 			this.m.ContractAction.setCooldownUntil(cooldownUntil);
-			this.m.ContractAction.setCooldownUntil(0); //remove
+			//this.m.ContractAction.setCooldownUntil(0); //remove
 			local actions = this.m.ContractAction.m.ContractActions;
 			
 			local numCooldowns = _in.readU16();
@@ -925,7 +988,7 @@
 					if (actions[j].ClassNameHash == actionID)
 					{
 						actions[j].setCooldownUntil(cooldownUntil);
-						actions[j].setCooldownUntil(0); // remove
+						//actions[j].setCooldownUntil(0); // remove
 						break;
 					}
 				}

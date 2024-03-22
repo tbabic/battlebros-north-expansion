@@ -237,8 +237,8 @@ this.nem_drive_away_bandits_contract <- this.inherit("scripts/contracts/barbaria
 
 	function createScreens()
 	{
-		this.importScreens(this.Const.Contracts.NegotiationDefault);
-		this.importScreens(this.Const.Contracts.Overview);
+		this.importScreens(::NorthMod.Const.Contracts.NegotiationDefault);
+		this.importScreens(::NorthMod.Const.Contracts.Overview);
 		this.m.Screens.push({
 			ID = "Task",
 			Title = "Negotiations",

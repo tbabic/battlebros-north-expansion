@@ -624,11 +624,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		logInfo("flag:" + f);
 		local barbarians = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
 		this.logInfo(barbarians);
-		if (barbarians == null)
-		{
-			return;
-		}
-		barbarians.setPlayerRelation(50);
+		
 		if (this.World.Flags.get("NorthExpansionCivilLevel") >= 3)
 		{
 			this.World.Assets.m.BrothersMax = 20;

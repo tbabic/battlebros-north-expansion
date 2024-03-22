@@ -169,7 +169,7 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 			return;
 		}
 		
-		if (!this.World.Flags.get("NorthExpansionCivilActive") )
+		if (!this.World.Flags.get("NorthExpansionActive") )
 		{
 			return;
 		}

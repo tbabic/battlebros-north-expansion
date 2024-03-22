@@ -326,6 +326,22 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 		logInfo("stash list size:"  + list.len());
 		logInfo("stash size:"  + this.m.Stash.getItems().len());
 	}
+	
+	function onClicked( _townScreen )
+	{
+		this.logInfo("on click: " + this.m.Stash.getItems().len());
+		foreach( item in this.m.Stash.getItems() )
+		{
+			if (item != null)
+			{
+				this.logInfo("item: " + item.getName());
+			}
+		}
+		
+		_townScreen.getShopDialogModule().setShop(this);
+		_townScreen.showShopDialog();
+		this.pushUIMenuStack();
+	}
 
 });
 

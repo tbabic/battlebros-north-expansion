@@ -220,8 +220,8 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 
 	function createScreens()
 	{
-		this.importScreens(this.Const.Contracts.NegotiationDefault);
-		this.importScreens(this.Const.Contracts.Overview);
+		this.importScreens(::NorthMod.Const.Contracts.NegotiationDefault);
+		this.importScreens(::NorthMod.Const.Contracts.Overview);
 		this.m.Screens.push({
 			ID = "Task",
 			Title = "Negotiations",

@@ -54,7 +54,7 @@ this.king_ambition <- this.inherit("scripts/ambitions/ambition", {
 		{
 			return;
 		}
-		if (!this.World.Flags.get("NorthExpansionCivilActive"))
+		if (!this.World.Flags.get("NorthExpansionActive"))
 		{
 			return;
 		}

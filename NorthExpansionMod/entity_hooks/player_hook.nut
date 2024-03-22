@@ -2,7 +2,7 @@
 	local onInit = ::mods_getMember(o, "onInit");
 	::mods_override(o, "onInit", function() {
 		onInit();
-		if (this.World.Flags.get("NorthExpansionCivilActive"))
+		if (this.World.Flags.get("NorthExpansionActive"))
 		{
 			this.m.Skills.add(this.new("scripts/skills/effects/skald_horn_effect"));
 		}

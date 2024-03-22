@@ -57,7 +57,7 @@ this.nem_return_item_contract <- this.inherit("scripts/contracts/barbarian_contr
 				this.World.Assets.addMoney(this.Contract.m.Payment.getInAdvance());
 				this.Contract.addGuests();
 				local r = this.Math.rand(1, 100);
-
+				
 				if (r <= 5)
 				{
 					if (this.Contract.getDifficultyMult() >= 0.95)
@@ -100,7 +100,7 @@ this.nem_return_item_contract <- this.inherit("scripts/contracts/barbarian_contr
 				}
 				else
 				{
-					party = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).spawnEntity(tile, "Thieves", false, this.Const.World.Spawn.BanditRaiders, 80 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
+					party = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).spawnEntity(tile, "Thieves", false, this.Const.World.Spawn.Barbarians, 80 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
 					party.setDescription("A group of sturdy northmen.");
 					party.setFootprintType(this.Const.World.FootprintsType.Barbarians);
 				}
@@ -218,8 +218,8 @@ this.nem_return_item_contract <- this.inherit("scripts/contracts/barbarian_contr
 
 	function createScreens()
 	{
-		this.importScreens(this.Const.Contracts.NegotiationDefault);
-		this.importScreens(this.Const.Contracts.Overview);
+		this.importScreens(::NorthMod.Const.Contracts.NegotiationDefault);
+		this.importScreens(::NorthMod.Const.Contracts.Overview);
 		this.m.Screens.push({
 			ID = "Task",
 			Title = "Negotiations",
