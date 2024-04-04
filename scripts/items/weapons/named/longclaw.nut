@@ -29,7 +29,7 @@ this.longclaw <- this.inherit("scripts/items/weapons/named/named_weapon", {
 	{
 		this.m.IconLarge = "weapons/melee/longclaw.png";
 		this.m.Icon = "weapons/melee/longclaw_70x70.png";
-		this.m.ArmamentIcon = "icon_named_sword_01";
+		this.m.ArmamentIcon = "icon_longclaw";
 	}
 
 	function onEquip()

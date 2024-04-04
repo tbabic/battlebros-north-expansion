@@ -161,7 +161,11 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 				else
 				{
 					this.logInfo("show combat");
-					this.World.Contracts.showCombatDialog();
+					local properties = this.World.State.getLocalCombatProperties(this.World.State.getPlayer().getPos());
+					properties.TemporaryEnemies = [
+						this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID()
+					];
+					this.World.Contracts.startScriptedCombat(properties, _isPlayerAttacking, true, true);
 				}
 			}
 
@@ -485,7 +489,10 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 							};
 							
 							_event.registerToShowAfterCombat("TheDuel2","TheDuel3");
-							this.World.State.startScriptedCombat(p, false, true, false);
+							properties.TemporaryEnemies = [
+								this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID()
+							];
+							this.World.State.startScriptedCombat(properties, false, true, false);
 							
 							return 0;
 						}
@@ -701,6 +708,9 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 						properties.EnemyBanners.push(this.Flags.get("EnemyBanner"));
 						properties.Entities = [];
 						this.Const.World.Common.addUnitsToCombat(properties.Entities, this.Const.World.Spawn.Barbarians, 110 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult(), this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID());
+						properties.TemporaryEnemies = [
+							this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID()
+						];
 						this.World.Contracts.startScriptedCombat(properties, false, true, false);
 						return 0;
 					}
@@ -846,6 +856,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 			if (this.m.Destination != null && !this.m.Destination.isNull())
 			{
 				this.m.Destination.getSprite("selection").Visible = false;
+				::NorthMod.Utils.setIsHostile(this.Contract.m.Destination, false);
 				this.m.Destination.setOnCombatWithPlayerCallback(null);
 			}
 

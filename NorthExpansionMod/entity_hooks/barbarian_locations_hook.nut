@@ -83,6 +83,7 @@
 			
 			else if (_location.isEnterable())
 			{
+				_location.updateSituations();
 				_location.updateRoster();
 				_location.updateShop();
 				this.logInfo("enter location:")
@@ -147,17 +148,25 @@
 				BackgroundCenter = backgroundCenter + (night ? "_night" : "") + ".png",
 				BackgroundLeft = null,
 				BackgroundRight = null,
-				Ramp = settlementImages.Ramp + (night ? "_night" : "") + ".png",
+				Ramp = settlementImages.Ramp != null ? settlementImages.Ramp + (night ? "_night" : "") + ".png" : null,
 				RampPathway = "ui/settlements/ramp_01_planks" + (night ? "_night" : "") + ".png",
-				Mood = settlementImages.Mood + ".png",
-				Foreground = settlementImages.Foreground + (night ? "_night" : "") + ".png",
-				Water = null
+				Mood = settlementImages.Mood != null ? settlementImages.Mood + ".png" : null,
+				Foreground = settlementImages.Foreground != null ? settlementImages.Foreground + (night ? "_night" : "") + ".png" : null,
+				Water = null,
 				Slots = [],
 				Situations = [],
 				Contracts = [],
 				IsContractActive = this.World.Contracts.getActiveContract() != null,
 				IsContractsLocked = false
 			};
+			/*logInfo("ui info:");
+			logInfo(result.Background);
+			logInfo(result.BackgroundCenter);
+			logInfo(result.Ramp);
+			logInfo(result.RampPathway);
+			logInfo(result.Mood);
+			logInfo(result.Foreground);
+			*/
 
 			foreach( building in this.m.Buildings )
 			{

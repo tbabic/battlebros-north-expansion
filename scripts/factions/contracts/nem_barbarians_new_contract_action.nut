@@ -133,7 +133,8 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 			"scripts/factions/contracts/nem_defend_settlement_barbarians_action",
 			"scripts/factions/contracts/nem_destroy_orc_camp_action",
 			"scripts/factions/contracts/nem_destroy_goblin_camp_action",
-			"scripts/factions/contracts/nem_confront_warlord_action"
+			"scripts/factions/contracts/nem_confront_warlord_action",
+			"scripts/factions/contracts/nem_discover_location_action"
 			
 			
 	

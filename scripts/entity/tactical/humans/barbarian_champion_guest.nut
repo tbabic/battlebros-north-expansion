@@ -1,11 +1,17 @@
-this.barbarian_champion <- this.inherit("scripts/entity/tactical/human", {
+this.barbarian_champion <- this.inherit("scripts/entity/tactical/player", {
 	m = {},
+	
+	function isReallyKilled( _fatalityType )
+	{
+		return true;
+	}
+	
 	function create()
 	{
 		this.m.Type = this.Const.EntityType.BarbarianChampion;
 		this.m.BloodType = this.Const.BloodType.Red;
 		this.m.XP = this.Const.Tactical.Actor.BarbarianChampion.XP;
-		this.human.create();
+		this.player.create();
 		this.m.Faces = this.Const.Faces.WildMale;
 		this.m.Hairs = this.Const.Hair.WildMale;
 		this.m.HairColors = this.Const.HairColors.All;
@@ -17,7 +23,7 @@ this.barbarian_champion <- this.inherit("scripts/entity/tactical/human", {
 
 	function onInit()
 	{
-		this.human.onInit();
+		this.player.onInit();
 		local tattoos = [
 			3,
 			4,

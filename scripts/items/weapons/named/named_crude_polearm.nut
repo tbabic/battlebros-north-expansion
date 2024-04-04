@@ -36,9 +36,9 @@ this.named_crude_polearm <- this.inherit("scripts/items/weapons/named/named_weap
 
 	function updateVariant()
 	{
-		this.m.IconLarge = "weapons/melee/barbarian_named_polearm_01.png";
-		this.m.Icon = "weapons/melee/barbarian_named_polearm_01_70x70.png";
-		this.m.ArmamentIcon = "icon_barbarian_named_polearm_01";
+		this.m.IconLarge = "weapons/melee/barbarian_named_polearm_02.png";
+		this.m.Icon = "weapons/melee/barbarian_named_polearm_02_70x70.png";
+		this.m.ArmamentIcon = "icon_barbarian_named_polearm_02";
 	}
 
 	function onEquip()

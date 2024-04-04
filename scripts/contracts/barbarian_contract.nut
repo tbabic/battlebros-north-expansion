@@ -126,15 +126,15 @@ this.barbarian_contract <- this.inherit("scripts/contracts/contract", {
 
 		if (relation <= 35)
 		{
-			this.m.Screens.extend(::NorthMod.Const.Contracts.IntroSettlementCold);
+			this.m.Screens.push(::NorthMod.Const.Contracts.IntroSettlementCold);
 		}
 		else if (relation > 70)
 		{
-			this.m.Screens.extend(::NorthMod.Const.Contracts.IntroSettlementFriendly);
+			this.m.Screens.push(::NorthMod.Const.Contracts.IntroSettlementFriendly);
 		}
 		else
 		{
-			this.m.Screens.extend(::NorthMod.Const.Contracts.IntroSettlementNeutral);
+			this.m.Screens.push(::NorthMod.Const.Contracts.IntroSettlementNeutral);
 		}
 	}
 	

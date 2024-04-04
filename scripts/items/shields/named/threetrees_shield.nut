@@ -20,11 +20,11 @@ this.threetrees_shield <- this.inherit("scripts/items/shields/named/named_shield
 
 	function updateVariant()
 	{
-		this.m.Sprite = "shield_round_0" + this.m.Variant;
-		this.m.SpriteDamaged = "shield_round_0" + this.m.Variant + "_damaged";
-		this.m.ShieldDecal = "shield_round_0" + this.m.Variant + "_destroyed";
-		this.m.IconLarge = "shields/named_round_shield_0" + this.m.Variant + ".png";
-		this.m.Icon = "shields/named_round_shield_0" + this.m.Variant + "_70x70.png";
+		this.m.Sprite = "icon_shield_threetrees";
+		this.m.SpriteDamaged = "icon_shield_threetrees_damaged";
+		this.m.ShieldDecal = "";
+		this.m.IconLarge = "shields/shield_threetrees_equipped.png";
+		this.m.Icon = "shields/shield_threetrees.png";
 	}
 
 	function onEquip()

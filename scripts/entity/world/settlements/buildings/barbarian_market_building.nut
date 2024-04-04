@@ -274,10 +274,39 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 		}
 		
 		list.push({
-			R = 50,
+			R = 10,
 			P = 1.0,
 			S = "supplies/roots_and_berries_item"
 		});
+		list.push({
+			R = 10,
+			P = 1.0,
+			S = "supplies/roots_and_berries_item"
+		});
+		
+		list.push({
+			R = 70,
+			P = 1.0,
+			S = "supplies/ground_grains_item"
+		});
+		list.push({
+			R = 50,
+			P = 1.0,
+			S = "supplies/bread_item"
+		});
+		
+		list.push({
+			R = 60,
+			P = 1.0,
+			S = "supplies/cured_venison_item"
+		});
+		
+		list.push({
+			R = 40,
+			P = 1.0,
+			S = "supplies/pickled_mushrooms_item"
+		});
+		
 
 		if (this.m.Settlement.m.CampSize >= 2)
 		{

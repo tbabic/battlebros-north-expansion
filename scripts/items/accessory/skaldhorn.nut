@@ -5,8 +5,8 @@ this.skaldhorn <- this.inherit("scripts/items/accessory/accessory", {
 	{
 		this.accessory.create();
 		this.m.ID = "accessory.skaldhorn";
-		this.m.Name = "Skald\'s Horn";
-		this.m.Description = "A horn worn by the company\'s skald, your second-in-command on the battlefield.";
+		this.m.Name = "War Horn";
+		this.m.Description = "A war horn fashioned of unhold bones worn by your second-in-command on the battlefield.";
 		this.m.SlotType = this.Const.ItemSlot.Accessory;
 		this.m.IsDroppedAsLoot = true;
 		this.m.ShowOnCharacter = false;
@@ -45,6 +45,17 @@ this.skaldhorn <- this.inherit("scripts/items/accessory/accessory", {
 				ally.getSkills().update();
 			}
 		}
+	}
+	
+	
+	function onCombatStarted()
+	{
+		//todo add skald effect on all alliess
+	}
+
+	function onCombatFinished()
+	{
+		//todo remove skald effect from all allies
 	}
 
 });

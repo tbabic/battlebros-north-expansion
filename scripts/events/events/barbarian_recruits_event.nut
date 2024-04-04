@@ -46,7 +46,6 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 				_event.m.Dude.setStartValuesEx([
 					"barbarian_background"
 				]);
-				_event.m.Dude.getBackground().m.RawDescription = "%name% joined you after being exiled from his tribe in the north for refusing to kill his brother. He\'ll fight for you as well as for anyone.";
 				_event.m.Dude.getBackground().buildDescription(true);
 				_event.m.Dude.getItems().equip(this.new("scripts/items/accessory/warhound_item"));
 				this.Characters.push(_event.m.Dude.getImagePath());
@@ -79,16 +78,21 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 		{
 			return;
 		}
-		
-		local settlements = this.World.EntityManager.getSettlements();
+		local faction = this.World.FactionManager.getFaction(this.Const.Faction.Barbarians);
+		local settlements = faction.getSettlements();
 		local inBarbarianVillage = false;
 		local town;
 		local playerTile = this.World.State.getPlayer().getTile();
 		logInfo("findTown");
 		foreach( s in settlements )
 		{
-			local faction = this.World.FactionManager.getFaction(s.getFaction());
-			if (faction.getType() == this.Const.FactionType.Barbarian && s.getTile().getDistanceTo(playerTile) <=4 )
+			
+			if(s.isLocationType(this.Const.World.LocationType.Unique))
+			{
+				continue;
+			}
+			
+			if (s.getTile().getDistanceTo(playerTile) <=4 )
 			{
 				town = s;
 				inBarbarianVillage = true;

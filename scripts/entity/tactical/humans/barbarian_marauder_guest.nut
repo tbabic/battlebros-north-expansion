@@ -1,11 +1,17 @@
 this.barbarian_marauder_guest <- this.inherit("scripts/entity/tactical/player", {
 	m = {},
+	
+	function isReallyKilled( _fatalityType )
+	{
+		return true;
+	}
+	
 	function create()
 	{
 		this.m.Type = this.Const.EntityType.BarbarianMarauder;
 		this.m.BloodType = this.Const.BloodType.Red;
 		this.m.XP = this.Const.Tactical.Actor.BarbarianMarauder.XP;
-		this.human.create();
+		this.player.create();
 		this.m.Faces = this.Const.Faces.WildMale;
 		this.m.Hairs = this.Const.Hair.WildMale;
 		this.m.HairColors = this.Const.HairColors.All;
@@ -17,7 +23,7 @@ this.barbarian_marauder_guest <- this.inherit("scripts/entity/tactical/player", 
 
 	function onInit()
 	{
-		this.human.onInit();
+		this.player.onInit();
 		local tattoos = [
 			3,
 			4,
