@@ -19,17 +19,20 @@ this.nem_barbarian_drum <- this.inherit("scripts/items/weapons/weapon", {
 		this.m.RangeMax = 6;
 		this.m.RangeIdeal = 6;
 		this.m.Value = 10;
-		this.m.StaminaModifier = 5;
+		this.m.StaminaModifier = -5;
 		this.m.RegularDamage = 0;
 		this.m.RegularDamageMax = 0;
 		this.m.ArmorDamageMult = 0.0;
 		this.m.DirectDamageMult = 0.0;
+		this.m.Icon = "weapons/melee/barbarian_drum.png";
 	}
 
 	function onEquip()
 	{
 		this.weapon.onEquip();
-		this.addSkill(this.new("scripts/skills/actives/barbarian_drum_skill"));
+		local skill = this.new("scripts/skills/actives/nem_barbarian_drum_skill");
+		this.logInfo("skill:" + skill);
+		this.addSkill(skill);
 	}
 
 });

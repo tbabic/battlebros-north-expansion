@@ -307,6 +307,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		
 		this.World.Assets.getStash().add(this.new("scripts/items/supplies/goat_cheese_item"));
 		this.World.Assets.getStash().add(this.new("scripts/items/supplies/smoked_ham_item"));
+		this.World.Assets.getStash().add(this.new("scripts/items/weapons/nem_barbarian_drum"));
 		this.World.Assets.m.Money = this.World.Assets.m.Money / 2;
 		this.World.Assets.m.Ammo = this.World.Assets.m.Ammo / 2;
 	}
@@ -425,6 +426,9 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		barbarians.setPlayerRelation(50);
 		barbarians.m.IsHidden = false;
 		barbarians.m.IsRelationDecaying = false;
+		barbarians.m.Banner = 99;
+		barbarians.setMotto("\"Winter is here\"");
+		barbarians.setDescription("Free barbarian tribes roam the north as they have been for hundreds of years. They raid to claim what they need, and they sacrifice their prisoners in bloody rituals to prove their worth to ancestors who ascended to be gods through their deeds in life. They follow their old ways to this day. They’re the warriors of the north.");
 		
 	}
 	
@@ -456,29 +460,20 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 	{	
 		logInfo("scenario on init")
 		this.World.Assets.m.BrothersMax = 12;
-		local f = this.World.Flags.get("NorthExpansionCivilLevel");
-		logInfo("flag:" + f);
 		local barbarians = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
-		this.logInfo(barbarians);
-		
 		if (this.World.Flags.get("NorthExpansionCivilLevel") >= 3)
 		{
 			this.World.Assets.m.BrothersMax = 20;
-			barbarians.m.IsHidden = true
-			
 		}
-		else {
+		else if(barbarians != null)
+		{
 			
 			barbarians.m.IsHidden = false;
-			barbarians.m.Banner = 99;
-			barbarians.setMotto("\"Winter is here\"");
-			barbarians.setDescription("Free barbarian tribes roam the north as they have been for hundreds of years. They raid to claim what they need, and they sacrifice their prisoners in bloody rituals to prove their worth to ancestors who ascended to be gods through their deeds in life. They follow their old ways to this day. They’re the warriors of the north.");
+			barbarians.m.IsRelationDecaying = false;
 		}
-		local camps = barbarians.getSettlements();
-		foreach (camp in camps)
-		{
-			camp.updateChieftain();
-		}
+		
+		
+
 		//this.World.Events.addSpecialEvent("event.survivor_recruits");
 
 	}

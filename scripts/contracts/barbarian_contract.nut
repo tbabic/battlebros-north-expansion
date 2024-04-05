@@ -59,8 +59,9 @@ this.barbarian_contract <- this.inherit("scripts/contracts/contract", {
 	
 	function positionGuests()
 	{
+		local roster = this.World.getGuestRoster();
+		local units = roster.getAll();
 		local startPosition = this.Math.max(18, 21 - this.Math.floor(units.len()/2));
-		local units = roster.getAll()
 		for( local i = 0; i < units.len(); i++ )
 		{
 			units[i].setPlaceInFormation(startPosition + i);

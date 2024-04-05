@@ -20,10 +20,18 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 	
 	function setHome( _home)
 	{
-		this.m.Home = _home;
+		if (typeof _home == "instance")
+		{
+			this.m.Home = _home;
+		}
+		else
+		{
+			this.m.Home = this.WeakTableRef(_home);
+		}
+		
 		foreach(c in this.m.ContractActions)
 		{
-			c.setHome(_home);
+			c.setHome(this.m.Home);
 		}
 	}
 	
@@ -98,7 +106,7 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 		
 		this.logInfo("picked action:" + i + " - " + this.m.ContractActions[i].getID() + "/" + this.m.Home.getID());
 		this.m.ContractActions[i].execute();
-		//this.m.ContractActions[13].execute();
+		//this.m.ContractActions[this.m.ContractActions.len()-1].execute();
 	}
 	
 	function availableActions() {
@@ -134,7 +142,8 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 			"scripts/factions/contracts/nem_destroy_orc_camp_action",
 			"scripts/factions/contracts/nem_destroy_goblin_camp_action",
 			"scripts/factions/contracts/nem_confront_warlord_action",
-			"scripts/factions/contracts/nem_discover_location_action"
+			"scripts/factions/contracts/nem_discover_location_action",
+			"scripts/factions/contracts/nem_defend_settlement_nobles_action",
 			
 			
 	

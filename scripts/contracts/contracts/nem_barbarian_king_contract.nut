@@ -822,6 +822,24 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/barbarian_co
 		}
 
 		this.contract.onDeserialize(_in);
+		local party = this.Contract.m.UnitsSpawned[0];
+		local _isAlliedWithPlayer = ::mods_getMember(party, "isAlliedWithPlayer") 
+		::mods_override(party, "isAlliedWithPlayer", function() {
+			if (this.getFlags().get("hostile")) {
+				return false;
+			}
+			return _isAlliedWithPlayer()
+		});	
+		
+		local _isAlliedWith = ::mods_getMember(party, "isAlliedWith") 
+		::mods_override(party, "isAlliedWith", function(_p) {
+			if (_p.getFaction() == this.Const.Faction.Player && this.getFlags().get("hostile"))
+			{
+				return false;
+			}
+			return _isAlliedWith(_p)
+		});	
+		
 	}
 
 });

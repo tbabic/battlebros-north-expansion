@@ -249,14 +249,14 @@
 				BackgroundCenter = "ui/settlements/townhall_01" + (night ? "_night" : "") + ".png",
 				BackgroundLeft = null,
 				BackgroundRight = null,
-				Ramp = settlementImages.Ramp + (night ? "_night" : "") + ".png",
+				Ramp = settlementImages.Ramp != null ? settlementImages.Ramp + (night ? "_night" : "") + ".png" : null,
 				RampPathway = "ui/settlements/ramp_01_planks" + (night ? "_night" : "") + ".png",
-				Mood = settlementImages.Mood + ".png",
-				Foreground = settlementImages.Foreground + (night ? "_night" : "") + ".png",
+				Mood = settlementImages.Mood != null ? settlementImages.Mood + ".png" : null,
+				Foreground = settlementImages.Foreground != null ? settlementImages.Foreground + (night ? "_night" : "") + ".png" : null,
 				Water = null,
 				Slots = []
 			};
-
+			
 			foreach( building in this.m.Buildings )
 			{
 				if (building == null || building.isHidden())
@@ -298,18 +298,18 @@
 
 			local rosterMin = this.m.CampSize;
 			local rosterMax = rosterMin + this.m.CampSize -1;
-
-			if (this.World.FactionManager.getFaction(this.getFaction()).getPlayerRelation() < 50)
+			local playerRelation = this.World.FactionManager.getFaction(this.getFaction()).getPlayerRelation();
+			if ( playerRelation < 50)
 			{
-				rosterMin = rosterMin * (this.World.FactionManager.getFaction(this.m.Factions[0]).getPlayerRelation() / 50.0);
-				rosterMax = rosterMax * (this.World.FactionManager.getFaction(this.m.Factions[0]).getPlayerRelation() / 50.0);
+				rosterMin = rosterMin * (playerRelation / 50.0);
+				rosterMax = rosterMax * (playerRelation / 50.0);
 			}
 
 			rosterMin = rosterMin * this.m.Modifiers.RecruitsMult;
 			rosterMax = rosterMax * this.m.Modifiers.RecruitsMult;
 			rosterMin = rosterMin + this.World.Assets.m.RosterSizeAdditionalMin;
 			rosterMax = rosterMax + this.World.Assets.m.RosterSizeAdditionalMax;
-
+			
 			if (iterations < 7)
 			{
 				for( local i = 0; i < iterations; i = ++i )
@@ -698,15 +698,28 @@
 			character.m.Name = ::NorthMod.Utils.barbarianNameOnly();
 			character.assignRandomEquipment();
 			character.getFlags().set("NorthExpansionChieftain", this.getID());
+			this.getFlags().set("NorthExpansionChieftain", character.getID());
 			return character;
 		}
 		
 		this.getChieftain <- function() {
+			
+			if (this.getFlags().has("NorthExpansionChieftain"))
+			{
+				local chieftain = this.Tactical.getEntityByID( this.getFlags().get("NorthExpansionChieftain"));
+				if (chieftain != null)
+				{
+					return chieftain;	
+				}
+				
+			}
+			
 			local roster = this.World.getRoster(this.World.FactionManager.getFaction(this.getFaction()).getID());
 			foreach( character in roster.getAll() )
 			{
 				if (character.getFlags().get("NorthExpansionChieftain") == this.getID())
 				{
+					this.getFlags().set("NorthExpansionChieftain", character.getID());
 					return character;
 				}
 			}
@@ -901,6 +914,25 @@
 			}
 			return _isAlliedWith(_p)
 		});	
+		
+		
+		::mods_override(this, "fadeOutAndDie", function() {
+			local faction = this.World.FactionManager.getFaction(this.getFaction());
+			if (faction == null) {
+				return;
+			}
+			
+			if(faction != null && this.World.Flags.get("NorthExpansionBarbarianRoster")) {
+				
+				local roster = this.World.getRoster(faction.getID());
+				local chieftain = this.Tactical.getEntityByID(this.getFlags().get("NorthExpansionChieftain"))	;	
+				roster.remove(chieftain);
+				
+			}
+			
+			this.m.IsAlive = false;
+			this.fadeAndDie();
+		});
 		
 		local _onSerialize = ::mods_getMember(this, "onSerialize");
 		::mods_override(this, "onSerialize", function(_out) {

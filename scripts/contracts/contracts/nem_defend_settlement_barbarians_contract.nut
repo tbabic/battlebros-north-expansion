@@ -111,7 +111,7 @@ this.nem_defend_settlement_barbarians_contract <- this.inherit("scripts/contract
 					local move = this.new("scripts/ai/world/orders/move_order");
 					move.setDestination(targets[t].getTile());
 					c.addOrder(move);
-					local raid = this.new("scripts/ai/world/orders/raid_order");
+					local raid = this.new("scripts/ai/world/orders/nem_raid_order");
 					raid.setTime(40.0);
 					raid.setTargetTile(targets[t].getTile());
 					c.addOrder(raid);
@@ -142,8 +142,9 @@ this.nem_defend_settlement_barbarians_contract <- this.inherit("scripts/contract
 				
 				if (this.Contract.m.UnitsSpawned.len() > 0 && this.Flags.get("IsEnemyHereDialogShown"))
 				{
-					foreach(p in this.Contract.m.UnitsSpawned)
+					foreach( id in this.Contract.m.UnitsSpawned )
 					{
+						local p = this.World.getEntityByID(id);
 						if (p != null && p.isAlive() && !p.getController().hasOrders())
 						{
 							this.Flags.set("IsRaided", true);

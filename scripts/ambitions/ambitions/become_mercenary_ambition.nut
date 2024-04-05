@@ -83,6 +83,9 @@ this.become_mercenary_ambition <- this.inherit("scripts/ambitions/ambition", {
 		}
 		local stash = this.World.Assets.getStash();
 		local item = stash.removeByID("accessory.skaldhorn");
+		
+		local barbarians = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
+		barbarians.m.IsHidden = true;
 	}
 
 	function onCheckSuccess()

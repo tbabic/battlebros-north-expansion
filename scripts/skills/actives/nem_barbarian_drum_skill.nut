@@ -1,4 +1,4 @@
-this.drums_of_war_skill <- this.inherit("scripts/skills/skill", {
+this.nem_barbarian_drum_skill <- this.inherit("scripts/skills/skill", {
 	m = {
 		FatigueReduction = 10
 	},
@@ -7,8 +7,8 @@ this.drums_of_war_skill <- this.inherit("scripts/skills/skill", {
 		this.m.ID = "actives.nem_barbarian_drum";
 		this.m.Name = "Drums of War";
 		this.m.Description = "Drums of War will reduce the fatigue of all allies by " + this.m.FatigueReduction;
-		this.m.Icon = "skills/active_163.png";
-		this.m.IconDisabled = "skills/active_163.png";
+		this.m.Icon = "skills/wardrum.png";
+		this.m.IconDisabled = "skills/wardrum_sw.png";
 		this.m.Overlay = "active_163";
 		this.m.SoundOnUse = [
 			"sounds/enemies/dlc4/wardrums_01.wav",
