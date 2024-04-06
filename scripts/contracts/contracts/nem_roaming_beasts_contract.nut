@@ -442,7 +442,7 @@ this.nem_roaming_beasts_contract <- this.inherit("scripts/contracts/barbarian_co
 					{
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractSuccess);
 						this.World.Assets.addMoney(this.Contract.m.Payment.getOnCompletion());
-						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Rid the %townname% of direwolves");
+						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Rid the " + this.Contract.m.Home.getName() + " of direwolves");
 						this.World.Contracts.finishActiveContract();
 						return 0;
 					}
@@ -474,7 +474,7 @@ this.nem_roaming_beasts_contract <- this.inherit("scripts/contracts/barbarian_co
 					{
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractSuccess);
 						this.World.Assets.addMoney(this.Contract.m.Payment.getOnCompletion());
-						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Rid the %townname% of brigands masquerading as direwolves");
+						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Rid the " + this.Contract.m.Home.getName() + " of brigands masquerading as direwolves");
 						this.World.Contracts.finishActiveContract();
 						return 0;
 					}
@@ -506,7 +506,7 @@ this.nem_roaming_beasts_contract <- this.inherit("scripts/contracts/barbarian_co
 					{
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractSuccess);
 						this.World.Assets.addMoney(this.Contract.m.Payment.getOnCompletion());
-						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Rid the %townname% of nachzehrers");
+						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Rid the " + this.Contract.m.Home.getName() + " of nachzehrers");
 						this.World.Contracts.finishActiveContract();
 						return 0;
 					}
@@ -538,7 +538,7 @@ this.nem_roaming_beasts_contract <- this.inherit("scripts/contracts/barbarian_co
 					{
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractSuccess);
 						this.World.Assets.addMoney(this.Contract.m.Payment.getOnCompletion());
-						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Rid the %townname% of webknechts");
+						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Rid the " + this.Contract.m.Home.getName() + " of webknechts");
 						this.World.Contracts.finishActiveContract();
 						return 0;
 					}

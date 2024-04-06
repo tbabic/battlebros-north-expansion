@@ -151,32 +151,12 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 	{
 		this.accessory.onSerialize(_out);
 		_out.writeString(this.m.Name);
-		_out.writeI32(this.m.XP);
 	}
 
 	function onDeserialize( _in )
 	{
 		this.accessory.onDeserialize(_in);
 		this.m.Name = _in.readString();
-		this.m.XP = _in.readI32();
-	}
-	
-	function getXPLevels() {
-		local xpLevels = [1000, 2500, 4000, 6000, 8000, 11000, 14000];
-		return xpLevels;
-	}
-	
-	function getNextLevel()
-	{
-		local xpLevels = this.getXPLevels();
-		foreach (level in xpLevels)
-		{
-			if (level > this.m.XP)
-			{
-				return level;
-			}
-		}
-		return null;
 	}
 	
 	

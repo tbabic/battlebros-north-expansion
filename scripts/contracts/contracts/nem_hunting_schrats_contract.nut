@@ -443,7 +443,7 @@ this.nem_hunting_schrats_contract <- this.inherit("scripts/contracts/barbarian_c
 					{
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractSuccess);
 						this.World.Assets.addMoney(this.Contract.m.Payment.getOnCompletion());
-						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Rid the %townname% of living trees");
+						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Rid the " + this.Contract.m.Home.getName() + " of living trees");
 						this.World.Contracts.finishActiveContract();
 						return 0;
 					}
