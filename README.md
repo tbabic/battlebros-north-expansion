@@ -9,3 +9,7 @@ You are a warrior and a raider. Your whole life has been battle and struggle and
 **Father's Sword:** Start with a greatsword inherited from your father.
 
 **Mercenary Path:** Make decisions to become mercenary and remove restrictions or stay barbarian.
+
+## Installation
+
+Download [this](https://github.com/tbabic/battlebros-north-expansion/releases/latest/download/north-expansion-mod.zip) file and copy if in your data folder
