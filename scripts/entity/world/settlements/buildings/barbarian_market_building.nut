@@ -307,6 +307,11 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 			S = "supplies/pickled_mushrooms_item"
 		});
 		
+		list.push({
+			R = 50,
+			P = 1.0,
+			S = "accessory/warhound_item"
+		});
 
 		if (this.m.Settlement.m.CampSize >= 2)
 		{
@@ -347,7 +352,17 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 				P = 1.0,
 				S = "supplies/beer_item"
 			});
+			
+			list.push({
+				R = 20,
+				P = 1.0,
+				S = "accessory/warhound_item"
+			});
 		}
+		
+		
+		
+		
 
 		
 		this.fillStash(list, this.m.Stash, 1.0, true);

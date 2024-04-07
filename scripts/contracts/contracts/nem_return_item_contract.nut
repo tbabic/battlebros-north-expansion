@@ -172,7 +172,7 @@ this.nem_return_item_contract <- this.inherit("scripts/contracts/barbarian_contr
 						this.Contract.setScreen("Necromancer");
 						this.World.Contracts.showActiveContract();
 					}
-					if (this.Flags.get("IsWitch"))
+					else if (this.Flags.get("IsWitch"))
 					{
 						this.Flags.set("IsAttackDialogTriggered", true);
 						this.Contract.m.IsPlayerAttacking = _isPlayerAttacking;
