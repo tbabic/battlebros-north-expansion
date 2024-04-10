@@ -51,11 +51,29 @@ this.skaldhorn <- this.inherit("scripts/items/accessory/accessory", {
 	function onCombatStarted()
 	{
 		//todo add skald effect on all alliess
+		local actor = this.getContainer().getActor();
+		local allies = this.Tactical.Entities.getInstancesOfFaction(actor.getFaction());
+
+		foreach( ally in allies )
+		{
+			if (!ally.getSkills().hasSkill("effects.skald_horn"))
+			{
+				ally.getSkills().add(this.new("scripts/skills/effects/skald_horn_effect"));	
+			}
+			
+		}
+		
 	}
 
 	function onCombatFinished()
 	{
-		//todo remove skald effect from all allies
+		local actor = this.getContainer().getActor();
+		local allies = this.Tactical.Entities.getInstancesOfFaction(actor.getFaction());
+
+		foreach( ally in allies )
+		{
+			ally.getSkills().removeByID("effects.skald_horn");
+		}
 	}
 
 });

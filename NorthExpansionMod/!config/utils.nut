@@ -79,6 +79,7 @@
 		if (location.getFlags().has("NEMisNearbySnow")) {
 			return location.getFlags().get("NEMisNearbySnow");
 		}
+		local worldmap = this.MapGen.get("world.worldmap_generator");
 		local terrain = worldmap.getTerrainInRegion(location.getTile());
 		local result = checkSuitableTerrain(terrain, "small_snow_village")
 		location.getFlags().set("NEMisNearbySnow", result);

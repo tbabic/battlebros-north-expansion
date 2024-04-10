@@ -119,7 +119,7 @@ this.nem_defend_settlement_greenskins_contract <- this.inherit("scripts/contract
 					c.addOrder(move);
 					local raid = this.new("scripts/ai/world/orders/nem_raid_order");
 					raid.setTime(40.0);
-					raid.setTargetTile(this.Contract.m.Home.getTile());
+					raid.setTargetLocation(this.Contract.m.Home);
 					c.addOrder(raid);
 				}
 

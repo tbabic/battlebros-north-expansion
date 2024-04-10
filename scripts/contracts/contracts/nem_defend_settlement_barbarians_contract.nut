@@ -109,11 +109,11 @@ this.nem_defend_settlement_barbarians_contract <- this.inherit("scripts/contract
 					}
 
 					local move = this.new("scripts/ai/world/orders/move_order");
-					move.setDestination(targets[t].getTile());
+					move.setDestination(this.Contract.m.Home.getTile());
 					c.addOrder(move);
 					local raid = this.new("scripts/ai/world/orders/nem_raid_order");
 					raid.setTime(40.0);
-					raid.setTargetTile(targets[t].getTile());
+					raid.setTargetLocation(this.Contract.m.Home);
 					c.addOrder(raid);
 				}
 

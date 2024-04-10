@@ -98,7 +98,7 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 					number = number + 1;
 				}
 
-				for( local i = 0; i != number; i = ++i )
+				for( local i = 0; i < number; i++ )
 				{
 					local party;
 
@@ -128,7 +128,7 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 					c.addOrder(move);
 					local raid = this.new("scripts/ai/world/orders/nem_raid_order");
 					raid.setTime(40.0);
-					raid.setTargetTile(this.Contract.m.Home.getTile());
+					raid.setTargetLocation(this.Contract.m.Home);
 					c.addOrder(raid);
 				}
 

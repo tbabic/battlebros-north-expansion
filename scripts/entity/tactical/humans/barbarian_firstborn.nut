@@ -42,7 +42,7 @@ this.barbarian_firstborn <- this.inherit("scripts/entity/tactical/player", {
 
 	function assignRandomEquipment()
 	{
-		items.equip(this.new("scripts/items/armor/barbarians/thick_furs_armor"));
+		this.m.Items.equip(this.new("scripts/items/armor/barbarians/thick_furs_armor"));
 
 		if (this.Math.rand(1, 100) <= 0)
 		{
