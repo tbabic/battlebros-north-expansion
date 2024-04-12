@@ -3,12 +3,19 @@
 	::mods_override(o, "normalizeRelation", function() {
 		//logInfo("normalize relations:" + this.getName());
 		
-		if(this.World.Flags.get("NorthExpansionCivilLevel") >= 2)
+		
+		//TODO: consider doing this in init method of origin setting relations decay
+		if(!this.World.Flags.get("NorthExpansionActive"))
 		{
 			normalizeRelation();
 			return;
 		}
 		else if(this.World.Flags.get("NorthExpansionCivilLevel") >= 2)
+		{
+			normalizeRelation();
+			return;
+		}
+		else if(this.m.Type == this.Const.FactionType.Barbarians)
 		{
 			normalizeRelation();
 			return;

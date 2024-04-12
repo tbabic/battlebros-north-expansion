@@ -37,6 +37,7 @@
 		{
 			this.m.CampSize <- 3;
 		}
+		this.m.Size <- this.m.CampSize;
 		this.m.combatForced <- false;
 		
 		
@@ -93,6 +94,11 @@
 			
 			return;
 		});
+		
+		this.getSize <- function()
+		{
+			return this.m.Size;
+		}
 		
 		this.getMusic <- function() {
 			if (!this.World.getTime().IsDaytime)

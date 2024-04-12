@@ -72,6 +72,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 
 	function onSpawnAssets()
 	{
+		this.logInfo("Barbarian raiders scenario");
 		local useDefaultBro = false;
 		local roster = this.World.getPlayerRoster();
 
@@ -425,7 +426,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		local barbarians = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
 		barbarians.setPlayerRelation(50);
 		barbarians.m.IsHidden = false;
-		barbarians.m.IsRelationDecaying = false;
+		barbarians.m.IsRelationDecaying = true;
 		barbarians.m.Banner = 99;
 		barbarians.setMotto("\"Winter is here\"");
 		barbarians.setDescription("Free barbarian tribes roam the north as they have been for hundreds of years. They raid to claim what they need, and they sacrifice their prisoners in bloody rituals to prove their worth to ancestors who ascended to be gods through their deeds in life. They follow their old ways to this day. They’re the warriors of the north.");
@@ -469,11 +470,10 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		{
 			
 			barbarians.m.IsHidden = false;
-			barbarians.m.IsRelationDecaying = false;
+			barbarians.m.IsRelationDecaying = true;
 		}
 		
 		
-
 		//this.World.Events.addSpecialEvent("event.survivor_recruits");
 
 	}
