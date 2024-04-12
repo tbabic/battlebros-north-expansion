@@ -23,11 +23,6 @@ this.nem_defend_settlement_barbarians_action <- this.inherit("scripts/factions/f
 			return;
 		}
 
-		if (_faction.getSettlements()[0].isIsolated())
-		{
-			return;
-		}
-
 		if (this.World.Assets.getBusinessReputation() < 500)
 		{
 			return;

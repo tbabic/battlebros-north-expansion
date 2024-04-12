@@ -84,6 +84,50 @@
 		local result = checkSuitableTerrain(terrain, "small_snow_village")
 		location.getFlags().set("NEMisNearbySnow", result);
 	}
+	
+	function getBestTerrain(location)
+	{
+		local tile = location.getTile();
+		local terrain = [];
+		terrain.resize(this.Const.World.TerrainType.COUNT, 0);
+
+		for( local i = 0; i < 6; i = ++i )
+		{
+			if (!tile.hasNextTile(i))
+			{
+			}
+			else
+			{
+				++terrain[tile.getNextTile(i).Type];
+			}
+		}
+
+		terrain[this.Const.World.TerrainType.Plains] = this.Math.max(0, terrain[this.Const.World.TerrainType.Plains] - 1);
+
+		if (terrain[this.Const.World.TerrainType.Steppe] != 0 && this.Math.abs(terrain[this.Const.World.TerrainType.Steppe] - terrain[this.Const.World.TerrainType.Hills]) <= 2)
+		{
+			terrain[this.Const.World.TerrainType.Steppe] += 2;
+		}
+
+		if (terrain[this.Const.World.TerrainType.Snow] != 0 && this.Math.abs(terrain[this.Const.World.TerrainType.Snow] - terrain[this.Const.World.TerrainType.Hills]) <= 2)
+		{
+			terrain[this.Const.World.TerrainType.Snow] += 2;
+		}
+
+		local highest = 0;
+
+		for( local i = 0; i < this.Const.World.TerrainType.COUNT; i = ++i )
+		{
+			if (i == this.Const.World.TerrainType.Ocean || i == this.Const.World.TerrainType.Shore)
+			{
+			}
+			else if (terrain[i] >= terrain[highest])
+			{
+				highest = i;
+			}
+		}
+		return highest;
+	}
 
 
 	function guaranteedTalents(bro, talent, number)
@@ -138,11 +182,11 @@
 		return this.barbarianNameOnly() + " " + this.barbarianTitle();
 	}
 	
-	function nearestBarbarianNeighbour(_home)
+	function nearestFactionNeighbour(_home, _faction)
 	{
 		local lowestDistance = 9999;
 		local lowestDistanceSettlement;
-		local f = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
+		local f = _faction;
 		local camps = f.getSettlements();
 		
 		foreach( b in camps )
@@ -170,8 +214,12 @@
 			settlement = lowestDistanceSettlement,
 			distance = lowestDistance
 		};
-			
-		
+	}
+	
+	function nearestBarbarianNeighbour(_home)
+	{
+		local f = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
+		return nearestFactionNeighbour(_home, f);
 	}
 	
 	function setIsHostile(_entity, _isHostile)
@@ -182,6 +230,48 @@
 	function isHostile(_entity)
 	{
 		return _entity.getFlags().get("NEM_isHostile");
+	}
+	
+	function addOverrideHostility(_entity)
+	{
+		local _isAlliedWithPlayer = ::mods_getMember(_entity, "isAlliedWithPlayer") 
+		::mods_override(this, "isAlliedWithPlayer", function() {
+			local isHostile = ::NorthMod.Utils.isHostile(this)
+			if (isHostile) {
+				return false;
+			}
+			return _isAlliedWithPlayer()
+		});	
+		
+		local _isAlliedWith = ::mods_getMember(_entity, "isAlliedWith") 
+		::mods_override(this, "isAlliedWith", function(_p) {
+			local isHostile = ::NorthMod.Utils.isHostile(this);
+			if (_p.getFaction() == this.Const.Faction.Player && isHostile)
+			{
+				return false;
+			}
+			return _isAlliedWith(_p)
+		});	
+		
+	}
+	
+	function aliveEntitiesByIds( _ids)
+	{
+		if (ids == null || ids.len() == 0)
+		{
+			return [];
+		}
+		local entities = [];
+		foreach (id in ids)
+		{
+			local e = this.World.getEntityByID(id);
+			if (e != null && !e.isNull() && e.isAlive())
+			{
+				entities.push(this.WeakTableRef(e));
+			}
+		}
+		return entities;
+		
 	}
 
 }

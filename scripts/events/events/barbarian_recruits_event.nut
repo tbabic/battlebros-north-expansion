@@ -78,7 +78,7 @@ this.barbarian_recruits_event <- this.inherit("scripts/events/event", {
 		{
 			return;
 		}
-		local faction = this.World.FactionManager.getFaction(this.Const.Faction.Barbarians);
+		local faction = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
 		local settlements = faction.getSettlements();
 		local inBarbarianVillage = false;
 		local town;

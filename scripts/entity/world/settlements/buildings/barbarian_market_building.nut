@@ -4,6 +4,8 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 	function create()
 	{
 		this.marketplace_building.create();
+		this.m.UIImage = "ui/settlements/barbarian_market";
+		this.m.UIImageNight = "ui/settlements/barbarian_market_night";
 		this.m.IsRepairOffered = true;
 	}
 
@@ -373,14 +375,14 @@ this.barbarian_market_building <- this.inherit("scripts/entity/world/settlements
 	
 	function onClicked( _townScreen )
 	{
-		this.logInfo("on click: " + this.m.Stash.getItems().len());
+		/*this.logInfo("on click: " + this.m.Stash.getItems().len());
 		foreach( item in this.m.Stash.getItems() )
 		{
 			if (item != null)
 			{
 				this.logInfo("item: " + item.getName());
 			}
-		}
+		}*/
 		
 		_townScreen.getShopDialogModule().setShop(this);
 		_townScreen.showShopDialog();

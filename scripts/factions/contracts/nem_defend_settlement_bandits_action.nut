@@ -23,11 +23,6 @@ this.nem_defend_settlement_bandits_action <- this.inherit("scripts/factions/fact
 			return;
 		}
 
-		if (_faction.getSettlements()[0].isIsolated())
-		{
-			return;
-		}
-
 		if (this.World.Assets.getBusinessReputation() < 500)
 		{
 			return;
@@ -41,6 +36,8 @@ this.nem_defend_settlement_bandits_action <- this.inherit("scripts/factions/fact
 	
 		local tooFar = true;
 		local myTile = this.m.Home.getTile();
+		local target = null;
+		
 
 		if (tooFar)
 		{

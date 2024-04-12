@@ -6,7 +6,7 @@ this.feral_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		this.m.ID = "trait.feral";
 		this.m.Name = "Feral";
 		this.m.Icon = "ui/traits/trait_icon_feral.png";
-		this.m.Description = "This character is feral and ferocious fighter like a bear. When unencumbered by armor he gains bonuses that rise the more wounded he is. When close to death he can will not be stopped by bleeding or injuries.";
+		this.m.Description = "This character is feral and ferocious fighter like a wild beast. When unencumbered by armor he gains bonuses that rise the more wounded he is. When close to death he can will not be stopped by bleeding or injuries.";
 		this.m.Titles = [
 			"the Mad",
 			"the Odd",

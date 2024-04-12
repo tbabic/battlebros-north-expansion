@@ -22,11 +22,6 @@ this.nem_defend_settlement_greenskins_action <- this.inherit("scripts/factions/f
 			return;
 		}
 
-		if (_faction.getSettlements()[0].isIsolated())
-		{
-			return;
-		}
-
 		if (this.World.Assets.getBusinessReputation() < 900)
 		{
 			return;

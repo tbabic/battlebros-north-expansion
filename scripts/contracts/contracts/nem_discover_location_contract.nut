@@ -39,33 +39,12 @@ this.nem_discover_location_contract <- this.inherit("scripts/contracts/barbarian
 
 		foreach( b in locations )
 		{
-			if (b.isLocationType(this.Const.World.LocationType.Unique))
+			if (b.isDiscovered() || b.isLocationType(this.Const.World.LocationType.Unique))
 			{
 				continue;
 			}
 
-			if (b.isDiscovered())
-			{
-				continue;
-			}
-
-			local region = this.World.State.getRegion(b.getTile().Region);
-
-			if (!region.Center.IsDiscovered)
-			{
-				continue;
-			}
-
-			if (region.Discovered < 0.25)
-			{
-				this.World.State.updateRegionDiscovery(region);
-			}
-
-			if (region.Discovered < 0.25)
-			{
-				continue;
-			}
-
+			
 			local d = myTile.getDistanceTo(b.getTile());
 
 			if (d > 20)

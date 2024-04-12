@@ -46,11 +46,12 @@
 		this.m.CurrentBuilding <- null;
 		
 		this.m.Buildings <- [];
-		this.m.Buildings.resize(6, null)
+		this.m.Buildings.resize(6, null);
+		this.m.Buildings[0] = this.new("scripts/entity/world/settlements/buildings/barbarian_duel_building");
 		this.m.Buildings[2] = this.new("scripts/entity/world/settlements/buildings/barbarian_market_building");
 		this.m.Buildings[5] = this.new("scripts/entity/world/settlements/buildings/barbarian_crowd_building");
 		this.m.Buildings[3] = this.new("scripts/entity/world/settlements/buildings/barbarian_taxidermist_building");
-		this.m.Buildings[4] = this.new("scripts/entity/world/settlements/buildings/barber_building");
+		this.m.Buildings[4] = this.new("scripts/entity/world/settlements/buildings/barbarian_barber_building");
 		
 		for( local i = 0; i < this.m.Buildings.len(); i = ++i )
 		{
@@ -61,14 +62,7 @@
 		}
 		
 		
-		/*this.setOnCombatWithPlayerCallback(function(_location, _isPlayerAttacking = true){
-			local event = this.World.Events.getEvent("event.barbarian_duel");
-			event.m.Location = _location;
-			if(event.isValid())
-			{
-				this.World.Events.fire("event.barbarian_duel");
-			}
-		})*/
+		
 		
 		this.setOnEnterCallback(function (_location) {
 			local forceAttack = this.World.State.m.IsForcingAttack;
@@ -135,10 +129,12 @@
 		this.getUIInformation <- function()
 		{
 			this.logInfo("get UI information");
-			local terrainType = this.getTile().Type
+			local terrainType = ::NorthMod.Utils.getBestTerrain(this);
+			this.logInfo("terrain type: " + terrainType);
 			local settlementImages = this.Const.World.TerrainSettlementImages[terrainType];
 			local night = !this.World.getTime().IsDaytime;
 			local water =  null;
+			
 			
 			local backgroundCenter = "ui/settlements/townhall_01_snow"
 			if (terrainType != this.Const.World.TerrainType.Snow) {
@@ -1007,6 +1003,8 @@
 				}
 			}
 			
+			
+			
 			local numSituations = _in.readU8();
 			this.m.Situations.resize(numSituations);
 
@@ -1039,7 +1037,9 @@
 						break;
 					}
 				}
-		}
+			}
+
+			
 			
 		});
 		

@@ -23,11 +23,6 @@ this.nem_defend_settlement_nobles_action <- this.inherit("scripts/factions/facti
 			return;
 		}
 
-		if (_faction.getSettlements()[0].isIsolated())
-		{
-			return;
-		}
-
 		if (this.World.Assets.getBusinessReputation() < 1500)
 		{
 			return;

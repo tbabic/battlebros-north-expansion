@@ -73,23 +73,11 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/barbarian_co
 				party.setDescription("A mighty warhost of barbarian tribes, united by a self-proclaimed barbarian king.");
 				party.getSprite("body").setBrush("figure_wildman_04");
 				party.setVisibilityMult(2.0);
-				party.getFlags().set("hostile", true);
-				local _isAlliedWithPlayer = ::mods_getMember(party, "isAlliedWithPlayer") 
-				::mods_override(party, "isAlliedWithPlayer", function() {
-					if (this.getFlags().get("hostile")) {
-						return false;
-					}
-					return _isAlliedWithPlayer()
-				});	
+		
+				::NorthMod.Utils.addOverrideHostility(_party);
+				::NorthMod.Utils.setIsHostile(_party, true);
 				
-				local _isAlliedWith = ::mods_getMember(party, "isAlliedWith") 
-				::mods_override(party, "isAlliedWith", function(_p) {
-					if (_p.getFaction() == this.Const.Faction.Player && this.getFlags().get("hostile"))
-					{
-						return false;
-					}
-					return _isAlliedWith(_p)
-				});	
+				
 				
 				
 				party.setAttackable(true);
@@ -811,7 +799,12 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/barbarian_co
 
 		if (obj != 0)
 		{
-			this.m.Destination = this.WeakTableRef(this.World.getEntityByID(obj));
+			local party = this.World.getEntityByID(obj);
+			if (party != null && !partyisNull() && party.isAlive())
+			{
+				::NorthMod.Utils.addOverrideHostility(party);	
+			}
+			this.m.Destination = this.WeakTableRef(party);
 		}
 
 		obj = _in.readU32();
@@ -822,23 +815,10 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/barbarian_co
 		}
 
 		this.contract.onDeserialize(_in);
-		local party = this.Contract.m.UnitsSpawned[0];
-		local _isAlliedWithPlayer = ::mods_getMember(party, "isAlliedWithPlayer") 
-		::mods_override(party, "isAlliedWithPlayer", function() {
-			if (this.getFlags().get("hostile")) {
-				return false;
-			}
-			return _isAlliedWithPlayer()
-		});	
+		local partyID = this.Contract.m.UnitsSpawned[0];
+		local party = this.World.getEntityByID(id);
 		
-		local _isAlliedWith = ::mods_getMember(party, "isAlliedWith") 
-		::mods_override(party, "isAlliedWith", function(_p) {
-			if (_p.getFaction() == this.Const.Faction.Player && this.getFlags().get("hostile"))
-			{
-				return false;
-			}
-			return _isAlliedWith(_p)
-		});	
+		
 		
 	}
 

@@ -12,22 +12,7 @@ this.barbarian_crowd_building <- this.inherit("scripts/entity/world/settlements/
 		}
 		else
 		{
-			local img;
-
-			if (roster.getSize() <= 3)
-			{
-				img = "ui/settlements/crowd_01";
-			}
-			else if (roster.getSize() <= 6)
-			{
-				img = "ui/settlements/crowd_02";
-			}
-			else
-			{
-				img = "ui/settlements/crowd_03";
-			}
-			logInfo("roster img: " + img);
-			return img;
+			return this.m.UIImage;
 		}
 	}
 
@@ -35,7 +20,7 @@ this.barbarian_crowd_building <- this.inherit("scripts/entity/world/settlements/
 	{
 		this.building.create();
 		this.m.ID = "building.crowd";
-		this.m.UIImage = "ui/settlements/crowd_01";
+		this.m.UIImage = "ui/settlements/barbarian_crowd";
 		this.m.Tooltip = "world-town-screen.main-dialog-module.Crowd";
 		this.m.Name = "Hire";
 	}

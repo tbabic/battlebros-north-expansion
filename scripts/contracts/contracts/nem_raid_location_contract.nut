@@ -26,7 +26,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 
 	function start()
 	{
-		this.m.Payment.Pool = 600 * this.getPaymentMult() * this.getDifficultyMult() * this.getReputationToPaymentMult();
+		this.m.Payment.Pool = 300 * this.getPaymentMult() * this.getDifficultyMult() * this.getReputationToPaymentMult();
 
 		this.m.Payment.Completion = 1.0;
 
@@ -64,7 +64,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 				
 				if(this.Contract.m.Settlement.isMilitary())
 				{
-					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.Noble, 150 * this.Contract.getDifficultyMult() *this.Contract.getScaledDifficultyMult());
+					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.Noble, 100 * this.Contract.getDifficultyMult() *this.Contract.getScaledDifficultyMult());
 				}
 				
 				if (this.Contract.getDifficultyMult() >= 0.95 && this.Math.rand(1, 100) <= 25)
@@ -73,12 +73,12 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 				}
 				else if (this.Contract.getDifficultyMult() <= 0.85 && this.Math.rand(1, 100) <= 50 && !this.Contract.m.Destination.isMilitary())
 				{
-					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.PeasantsArmed, this.Math.min(300, 80 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult()));
+					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.PeasantsArmed, this.Math.min(300, 150 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult()));
 				}
 				else
 				{
 					this.Flags.set("IsMilitiaPresent", true)
-					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.Militia, this.Math.min(300, 80 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult()));
+					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.Militia, this.Math.min(300, 100 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult()));
 				}
 
 				this.Contract.setScreen("Overview");
@@ -111,14 +111,6 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 
 			function onEntityPlaced( _entity, _tag )
 			{
-				if (_entity.getFlags().has("peasant") && this.Math.rand(1, 100) <= 75)
-				{
-					_entity.setMoraleState(this.Const.MoraleState.Fleeing);
-					_entity.getBaseProperties().Bravery = 0;
-					_entity.getSkills().update();
-					_entity.getAIAgent().addBehavior(this.new("scripts/ai/tactical/behaviors/ai_retreat_always"));
-				}
-
 				if (_entity.getFlags().has("peasant") || _entity.getFlags().has("militia"))
 				{
 					_entity.setFaction(this.Const.Faction.Enemy);
@@ -163,8 +155,6 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 					p.LocationTemplate.Fortification = this.Const.Tactical.FortificationType.None;
 					p.LocationTemplate.CutDownTrees = true;
 					p.LocationTemplate.AdditionalRadius = 5;
-					p.PlayerDeploymentType = this.Flags.get("IsEncircled") ? this.Const.Tactical.DeploymentType.Circle : this.Const.Tactical.DeploymentType.Edge;
-					p.EnemyDeploymentType = this.Const.Tactical.DeploymentType.Center;
 					p.Music = this.Const.Music.CivilianTracks;
 					p.IsAutoAssigningBases = false;
 
@@ -262,20 +252,9 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 			List = [],
 			Options = [
 				{
-					Text = "Encircle them!",
+					Text = "Attack!",
 					function getResult()
 					{
-						this.Flags.set("IsEncircled", true);
-						this.Contract.getActiveState().onDestinationAttacked(this.Contract.m.Destination);
-						return 0;
-					}
-
-				},
-				{
-					Text = "Sweep through from one side!",
-					function getResult()
-					{
-						this.Flags.set("IsEncircled", false);
 						this.Contract.getActiveState().onDestinationAttacked(this.Contract.m.Destination);
 						return 0;
 					}
@@ -291,20 +270,9 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 			List = [],
 			Options = [
 				{
-					Text = "Encircle them!",
+					Text = "Attack!",
 					function getResult()
 					{
-						this.Flags.set("IsEncircled", true);
-						this.Contract.getActiveState().onDestinationAttacked(this.Contract.m.Destination);
-						return 0;
-					}
-
-				},
-				{
-					Text = "Sweep through from one side!",
-					function getResult()
-					{
-						this.Flags.set("IsEncircled", false);
 						this.Contract.getActiveState().onDestinationAttacked(this.Contract.m.Destination);
 						return 0;
 					}

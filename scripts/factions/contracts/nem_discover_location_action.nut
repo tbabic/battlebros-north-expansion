@@ -38,11 +38,6 @@ this.nem_discover_location_action <- this.inherit("scripts/factions/faction_acti
 			return;
 		}
 
-		if (this.World.getTime().Days <= 3 && this.Math.rand(1, 100) < 20 || this.Math.rand(1, 100) > 10)
-		{
-			return;
-		}
-
 		local locations = clone this.World.FactionManager.getFactionOfType(this.Const.FactionType.Undead).getSettlements();
 		locations.extend(this.World.FactionManager.getFactionOfType(this.Const.FactionType.Zombies).getSettlements());
 		locations.extend(this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getSettlements());
@@ -57,27 +52,6 @@ this.nem_discover_location_action <- this.inherit("scripts/factions/faction_acti
 				continue;
 			}
 
-			if (!this.World.State.getRegion(b.getTile().Region).Center.IsDiscovered)
-			{
-				continue;
-			}
-
-			local region = this.World.State.getRegion(b.getTile().Region);
-
-			if (!region.Center.IsDiscovered)
-			{
-				continue;
-			}
-
-			if (region.Discovered < 0.25)
-			{
-				this.World.State.updateRegionDiscovery(region);
-			}
-
-			if (region.Discovered < 0.25)
-			{
-				continue;
-			}
 
 			local d = myTile.getDistanceTo(b.getTile());
 
@@ -89,6 +63,7 @@ this.nem_discover_location_action <- this.inherit("scripts/factions/faction_acti
 
 		if (lowestDistance >= 20)
 		{
+			this.logInfo("nem discover too far");
 			return;
 		}
 

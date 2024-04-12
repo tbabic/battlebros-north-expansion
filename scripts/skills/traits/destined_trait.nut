@@ -42,7 +42,7 @@ this.destined_trait <- this.inherit("scripts/skills/traits/character_trait", {
 				id = 11,
 				type = "text",
 				icon = "ui/icons/bravery.png",
-				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+10[/color] Resolve"
+				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Resolve"
 			},
 			{
 				id = 12,
@@ -56,7 +56,7 @@ this.destined_trait <- this.inherit("scripts/skills/traits/character_trait", {
 	function onUpdate( _properties )
 	{
 		_properties.RerollMoraleChance = 100;
-		_properties.Bravery += 10;
+		_properties.Bravery += 5;
 	}
 	
 	function onCombatStarted()
