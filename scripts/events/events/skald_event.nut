@@ -56,7 +56,7 @@ this.skald_event <- this.inherit("scripts/events/event", {
 				
 				local actor = _event.m.Dude;
 				
-				_event.m.Dude.getBackground().m.RawDescription = "{%name% has spent his life in mountains and hills and raiding so called 'civilized' lands from there. He keeps talking about the moon and it's blessings, while you are not sure he makes much sense, you do notice he is a ruthless and vicious fighter during night.";
+				_event.m.Dude.getBackground().m.RawDescription = "{%name% has spent his life in mountains and hills, raiding so called 'civilized' lands from there. He keeps talking about the moon and it's blessings, while you are not sure he makes much sense, you do notice he is a ruthless and vicious fighter during night.";
 				_event.m.Dude.getBackground().buildDescription(true);
 				
 				foreach( trait in this.Const.CharacterTraits ) {
@@ -69,8 +69,13 @@ this.skald_event <- this.inherit("scripts/events/event", {
 				
 				local b = _event.m.Dude.getBaseProperties();
 
-
-				_event.m.Dude.getSkills().add(this.new("scripts/skills/traits/skald_trait"));
+				local trait = this.new("scripts/skills/traits/skald_trait");
+				if (trait == null)
+				{
+					this.logInfo("skald trait null");
+				}
+				_event.m.Dude.getSkills().add(trait);
+				_event.m.Dude.getSkills().add(this.new("scripts/skills/traits/moonkissed_trait"));
 	
 				
 				//::NorthMod.Utils.guaranteedTalents(_event.m.Dude, this.Const.Attributes.MeleeSkill, 1);
@@ -109,6 +114,22 @@ this.skald_event <- this.inherit("scripts/events/event", {
 						this.World.getPlayerRoster().add(_event.m.Dude);
 						this.World.getTemporaryRoster().clear();
 						_event.m.Dude.onHired();
+						if(_event.m.Dude.getSkills().hasSkill("trait.skald"))
+						{
+							this.logInfo("is skald");
+						}
+						else
+						{
+							this.logInfo("no skald");
+						}
+						if(_event.m.Dude.getSkills().hasSkill("trait.moonkissed"))
+						{
+							this.logInfo("is moonkissed");
+						}
+						else
+						{
+							this.logInfo("no moonkissed");
+						}
 						_event.m.Dude = null;
 						return 0;
 					}

@@ -1,27 +1,19 @@
-this.rally_the_troops <- this.inherit("scripts/skills/skill", {
+this.skald_trait <- this.inherit("scripts/skills/traits/character_trait", {
 	m = {},
 	function create()
 	{
+		this.character_trait.create();
 		this.m.ID = "trait.skald";
 		this.m.Name = "Skald";
 		this.m.Description = "This character's provess in battle inspires nearby allies.";
-		this.m.Icon = "ui/perks/perk_42_active.png";
+		this.m.Icon = "ui/traits/trait_icon_skald.png";
 		this.m.Overlay = "perk_42_active";
 		this.m.SoundOnUse = [
 			"sounds/combat/rally_the_troops_01.wav"
 		];
-		this.m.Type = this.Const.SkillType.Active;
-		this.m.Order = this.Const.SkillOrder.Any;
-		this.m.IsSerialized = false;
-		this.m.IsActive = true;
-		this.m.IsTargeted = false;
-		this.m.IsStacking = false;
-		this.m.IsAttack = false;
-		this.m.IsVisibleTileNeeded = false;
-		this.m.ActionPointCost = 5;
-		this.m.FatigueCost = 25;
-		this.m.MinRange = 1;
-		this.m.MaxRange = 1;
+		this.m.Type = this.m.Type;
+		this.m.Titles = [];
+		this.m.Excluded = [];
 	}
 
 	function getTooltip()
@@ -52,15 +44,21 @@ this.rally_the_troops <- this.inherit("scripts/skills/skill", {
 
 	function onTargetHit( _skill, _targetEntity, _bodyPart, _damageInflictedHitpoints, _damageInflictedArmor )
 	{
+		local _user = this.getContainer().getActor();
 		local myTile = _user.getTile();
 		local difficulty = 5;
 		local actors = this.Tactical.Entities.getInstancesOfFaction(_user.getFaction());
 		
 		local closestActor = null;
 		local closestDistance = 4;
+
 		foreach( a in actors )
 		{
 			if (a.getID() == _user.getID())
+			{
+				continue;
+			}
+			if (a.getMoraleState() == this.Const.MoraleState.Confident)
 			{
 				continue;
 			}
@@ -69,7 +67,6 @@ this.rally_the_troops <- this.inherit("scripts/skills/skill", {
 			{
 				continue;
 			}
-			
 			closestActor = a;
 			closestDistance = distance;
 		}
@@ -78,24 +75,21 @@ this.rally_the_troops <- this.inherit("scripts/skills/skill", {
 			return;
 		}
 
-		local morale = a.getMoraleState();
-		local attempts = this.Const.MoraleState.Confident - this.Math.max(morale, this.Const.MoraleState.Breaking);
+		local morale = closestActor.getMoraleState();
+		local attempts = 1;
 		for (local i = 0; i < attempts; i++)
 		{
-			if (a.getMoraleState() == this.Const.MoraleState.Fleeing)
+			this.logInfo("skald check: " + closestActor.getName());
+			if (closestActor.getMoraleState() == this.Const.MoraleState.Fleeing)
 			{
-				a.checkMorale(this.Const.MoraleState.Wavering - this.Const.MoraleState.Fleeing, difficulty, this.Const.MoraleCheckType.Default, "status_effect_56");
+				closestActor.checkMorale(this.Const.MoraleState.Wavering - this.Const.MoraleState.Fleeing, difficulty, this.Const.MoraleCheckType.Default, "status_effect_56");
 			}
 			else
 			{
-				a.checkMorale(1, difficulty, this.Const.MoraleCheckType.Default, "status_effect_56");
+				closestActor.checkMorale(1, difficulty, this.Const.MoraleCheckType.Default, "status_effect_56");
 			}
 		}
 		
-		if (morale != a.getMoraleState())
-		{
-			a.getFlags().add("NEM_skald_effect");
-		}
 	}
 	
 	

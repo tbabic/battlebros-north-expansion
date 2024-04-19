@@ -1,7 +1,8 @@
-this.rally_the_troops <- this.inherit("scripts/skills/skill", {
+this.moonkissed_trait <- this.inherit("scripts/skills/traits/character_trait", {
 	m = {},
 	function create()
 	{
+		this.character_trait.create();
 		this.m.ID = "trait.moonkissed";
 		this.m.Name = "Beloved of the Moon";
 		this.m.Description = "This character's fighting provess improves during the night.";
