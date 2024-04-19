@@ -33,18 +33,18 @@ this.nem_barbarian_drum_skill <- this.inherit("scripts/skills/skill", {
 	function onUse( _user, _targetTile )
 	{
 		local myTile = _user.getTile();
+		this.logInfo("drums: " + _user.getName() + " / " + _user.getID())
 		local actors = this.Tactical.Entities.getInstancesOfFaction(_user.getFaction());
 
 		foreach( a in actors )
 		{
+			this.logInfo("drums: " + a.getName() + " / " + a.getID());
 			if (a.getFatigue() == 0)
 			{
 				continue;
 			}
-
 			if (a.getFaction() == _user.getFaction())
 			{
-				local a = this.getContainer().getActor();
 				a.setFatigue(this.Math.max(0, a.getFatigue() - this.m.FatigueReduction));
 				this.spawnIcon(this.m.Overlay, a.getTile());
 			}

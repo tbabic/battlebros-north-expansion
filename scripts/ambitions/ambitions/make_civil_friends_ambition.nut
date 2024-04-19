@@ -37,11 +37,14 @@ this.make_civil_friends_ambition <- this.inherit("scripts/ambitions/ambition", {
 
 	function onCheckSuccess()
 	{
-		if (this.World.Assets.getBusinessReputation() >= 1400)
+		local nobles = this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse);
+		foreach (nobleHouse in nobles)
 		{
-			return true;
+			if (nobles.getPlayerRelations >= 30)
+			{
+				return true;
+			}
 		}
-
 		return false;
 	}
 

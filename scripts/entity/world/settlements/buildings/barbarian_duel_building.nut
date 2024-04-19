@@ -28,6 +28,11 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 	
 	function getUIImage()
 	{
+		if(!this.World.getTime().IsDaytime)
+		{
+			return this.m.UIImageNight;
+		}
+		
 		if (this.isClosed() || !this.isDuelAvailable())
 		{
 			return "ui/settlements/dueling_circle_empty";

@@ -55,7 +55,7 @@ this.wolfmaster_bonus_effect <- this.inherit("scripts/skills/skill", {
 			return false;
 		}
 		local ally = collar.getContainer().getActor();
-		if (ally == null)
+		if (ally == null || ally.isNull() || !ally.isAlive())
 		{
 			logInfo("no ally");
 			return false;

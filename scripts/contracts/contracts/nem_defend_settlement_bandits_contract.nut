@@ -51,21 +51,22 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 		{
 			number = number + 1;
 		}
+		this.logInfo("number of parties:" + number);
 		return number;
 	}
 	
 	function generateMilitia()
 	{
 		local r = this.Math.rand(1, 100);
-		if (r <= this.m.MilitiaChance && this.Contract.getDifficultyMult() >= 0.95)
+		if (r <= this.m.MilitiaChance && this.getDifficultyMult() >= 0.95)
 		{
-			this.Flags.set("IsMilitia", true);
+			this.m.Flags.set("IsMilitia", true);
 		}
 	}
 	
 	function getAttackScreen()
 	{
-		if (this.Flags.get("IsUndead"))
+		if (this.m.Flags.get("IsUndead"))
 		{
 			return "UndeadAttack";
 		}
@@ -88,13 +89,13 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 	
 	function spawnParties(number)
 	{
-		local nearestBandits = this.Contract.getNearestLocationTo(this.Contract.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).getSettlements());
-		local nearestZombies = this.Contract.getNearestLocationTo(this.Contract.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Zombies).getSettlements());
+		local nearestBandits = this.getNearestLocationTo(this.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).getSettlements());
+		local nearestZombies = this.getNearestLocationTo(this.m.Home, this.World.FactionManager.getFactionOfType(this.Const.FactionType.Zombies).getSettlements());
 		
 		this.m.Origin = this.WeakTableRef(nearestBandits);
-		if (nearestZombies.getTile().getDistanceTo(this.Contract.m.Home.getTile()) <= 20 && nearestBandits.getTile().getDistanceTo(this.Contract.m.Home.getTile()) > 20)
+		if (nearestZombies.getTile().getDistanceTo(this.m.Home.getTile()) <= 20 && nearestBandits.getTile().getDistanceTo(this.m.Home.getTile()) > 20)
 		{
-			this.Flags.set("IsUndead", true);
+			this.m.Flags.set("IsUndead", true);
 			this.m.Origin = this.WeakTableRef(nearestZombies);
 		}
 		else
@@ -102,7 +103,7 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 			local r = this.Math.rand(1, 100);
 			if (r <= 30 || this.World.FactionManager.isUndeadScourge() && r <= 50)
 			{
-				if (nearestZombies.getTile().getDistanceTo(this.Contract.m.Home.getTile()) <= 20)
+				if (nearestZombies.getTile().getDistanceTo(this.m.Home.getTile()) <= 20)
 				{
 					this.Flags.set("IsUndead", true);
 					this.m.Origin = this.WeakTableRef(nearestZombies);
@@ -112,24 +113,24 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 		
 		for( local i = 0; i < number; i++ )
 		{
-			local faction = this.Flags.get("IsUndead") ? this.Const.FactionType.Zombies : this.Const.FactionType.Bandits;
-			local resources = this.Math.rand(80, 110) * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult();
+			local faction = this.m.Flags.get("IsUndead") ? this.Const.FactionType.Zombies : this.Const.FactionType.Bandits;
+			local resources = this.Math.rand(80, 110) * this.getDifficultyMult() * this.getScaledDifficultyMult();
 			local party = this.spawnEnemyPartyAtBase(faction, resources);
 		}
 	}
 	
 	function prepareFlags()
 	{
-		if(!this.Flags.get("IsUndead") )
+		if(!this.m.Flags.get("IsUndead") )
 		{
 			local r = this.Math.rand(1, 100)
 			if (r > 70)
 			{
-				this.Flags.set("IsKidnapping", true);
+				this.m.Flags.set("IsKidnapping", true);
 			}
 			if (r > 40)
 			{
-				this.Flags.set("RaidOnly", true);
+				this.m.Flags.set("RaidOnly", true);
 			}
 			
 		}
@@ -174,9 +175,9 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 				this.Contract.addGuests();
 				
 				this.Contract.generateMilitia();
-				local number = this.getNumberOfParties();
+				local number = this.Contract.getNumberOfParties();
 				this.Contract.spawnParties(number);
-				this.prepareFlags();
+				this.Contract.prepareFlags();
 				foreach (i, partyID in this.Contract.m.UnitsSpawned)
 				{
 					local party = this.World.getEntityByID(partyID);
@@ -261,6 +262,7 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 			}
 			function update()
 			{
+				this.logInfo("update defend settlement: " + this.Contract.m.UnitsSpawned.len());
 				if(this.Flags.get("IsDestroyed"))
 				{
 					this.logInfo("destroyed true");
@@ -268,50 +270,55 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 					this.World.Contracts.showActiveContract();
 					return;
 				}
-				
-				if (this.Contract.m.UnitsSpawned.len() > 0)
+				if(this.Contract.m.UnitsSpawned.len() == 0)
 				{
-					foreach( id in this.Contract.m.UnitsSpawned )
+					this.Contract.setScreen("ItsOver");
+					this.World.Contracts.showActiveContract();
+					this.Contract.setState("Return");
+					return;
+				}
+				
+				foreach( id in this.Contract.m.UnitsSpawned )
+				{
+					local p = this.World.getEntityByID(id);
+					if (p.getController().hasOrders())
 					{
-						local p = this.World.getEntityByID(id);
-						if (p.getController().hasOrders())
+						continue;
+					}
+					
+					this.Flags.set("IsRaided", true);
+					
+					if(this.Flags.get("RaidOnly"))
+					{
+						if(this.Flags.get("IsKidnapping") && !this.Flags.get("IsKidnappingInProgress"))
 						{
-							continue;
+							this.Flags.set("IsKidnappingInProgress", true);
+							this.Contract.m.Kidnapper = this.WeakTableRef(p);
 						}
-						
-						this.Flags.set("IsRaided", true);
-						
-						if(this.Flags.get("RaidOnly"))
-						{
-							if(this.Flags.get("IsKidnapping") && !this.Flags.get("IsKidnappingInProgress"))
-							{
-								this.Flags.set("IsKidnappingInProgress", true);
-								this.Contract.m.Kidnapper = this.WeakTableRef(p);
-							}
-							this.Flags.set("RaidersGoneTime", this.Time.getVirtualTimeF() + 60.0);
-							this.Contract.setState("PostRaid");
-							return;
-						}
-						
-						if (!p.getFlags().get("isDestroying"))
-						{
-							this.logInfo("defend nobles done raiding");
-							p.getFlags().set("isDestroying", true);
-							local c = p.getController();
-							p.getFlags().set("startDestroying", true);
-							local destroy = this.new("scripts/ai/world/orders/wait_order");
-							destroy.setTime(10.0);
-							c.addOrder(destroy);
-
-						}
-						else
-						{
-							this.Flags.set("IsDestroyed", true);
-							return;
-						}
+						this.Flags.set("RaidersGoneTime", this.Time.getVirtualTimeF() + 60.0);
+						this.Contract.setState("PostRaid");
+						return;
+					}
+					
+					if (!p.getFlags().get("isDestroying"))
+					{
+						this.logInfo("defend nobles done raiding");
+						p.getFlags().set("isDestroying", true);
+						local c = p.getController();
+						p.getFlags().set("startDestroying", true);
+						local destroy = this.new("scripts/ai/world/orders/wait_order");
+						destroy.setTime(10.0);
+						c.addOrder(destroy);
 
 					}
+					else
+					{
+						this.Flags.set("IsDestroyed", true);
+						return;
+					}
+
 				}
+				
 			}
 		});
 		
@@ -667,6 +674,7 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 					icon = "ui/icons/asset_money.png",
 					text = "You gain [color=" + this.Const.UI.Color.PositiveEventValue + "]" + this.Contract.m.Payment.getOnCompletion() + "[/color] Crowns"
 				});
+				this.Contract.m.SituationID = this.Contract.resolveSituation(this.Contract.m.SituationID, this.Contract.m.Home, this.List);
 			}
 
 		});
@@ -709,6 +717,7 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 					icon = "ui/icons/asset_money.png",
 					text = "You gain [color=" + this.Const.UI.Color.PositiveEventValue + "]" + this.Contract.m.Payment.getOnCompletion()/2 + "[/color] Crowns"
 				});
+				this.Contract.m.SituationID = this.Contract.resolveSituation(this.Contract.m.SituationID, this.Contract.m.Home, this.List);
 				this.Contract.addSituation(this.new("scripts/entity/world/settlements/situations/raided_situation"), 3, this.Contract.m.Home, this.List);
 			}
 
@@ -751,6 +760,7 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 					icon = "ui/icons/asset_money.png",
 					text = "You gain [color=" + this.Const.UI.Color.PositiveEventValue + "]" + this.Contract.m.Payment.getOnCompletion() / 2 + "[/color] Crowns"
 				});
+				this.Contract.m.SituationID = this.Contract.resolveSituation(this.Contract.m.SituationID, this.Contract.m.Home, this.List);
 				this.Contract.addSituation(this.new("scripts/entity/world/settlements/situations/raided_situation"), 3, this.Contract.m.Home, this.List);
 			}
 

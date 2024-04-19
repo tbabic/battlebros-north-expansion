@@ -2,7 +2,6 @@ this.destined_trait <- this.inherit("scripts/skills/traits/character_trait", {
 	m = {},
 	function create()
 	{
-		logInfo("creating destined trait");
 		this.character_trait.create();
 		this.m.ID = "trait.destined";
 		this.m.Name = "Destined";

@@ -155,12 +155,11 @@ this.nem_raid_caravan_action <- this.inherit("scripts/factions/faction_action", 
 			enemyFaction = start.getOwner();
 		}
 		else {
-			local factionId = start.getFactionOfType(this.Const.FactionType.Settlement);
-			if (factionId == null)
+			enemyFaction = start.getFactionOfType(this.Const.FactionType.Settlement);
+			if (enemyFaction == null)
 			{
 				return;
 			}
-			local enemyFaction = this.World.FactionManager.getFaction(factionId);
 		}
 		
 		this.m.StartId = start.getID();

@@ -94,6 +94,16 @@
 			return this.m.Size;
 		}
 		
+		this.isSouthern <- function()
+		{
+			return false;
+		}
+		
+		this.isMilitary <- function()
+		{
+			return false;
+		}
+		
 		this.getMusic <- function() {
 			if (!this.World.getTime().IsDaytime)
 			{
@@ -818,6 +828,8 @@
 		
 		this.m.ContractAction <- this.new("scripts/factions/contracts/nem_barbarians_new_contract_action");
 		this.m.ContractAction.setHome(this);
+		
+		
 		this.getContracts <- function() {
 			//logInfo("getContracts: " + this.getID());
 			//logInfo("contracts faction: " + this.getFaction());

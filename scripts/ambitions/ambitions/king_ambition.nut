@@ -61,7 +61,7 @@ this.king_ambition <- this.inherit("scripts/ambitions/ambition", {
 		if (this.World.Flags.get("NorthExpansionCivilLevel") >= 3) {
 			return;
 		}
-		this.m.Score = 10;
+		this.m.Score = 0;
 	}
 	
 	function onLocationDestroyed( _location )

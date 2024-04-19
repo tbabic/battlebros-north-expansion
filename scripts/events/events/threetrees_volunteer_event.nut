@@ -101,7 +101,8 @@ this.threetrees_volunteer_event <- this.inherit("scripts/events/event", {
 	}
 
 	function onUpdateScore()
-	{		
+	{	
+		logInfo("update score: " + this.m.ID);	
 		local multiplier = 1;
 		if (!this.Const.DLC.Wildmen)
 		{
@@ -128,6 +129,7 @@ this.threetrees_volunteer_event <- this.inherit("scripts/events/event", {
 		
 		
 		this.m.Score = 5 * multiplier;
+		logInfo("updated score: " + this.m.ID + " - " + this.m.Score);
 
 	}
 

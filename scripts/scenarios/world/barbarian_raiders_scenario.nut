@@ -287,6 +287,11 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 		bros[2].getBackground().m.RawDescription = "%name% has decided to stay with you, instead of going south. When asked why, he grounts out that north is his home. While not a man of many words, he is absolutely vicious and ferocious specimen in battle. Sometimes it looks like, the closer he is to death, the more dangerous he is.";
 		bros[2].getBackground().buildDescription(true);
 		bros[2].setPlaceInFormation(13);
+		bros[2].m.PerkPoints = 1;
+		bros[2].m.LevelUps = 1;
+		bros[2].m.Level = 2;
+		
+		
 		bros[2].m.Talents = [];
 		
 		

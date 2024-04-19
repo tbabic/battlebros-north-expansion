@@ -815,8 +815,7 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/barbarian_co
 		}
 
 		this.contract.onDeserialize(_in);
-		local partyID = this.Contract.m.UnitsSpawned[0];
-		local party = this.World.getEntityByID(id);
+		
 		
 		
 		

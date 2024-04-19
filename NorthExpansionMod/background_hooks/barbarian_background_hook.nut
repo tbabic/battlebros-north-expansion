@@ -86,7 +86,6 @@
 	::mods_override(o, "onAdded", function() {
 		if(this.World.Assets.getOrigin()== null)
 		{
-			logInfo("origin null");
 			onAdded();
 			return;
 		}

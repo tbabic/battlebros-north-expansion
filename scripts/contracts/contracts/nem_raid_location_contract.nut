@@ -70,6 +70,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 				if (this.Contract.getDifficultyMult() >= 0.95 && this.Math.rand(1, 100) <= 25)
 				{
 					this.Flags.set("IsNoblesReady", true);
+				
 				}
 				else if (this.Contract.getDifficultyMult() <= 0.85 && this.Math.rand(1, 100) <= 50 && !this.Contract.m.Destination.isMilitary())
 				{
@@ -120,6 +121,13 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 
 			function onDestinationAttacked( _dest, _isPlayerAttacking = true )
 			{
+				if (this.Flags.get("IsNoblesReady"))
+				{
+					this.Contract.setScreen("NoblesReady");
+					this.World.Contracts.showActiveContract();
+					return;
+				}
+				
 				if (this.Contract.m.Destination.getTroops().len() == 0)
 				{
 					this.onCombatVictory("RazeLocation");
@@ -128,12 +136,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 				else if (!this.Flags.get("IsAttackDialogTriggered") && !this.Contract.m.Settlement.isMilitary())
 				{
 					this.Flags.set("IsAttackDialogTriggered", true);
-
-					if (this.Flags.get("IsNoblesReady"))
-					{
-						this.Contract.setScreen("NoblesReady");
-					}
-					else if (this.Flags.get("IsMilitiaPresent"))
+					if (this.Flags.get("IsMilitiaPresent"))
 					{
 						this.Contract.setScreen("MilitiaAttack");
 					}
@@ -315,16 +318,17 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 					Text = "To arms!",
 					function getResult()
 					{
-						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationNobleContractBetrayal);
-						this.World.FactionManager.getFaction(this.Contract.getFaction()).getFlags().set("Betrayed", false);
 						local p = this.Const.Tactical.CombatInfo.getClone();
 						p.CombatID = "RazeLocation";
 						p.TerrainTemplate = this.Const.World.TerrainTacticalTemplate[this.Contract.m.Destination.getTile().Type];
 						p.Tile = this.World.getTile(this.World.worldToTile(this.World.State.getPlayer().getPos()));
-						p.PlayerDeploymentType = this.Const.Tactical.DeploymentType.Line;
-						p.EnemyDeploymentType = this.Const.Tactical.DeploymentType.Line;
 						p.Music = this.Const.Music.NobleTracks;
-						this.Const.World.Common.addUnitsToCombat(p.Entities, this.Const.World.Spawn.Noble, 150 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult(), this.Contract.getFaction());
+						
+						this.Const.World.Common.addUnitsToCombat(p.Entities, this.Const.World.Spawn.Noble, 120 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult(), this.Contract.m.Settlement.getFactionOfType(Const.FactionType.NobleHouse).getID());
+						p.TemporaryEnemies = [
+							this.Contract.m.Settlement.getFactionOfType(Const.FactionType.NobleHouse).getID()
+						];
+						
 						this.World.Contracts.startScriptedCombat(p, false, true, true);
 						return 0;
 					}

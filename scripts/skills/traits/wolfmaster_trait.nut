@@ -2,7 +2,6 @@ this.wolfmaster_trait <- this.inherit("scripts/skills/traits/character_trait", {
 	m = {},
 	function create()
 	{
-		logInfo("creating wolfmaster trait");
 		this.character_trait.create();
 		this.m.ID = "trait.wolfmaster";
 		this.m.Name = "Wolfmaster";
@@ -113,7 +112,6 @@ this.wolfmaster_trait <- this.inherit("scripts/skills/traits/character_trait", {
 
 	function onUpdate( _properties )
 	{
-		logInfo("update wolfmaster");
 		this.processBonus(_properties);
 	}
 

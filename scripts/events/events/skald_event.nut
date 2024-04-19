@@ -157,7 +157,7 @@ this.skald_event <- this.inherit("scripts/events/event", {
 
 	function onUpdateScore()
 	{		
-
+		logInfo("update score: " + this.m.ID);
 		if (!this.Const.DLC.Wildmen)
 		{
 			return;
@@ -188,6 +188,7 @@ this.skald_event <- this.inherit("scripts/events/event", {
 			multiplier = 4;
 		}
 		this.m.Score = 20 * multiplier;
+		logInfo("updated score: " + this.m.ID + " - " + this.m.Score);
 
 	}
 	
