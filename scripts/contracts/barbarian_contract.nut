@@ -256,6 +256,19 @@ this.barbarian_contract <- this.inherit("scripts/contracts/contract", {
 		return totalCost;
 	}
 	
+	function getDifficultySkulls()
+	{
+		
+		if (this.m.DifficultyMult <= 0.9)
+		{
+			return 1;
+		}
+		if (this.m.Difficulty < 1.1)
+		{
+			return 2;
+		}
+		return 3;
+	}
 	
 
 });

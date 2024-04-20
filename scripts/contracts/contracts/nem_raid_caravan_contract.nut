@@ -10,6 +10,101 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 		this.m.Flags.set("InterceptStart", _startId);
 		this.m.Flags.set("InterceptDest", _destId);
 	}
+	
+	function chooseCaravanRoute()
+	{
+		
+		local allSettlements = this.World.EntityManager.getSettlements();
+		
+		local candidates = [];
+		local playerTile = this.m.Home.getTile();
+		local startSettlements = [];
+		local allSettlements = this.World.EntityManager.getSettlements();
+		
+		local southY = this.World.getMapSize().Y * 0.5;
+		foreach(i, startCandidate in allSettlements)
+		{
+			local candidate = {
+				startIdx = i,
+				endIdxs	= []
+			};
+			
+			if (startCandidate.isMilitary() && this.getDifficultySkulls() == 1)
+			{
+				continue;
+			}
+			if(!startCandidate.isMilitary() && !startCandidate.isSouthern() && this.getDifficultySkulls() == 3)
+			{
+				continue;
+			}
+					
+			foreach(j, endCandidate in allSettlements)
+			{
+				if(startCandidate == endCandidate)
+				{
+					continue;
+				}
+				
+				if (startCandidate.getTile().Coords.Y < southY && endCandidate.getTile().Coords.Y < southY)
+				{
+					continue;
+				}
+				local distanceCaravan = this.getDistanceOnRoads(startCandidate.getTile(), endCandidate.getTile());
+				local daysCaravan = this.getDaysRequiredToTravel(distanceCaravan, this.Const.World.MovementSettings.Speed * 0.6, true)
+				
+				local distancePlayer = endCandidate.getTile().getDistanceTo(playerTile);
+				local daysPlayer = this.getDaysRequiredToTravel(distancePlayer, this.Const.World.MovementSettings.Speed * 1.0, true)
+				
+				if (daysPlayer > 1.5 * daysCaravan)
+				{
+					continue;
+				}
+
+				candidate.endIdxs.push(j);
+				
+				
+			}
+			if (candidate.endIdxs.len() > 0)
+			{
+				candidates.push(candidate);
+			}
+		}
+		
+		if(candidates.len() == 0)
+		{
+			return;
+		}
+		
+		local candidateIdx = this.Math.rand(0, candidates.len()-1);
+		local startIdx = candidates[candidateIdx].startIdx;
+		local endIdx = this.Math.rand(0, candidates[candidateIdx].endIdxs.len()-1)
+		local start = allSettlements[startIdx];
+		local end = allSettlements[endIdx];
+		
+		local enemyFaction = null;
+		if (start.isMilitary())
+		{
+			enemyFaction = start.getOwner();
+		}
+		else if(start.isSouthern())
+		{
+			enemyFaction = start.getOwner();
+		}
+		else {
+			enemyFaction = start.getFactionOfType(this.Const.FactionType.Settlement);
+			if (enemyFaction == null)
+			{
+				return;
+			}
+		}
+		
+		this.setCaravanInfo(enemyFaction.getID(), start.getID(), end.getID());
+	}
+	
+	function onHomeSet()
+	{
+		this.chooseCaravanRoute();
+	}
 
 	function create()
 	{
@@ -17,11 +112,13 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 		this.m.Type = "contract.nem_raid_caravan";
 		this.m.Name = "Raid Caravan";
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 7.0;
+				
 	}
 	
 	function start()
 	{
-		this.m.Payment.Pool = 800 * this.getPaymentMult() * this.getDifficultyMult() * this.getReputationToPaymentMult();
+		this.logInfo("caravan contract starting");
+		this.m.Payment.Pool = 500 * this.getPaymentMult() * this.getDifficultyMult() * this.getReputationToPaymentMult();
 		this.m.Payment.Completion = 1.0;
 		this.contract.start();
 	}
@@ -114,7 +211,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 				party.setVisibleInFogOfWar(true);
 				party.setImportant(true);
 				party.setDiscovered(true);
-				party.setDescription("A caravan with armed escorts transporting something worth protecting between settlements.");
+				party.setDescription(description);
 				party.setFootprintType(this.Const.World.FootprintsType.Caravan);
 				party.getFlags().set("IsCaravan", true);
 				party.setAttackableByAI(false);
@@ -576,7 +673,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 
 	function onIsValid()
 	{
-		return this.World.Statistics.getFlags().get("NorthExpansionActive");
+		return this.World.Flags.get("NorthExpansionActive");
 	}
 
 	function onSerialize( _out )

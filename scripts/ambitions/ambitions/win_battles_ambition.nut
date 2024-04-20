@@ -27,7 +27,7 @@ this.win_battles_ambition <- this.inherit("scripts/ambitions/ambition", {
 
 	function onCheckSuccess()
 	{
-		this.logInfo("win any battles: " + this.m.Defeated);
+		//this.logInfo("win any battles: " + this.m.Defeated);
 		if (this.m.Defeated >= 2)
 		{
 			return true;
