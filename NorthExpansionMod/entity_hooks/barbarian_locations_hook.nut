@@ -20,6 +20,7 @@
 		}
 		
 		
+		
 
 		
 		logInfo("barbarian camp conversion: " + this.getTypeID());
@@ -38,6 +39,9 @@
 			this.m.CampSize <- 3;
 		}
 		this.m.Size <- this.m.CampSize;
+
+			
+		
 		this.m.combatForced <- false;
 		
 		
@@ -104,6 +108,30 @@
 			return false;
 		}
 		
+		this.isCoastal <- function()
+		{
+			if (this.getFlags().has("NEM_isCoastal"))
+			{
+				return this.getFlags().get("NEM_isCoastal");
+			}
+			local isCoastal = false;
+			local myTile = this.getTile();
+			for( local i = 0; i < 6; i = ++i )
+			{
+				if (!myTile.hasNextTile(i))
+				{
+				}
+				else if (myTile.getNextTile(i).Type == this.Const.World.TerrainType.Ocean || myTile.getNextTile(i).Type == this.Const.World.TerrainType.Shore)
+				{
+					isCoastal= true;
+					break;
+				}
+			}
+			
+			this.getFlags().set("NEM_isCoastal", isCoastal);
+			return isCoastal;
+		}
+		
 		this.getMusic <- function() {
 			if (!this.World.getTime().IsDaytime)
 			{
@@ -143,7 +171,7 @@
 			this.logInfo("terrain type: " + terrainType);
 			local settlementImages = this.Const.World.TerrainSettlementImages[terrainType];
 			local night = !this.World.getTime().IsDaytime;
-			local water =  null;
+			local water = this.isCoastal() ? "ui/settlements/water_01" : null;
 			
 			
 			local backgroundCenter = "ui/settlements/townhall_01_snow"
@@ -164,7 +192,7 @@
 				RampPathway = "ui/settlements/ramp_01_planks" + (night ? "_night" : "") + ".png",
 				Mood = settlementImages.Mood != null ? settlementImages.Mood + ".png" : null,
 				Foreground = settlementImages.Foreground != null ? settlementImages.Foreground + (night ? "_night" : "") + ".png" : null,
-				Water = null,
+				Water = water != null ? water + (night ? "_night" : "") + ".png" : null,
 				Slots = [],
 				Situations = [],
 				Contracts = [],
@@ -255,6 +283,7 @@
 			local night = !this.World.getTime().IsDaytime;
 			local terrainType = this.getTile().Type
 			local settlementImages = this.Const.World.TerrainSettlementImages[terrainType];
+			local water = this.isCoastal() ? "ui/settlements/water_01" : null;
 			
 			local result = {
 				Background = settlementImages.Background + (night ? "_night" : "") + ".jpg",
@@ -265,7 +294,7 @@
 				RampPathway = "ui/settlements/ramp_01_planks" + (night ? "_night" : "") + ".png",
 				Mood = settlementImages.Mood != null ? settlementImages.Mood + ".png" : null,
 				Foreground = settlementImages.Foreground != null ? settlementImages.Foreground + (night ? "_night" : "") + ".png" : null,
-				Water = null,
+				Water = water != null ? water + (night ? "_night" : "") + ".png" : null,
 				Slots = []
 			};
 			
