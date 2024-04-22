@@ -20,10 +20,9 @@
 		logInfo("barb equipment:" + this.getID());
 		local items = this.getContainer().getActor().getItems();
 		local r = this.Math.rand(1,100);
-		if (r <= 60) {
-			onAddEquipment();
-		}
-		if (r <= 90) {
+		
+
+		if (this.m.Level == 2 && r <= 90) {
 			// thrall equipment
 			local weapons = [
 				"weapons/barbarians/antler_cleaver",
@@ -54,7 +53,9 @@
 				items.equip(this.new("scripts/items/shields/wooden_shield_old"));
 			}
 			
-		} else {
+		}
+		else if (this.m.Level == 4 && r <= 30)
+		{	
 			// chosen equipment
 			local weapons = [
 				"weapons/barbarians/rusty_warblade",
@@ -78,6 +79,10 @@
 				"helmets/barbarians/crude_faceguard_helmet"
 			];
 			items.equip(this.new("scripts/items/" + helmet[this.Math.rand(0, helmet.len() - 1)]));
+		}
+		else
+		{
+			onAddEquipment();
 		}
 		
 	});

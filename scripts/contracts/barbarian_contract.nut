@@ -263,7 +263,7 @@ this.barbarian_contract <- this.inherit("scripts/contracts/contract", {
 		{
 			return 1;
 		}
-		if (this.m.Difficulty < 1.1)
+		if (this.m.DifficultyMult < 1.1)
 		{
 			return 2;
 		}

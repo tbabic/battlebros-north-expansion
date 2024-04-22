@@ -16,20 +16,17 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 		
 		local allSettlements = this.World.EntityManager.getSettlements();
 		
-		local candidates = [];
+		local routes = [];
 		local playerTile = this.m.Home.getTile();
 		local startSettlements = [];
 		local allSettlements = this.World.EntityManager.getSettlements();
 		
-		local southY = this.World.getMapSize().Y * 0.5;
+		local southY = this.World.getMapSize().Y * 0.7;
 		foreach(i, startCandidate in allSettlements)
 		{
-			local candidate = {
-				startIdx = i,
-				endIdxs	= []
-			};
 			
-			if (startCandidate.isMilitary() && this.getDifficultySkulls() == 1)
+			
+			if ((startCandidate.isSouthern() || startCandidate.isMilitary()) && this.getDifficultySkulls() == 1)
 			{
 				continue;
 			}
@@ -39,7 +36,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 			}
 					
 			foreach(j, endCandidate in allSettlements)
-			{
+			{				
 				if(startCandidate == endCandidate)
 				{
 					continue;
@@ -59,25 +56,26 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 				{
 					continue;
 				}
+				
+				local route = {
+					startIdx = i,
+					endIdx	= j
+				};
 
-				candidate.endIdxs.push(j);
+				routes.push(route);
 				
 				
-			}
-			if (candidate.endIdxs.len() > 0)
-			{
-				candidates.push(candidate);
 			}
 		}
-		
-		if(candidates.len() == 0)
+		this.logInfo("caravan routes: " + routes.len());
+		if(routes.len() == 0)
 		{
 			return;
 		}
 		
-		local candidateIdx = this.Math.rand(0, candidates.len()-1);
-		local startIdx = candidates[candidateIdx].startIdx;
-		local endIdx = this.Math.rand(0, candidates[candidateIdx].endIdxs.len()-1)
+		local r = this.Math.rand(0, routes.len()-1);
+		local startIdx = routes[r].startIdx;
+		local endIdx = routes[r].endIdx;
 		local start = allSettlements[startIdx];
 		local end = allSettlements[endIdx];
 		
@@ -273,6 +271,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 
 			function update()
 			{
+				
 				if (this.Contract.m.Target == null || this.Contract.m.Target.isNull())
 				{
 					if (this.Flags.get("IsWomenAndChildren"))
@@ -289,10 +288,6 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 				{
 					this.Contract.setScreen("CaravanDelivered");
 					this.World.Contracts.showActiveContract();
-				}
-				else if (this.Contract.isPlayerAt(this.Contract.m.Target))
-				{
-					this.onTargetAttacked(this.Contract.m.Target, false);
 				}
 			}
 
@@ -322,7 +317,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 						this.onTargetAttacked(_dest, true);
 					}
 				}
-				else if (this.Time.getVirtualTimeF() >= this.Contract.m.LastCombatTime + 5.0)
+				else
 				{
 					local enemyFaction = this.World.FactionManager.getFaction(this.Flags.get("TargetFaction"));
 					enemyFaction.setIsTemporaryEnemy(true);
@@ -582,7 +577,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 				});
 				
 				this.Contract.addSituation(this.new("scripts/entity/world/settlements/situations/well_supplied_situation"), 2, this.Contract.m.Home, this.List);
-				if(this.Flags.get("Slaves", true)) {
+				if(this.Flags.get("Slaves")) {
 					this.Contract.addSituation(this.new("scripts/entity/world/settlements/situations/high_spirits_situation"), 2, this.Contract.m.Home, this.List);
 				}
 			}
@@ -673,7 +668,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 
 	function onIsValid()
 	{
-		return this.World.Flags.get("NorthExpansionActive");
+		return this.m.Flags.get("TargetFaction") && this.m.Flags.get("InterceptStart") && this.m.Flags.get("InterceptDest");
 	}
 
 	function onSerialize( _out )

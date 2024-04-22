@@ -374,11 +374,12 @@
 				"barbarian_background",
 				"barbarian_background",
 				"barbarian_background",
+				"barbarian_background",
 				"wildman_background"
 			];
 
-
-
+			
+			
 			this.World.Assets.getOrigin().onUpdateDraftList(draftList);
 
 			while (maxRecruits > current.len())

@@ -5,7 +5,7 @@ this.nem_drive_away_barbarians_action <- this.inherit("scripts/factions/faction_
 	function create()
 	{
 		this.m.ID = "nem_drive_away_barbarians_action";
-		this.m.Cooldown = this.World.getTime().SecondsPerDay * 7;
+		this.m.Cooldown = this.World.getTime().SecondsPerDay * 50;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();

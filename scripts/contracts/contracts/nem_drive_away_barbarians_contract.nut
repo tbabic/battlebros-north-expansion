@@ -71,19 +71,12 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 				this.logInfo("drive away barbarians chance: " + r);
 				if (r <= 20)
 				{
-					if (this.World.getTime().Days >= 10)
-					{
-						this.Flags.set("IsDuel", true);
-					}
-				}
-				else if (r <= 40)
-				{
 					if (this.World.Assets.getBusinessReputation() >= 500 && this.Contract.getDifficultyMult() >= 1.0)
 					{
 						this.Flags.set("IsRevenge", true);
 					}
 				}
-				else if (r <= 50)
+				else if (r <= 30)
 				{
 					this.Flags.set("IsSurvivor", true);
 				}
@@ -91,6 +84,10 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 				{
 					this.World.Flags.set("ContractBarbariansRecruit", true);
 					this.Flags.set("Recruit", true);
+				}
+				if(this.Contract.getDifficultySkulls() == 3)
+				{
+					this.Flags.set("EnemyChampion", true);
 				}
 
 				this.Contract.setScreen("Overview");
@@ -138,16 +135,11 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 			function onDestinationAttacked( _dest, _isPlayerAttacking = true )
 			{
 				this.logInfo("on destination attacked");
-				if (this.Flags.get("IsDuel"))
-				{
-					this.logInfo("duel");
-					this.Contract.setScreen("TheDuel1");
-					this.World.Contracts.showActiveContract();
-				}
-				else if (this.Flags.get("Recruit") && !this.Flags.get("IsBrotherRevengeShown"))
+				if (this.Flags.get("Recruit") && !this.Flags.get("IsBrotherRevengeShown"))
 				{
 					this.logInfo("bro-revenge");
 					this.Flags.set("IsAttackDialogTriggered", true);
+					this.Flags.set("IsBrotherRevengeShown", true);
 					this.Contract.setScreen("BrotherRevenge");
 					this.World.Contracts.showActiveContract();
 				}
@@ -182,6 +174,11 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 				if (_combatID == "Duel")
 				{
 					this.Flags.set("IsDuelDefeat", true);
+					if (this.Flags.get("PartyChampion"))
+					{
+						this.Contract.resetChampionDuels();
+					}
+					
 				}
 			}
 
@@ -211,6 +208,11 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 				else if (this.Flags.get("IsRevenge") && this.Contract.isPlayerNear(this.Contract.m.Home, 600))
 				{
 					this.Contract.setScreen("Revenge1");
+					this.World.Contracts.showActiveContract();
+				}
+				else if (this.Contract.isPlayerAt(this.Contract.m.Home) && this.Flags.get("IsDuel"))
+				{
+					this.Contract.setScreen("Success2");
 					this.World.Contracts.showActiveContract();
 				}
 				else if (this.Contract.isPlayerAt(this.Contract.m.Home))
@@ -278,10 +280,18 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 		this.m.Screens.push({
 			ID = "Approaching",
 			Title = "As you approach...",
-			Text = "[img]gfx/ui/events/event_138.png[/img]{You\'ve found the clan village and a series of cairns that lead toward it. The stones are stacked in the shapes of men, and at the top of each cairn rests a freshly hewn human head. %randombrother% nods.%SPEECH_ON%I wonder if they believe doing that gets them closer to their gods.%SPEECH_OFF%You suspect you have another way to get them closer to their gods: by killing them all. It\'s time to plan a way of attack.}",
+			Text = "[img]gfx/ui/events/event_138.png[/img]{You\'ve found the clan village and a series of cairns marking a path towards it. At the end of the path a line of men stands firm. %randombrother% nods.%SPEECH_ON% They know we are coming and are well armed. We might be in for a fight. Might be better to challenge their chieftain and settle this in a duel. On the other hand %employer% will be happier if we kill them all.%SPEECH_OFF%}",
 			Image = "",
 			List = [],
 			Options = [
+				{
+					Text = "Challenge the chieftain to a duel",
+					function getResult()
+					{
+						return "TheDuel1";
+					}
+
+				}
 				{
 					Text = "Prepare to attack.",
 					function getResult()
@@ -349,34 +359,23 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 				items.equip(this.new("scripts/items/weapons/crude_polearm"));
 				
 				this.Characters.push(this.Contract.m.Dude.getImagePath());
-				this.Contract.m.Flags.set("IsBrotherRevengeShown", true);
+				
 			}
 
 		});
 		this.m.Screens.push({
 			ID = "TheDuel1",
 			Title = "As you approach...",
-			Text = "[img]gfx/ui/events/event_139.png[/img]{Just as it seems the %companyname% is ready to clash with the savages, a lone figure steps out and stands between the battle lines. The man is huge even for clansmen, his heavy armor adorned with bones of slain enemies. He speaks in a strong and guttural voice %SPEECH_ON%Welcome, fellow northerners. My name is %barbarianname%, I'm the chieftain of this clan. I know why you are here, you seek to fight us and kill us. As is tradition, we believe that battle between two men is just as honorable and of value as that between two armies. So it is, I challenge the strongest of you to fight me in a single duel.%SPEECH_OFF%}",
+			Text = "[img]gfx/ui/events/event_139.png[/img]{You've decided to honor the old ways and speak out a challenge to the chieftain of the clan. Amongst the warriors a lone figure steps out and stands between the battle lines. The man is huge even for northerners, his heavy armor adorned with bones of slain enemies. He speaks in a strong and guttural voice %SPEECH_ON%Welcome, fellow northerners. My name is %enemychieftain%, I'm the chieftain of this clan and I accept your challenge. As is tradition, the battle between two men is just as honorable and of value as that between two armies.%SPEECH_OFF%The terms are agreed quickly, if you win his clansmen will no longer raid %townname% and if he wins, they'll do as they please.}",
 			Image = "",
 			List = [],
-			Options = [
-				{
-					Text = "I\'d rather burn down this whole camp. Attack!",
-					function getResult()
-					{
-						this.Flags.set("IsDuel", false);
-						this.Flags.set("IsAttackDialogTriggered", true);
-						this.Contract.getActiveState().onDestinationAttacked(this.Contract.m.Destination);
-						return 0;
-					}
-
-				}
-			],
+			Options = [],
 			function start()
 			{
+				
+				
 				local raw_roster = this.World.getPlayerRoster().getAll();
 				local roster = [];
-
 				foreach( bro in raw_roster )
 				{
 					if (bro.getPlaceInFormation() <= 17)
@@ -387,6 +386,48 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 
 				roster.sort(function ( _a, _b )
 				{
+					
+					if (_a.getSkills().getSkillByID("trait.player") && _b.getSkills().getSkillByID("trait.player"))
+					{
+						return 0;
+					}
+					
+					if (_a.getSkills().getSkillByID("trait.player"))
+					{
+						return -1;
+					}
+					if (_b.getSkills().getSkillByID("trait.player"))
+					{
+						return 1;
+					}
+					
+					
+					if (_a.getSkills().getSkillByID("trait.champion") && _b.getSkills().getSkillByID("trait.champion"))
+					{
+						return 0;
+					}
+					
+					if (_a.getSkills().getSkillByID("trait.champion"))
+					{
+						return -1;
+					}
+					if (_b.getSkills().getSkillByID("trait.champion"))
+					{
+						return 1;
+					}
+					
+					local _a_duels_won = _a.getFlags().getAsInt("NEM_duels_won");
+					local _b_duels_won = _b.getFlags().getAsInt("NEM_duels_won");
+					
+					if (_a_duels_won > _b_duels_won)
+					{
+						return -1;
+					}
+					if (_a_duels_won < _b_duels_won)
+					{
+						return 1;
+					}
+					
 					if (_a.getXP() > _b.getXP())
 					{
 						return -1;
@@ -398,59 +439,26 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 
 					return 0;
 				});
-				local name = this.Flags.get("ChampionName");
-				local difficulty = _event.getReputationToDifficultyLightMult();
-				if(difficulty < 1.15 && location.getFlags().get("DuelLost"))
+				
+				
+				local e = this.Math.min(4, roster.len());
+				local name = this.Contract.m.Destination.getChieftain().getName();
+				
+				for( local i = 0; i < e; i = ++i )
 				{
-					difficulty = 1.15;
-				}
-				local e = this.Math.min(3, roster.len());
-				local champion;
-				local avatar;
-				foreach( bro in raw_roster )
-				{
-					if (bro.getSkills().getSkillByID("trait.champion"))
-					{
-						champion = bro;
-					}
-					
+					local bro = roster[i];
+					local text = "";
 					if (bro.getFlags().get("IsPlayerCharacter") || bro.getFlags().get("IsPlayerCharacterAvatar"))
 					{
-						avatar = bro;
+						text = "I, "
 					}
-				}
-				local championText = champion.getName() + " is my champion and he will win!";
-				if (champion == avatar)
-				{
-					 championText = "I, " + champion.getName() + ", will fight your champion and win!"
-				}
-				this.Options.push({
-					Text = championText,
-					function getResult() {
-						this.Flags.set("ChampionBrotherName", champion.getName());
-						this.Flags.set("ChampionBrother", champion.getID());
-						return "TheDuel2";
-					}
-				});
-				foreach(bro in roster)
-				{
-					
-					if (this.Options.len() > e)
+					if (bro.getSkills().hasSkill("trait.champion"))
 					{
-						break;
-					}
-					if (bro == champion)
-					{
-						continue;
-					}
-					local text = bro.getName() + " will fight your champion!";
-					if (bro == avatar)
-					{
-						text = "I, " + text;
+						this.Flags.set("PartyChampion", true);
 					}
 					this.Options.push({
-						Text = text,
-						function getResult(_event)
+						Text = text + roster[i].getName() + " will fight you!",
+						function getResult()
 						{
 							this.Flags.set("ChampionBrotherName", bro.getName());
 							this.Flags.set("ChampionBrother", bro.getID());
@@ -461,7 +469,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 							properties.Entities.push({
 								ID = this.Const.EntityType.BarbarianChampion,
 								Name = name,
-								Variant = difficulty >= 1.15 ? 1 : 0,
+								Variant = this.Flags.get("EnemyChampion") ? 1 : 0,
 								Row = 0,
 								Script = "scripts/entity/tactical/humans/barbarian_champion",
 								Faction = this.Contract.m.Destination.getFaction(),
@@ -474,6 +482,9 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 							properties.EnemyBanners.push(this.Contract.m.Destination.getBanner());
 							properties.Players.push(bro);
 							properties.IsUsingSetPlayers = true;
+							properties.TemporaryEnemies = [
+								this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID()
+							];
 							properties.BeforeDeploymentCallback = function ()
 							{
 								local size = this.Tactical.getMapSize();
@@ -487,19 +498,14 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 									}
 								}
 							};
-							
-							_event.registerToShowAfterCombat("TheDuel2","TheDuel3");
-							properties.TemporaryEnemies = [
-								this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID()
-							];
-							this.World.State.startScriptedCombat(properties, false, true, false);
-							
+							this.World.Contracts.startScriptedCombat(properties, false, true, false);
 							return 0;
 						}
 
 					});
 					  // [062]  OP_CLOSE          0      7    0    0
 				}
+			
 			}
 
 		});
@@ -515,9 +521,12 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 					Text = "A good end.",
 					function getResult()
 					{
+						this.World.Assets.addMoralReputation(2);
+						this.Flags.set("IsRevenge", false);
+						this.Flags.set("IsDuel", true);
+						this.Contract.m.Destination.updateChieftain();
 						this.Contract.setState("Return");
-						this.Contract.m.Destination.die();
-						this.Contract.m.Destination = null;
+						
 						return 0;
 					}
 
@@ -536,14 +545,44 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 					this.Text = "[img]gfx/ui/events/event_138.png[/img]{%champbrother% sheathes his weapons and stands over the corpse of the slain chieftain. Nodding, the victorious warrior stares back at you.%SPEECH_ON%Finished, chief.%SPEECH_OFF%}"
 				}
 				
-				this.Text += "{One of the clan elders comes forward and raises his staff.%SPEECH_ON%So it is, what is it that you wish to have been solved by the violence you sought coming here?%SPEECH_OFF%You tell him that those to the south are furious and want them gone from these lands. The elder nods.%SPEECH_ON%If by battle you would have accomplished, then by honorable duel it is finished. We shall leave.%SPEECH_OFF%The savages are told in their tongue to pack up and go. Surprisingly, there\'s little backtalk or complaining. If they\'re true to their word then you can go and tell %employer% now.}"
+				this.Text += "{One of the clan elders comes forward and raises his staff.%SPEECH_ON%So it is, our chieftain is dead and you have accomplished honorably your goal. We will stop the raiding and attacks against %townname%.%SPEECH_OFF%If they\'re true to their word then you can go and tell %employer% now.}"
+				
+				
+				if(this.Flags.get("EnemyChampion") && !this.Flags.get("PartyChampion"))
+				{
+					
+					local championBro = this.Tactical.getEntityByID(this.Flags.get("ChampionBrother"));
+
+					championBro.getFlags().increment("NEM_duels_won");
+					if(championBro.getFlags().getAsInt("NEM_duels_won") == 5)
+					{
+						local trait = this.new("scripts/skills/traits/champion_trait");
+						championBro.getSkills().add(trait);
+						this.Contract.resetChampionDuels();
+						
+						if(championBro.getSkills().hasSkill("trait.player"))
+						{
+							this.Text += "\n\n You have now won a number of duels against renowned champions. This experience has made you a better fighter, particularly when in single combat."
+						}
+						else
+						{
+							this.Text += "\n\n %champbrother% has now won a number of duels against renowned champions. This experience has made him a better fighter, particularly when in single combat."
+						}
+						
+						this.List.push({
+							id = 10,
+							icon = trait.getIcon(),
+							text = championBro.getName() + " becomes " + trait.getName()
+						});
+					}
+				}
 			}
 
 		});
 		this.m.Screens.push({
 			ID = "TheDuel3",
 			Title = "After the battle...",
-			Text = "[img]gfx/ui/events/event_138.png[/img]{It was a good fight, a clash between men upon the earth with those in observation silent as though in awe of some timeless and honorable rite. But. %champbrother% lies dead on the ground. Bested and killed. The %barbarianname% steps forward again. He does not carry any hint of gloating or grin.%SPEECH_ON%Outsiders, the battle between two men is as such as it were between all of us combined. We have won, blessed is the Far Rock\'s gaze, and so we request that you depart these lands and do not return.%SPEECH_OFF%A few of your warriors look to you awating decision. %randombrother% points out tradition is sacred, but the crew was still has a job to do.}",
+			Text = "[img]gfx/ui/events/event_138.png[/img]{It was a good fight, a clash between men upon the earth with those in observation silent as though in awe of some timeless and honorable rite. But. %champbrother% lies dead on the ground. Bested and killed. The %barbarianname% steps forward again. He does not carry any hint of gloating or grin.%SPEECH_ON%Outsiders, the battle between two men is as such as it were between all of us combined. We have won, blessed is the Far Rock\'s gaze, and so we request that you depart these lands and do not return with weapons drawn.%SPEECH_OFF%A few of your warriors look to you awating decision. %randombrother% points out tradition is sacred, but the crew still has a job to do.}",
 			Image = "",
 			List = [],
 			Options = [
@@ -551,6 +590,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 					Text = "We will stay true to our word and leave you in peace.",
 					function getResult()
 					{
+						this.Flags.set("IsRevenge", false);
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractFail);
 						this.World.Assets.addMoralReputation(5);
 						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractFail, "Failed to destroy a barbarian encampment threatening " + this.Contract.m.Home.getName());
@@ -563,7 +603,14 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 					Text = "Everyone, charge!",
 					function getResult()
 					{
-						this.World.Assets.addMoralReputation(-3);
+						this.World.Assets.addMoralReputation(-10);
+						local barbarians = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
+						local relation = barbarians.getPlayerRelation();
+						if (relation > 30)
+						{
+							change = relation - 30;
+							this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).addPlayerRelation(-change, "Broke the rules of an honorable duel");
+						}
 						this.Contract.getActiveState().onDestinationAttacked(this.Contract.m.Destination);
 						return 0;
 					}
@@ -779,19 +826,19 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 		this.m.Screens.push({
 			ID = "Success1",
 			Title = "Near %townname%...",
-			Text = "[img]gfx/ui/events/event_04.png[/img]{%employer% welcomes your entrance with applause.%SPEECH_ON%My scouts tracked your cre to the north and to its, dare I say, inevitable success! Splendid work murdering those bastards. Surely this will make them think twice about coming here again!%SPEECH_OFF%The man pays you what you\'re owed. | You have a hard time finding %employer%, eventually finding him on the roof of one of the jurts, plugging a hole with wooden planks. He shouts up to you.%SPEECH_ON%Ah, my warrior. Let me come down!%SPEECH_OFF%He climbs down from in one smooth motion, as if he\'s been doing it his whole lif %SPEECH_ON%We\'ve lost some good men and repairs and rebuilding is going slowly, so I thought I\'d lend a hand myself. Nothing like a little dirty work to get a good man up in the morn\'.%SPEECH_OFF%He slaps your chest with his hand. He nods and fetches one of the men to go get your pay.%SPEECH_ON%A job well done, warrior. Very, very well done.%SPEECH_OFF% | You find %employer% attending a funeral ceremony. They\'re burning a pyre weighed with three corpses and what may possibly be a fourth, smaller one. Possibly a whole family. %employer% says a few kind words and then sets the woodwork ablaze. One of the men surprises you with a chest of crowns.%SPEECH_ON%%employer% does not wish to be bothered. Here is your pay, warrior. Please count if you do not trust it is all there.%SPEECH_OFF%}",
+			Text = "[img]gfx/ui/events/event_04.png[/img]{%employer% welcomes your entrance with applause.%SPEECH_ON%My scouts tracked your crew to the north and to its, dare I say, inevitable success! Splendid work murdering those bastards. Surely this will make them think twice about coming here again!%SPEECH_OFF%The man pays you what you\'re owed. | You have a hard time finding %employer%, eventually finding him on the roof of one of the jurts, plugging a hole with wooden planks. He shouts up to you.%SPEECH_ON%Ah, my warrior. Let me come down!%SPEECH_OFF%He climbs down from in one smooth motion, as if he\'s been doing it his whole life.%SPEECH_ON%We\'ve lost some good men and repairs and rebuilding is going slowly, so I thought I\'d lend a hand myself. Nothing like a little dirty work to get a good man up in the morn\'.%SPEECH_OFF%He slaps your chest with his hand. He nods and fetches one of the men to go get your pay.%SPEECH_ON%A job well done, warrior. Very, very well done.%SPEECH_OFF% | You find %employer% attending a funeral ceremony. They\'re burning a pyre weighed with three corpses and what may possibly be a fourth, smaller one. Possibly a whole family. %employer% says a few kind words and then sets the woodwork ablaze. One of the men surprises you with a chest of crowns.%SPEECH_ON%%employer% does not wish to be bothered. Here is your pay, warrior. Please count if you do not trust it is all there.%SPEECH_OFF%}",
 			Image = "",
 			Characters = [],
 			List = [],
 			ShowEmployer = true,
 			Options = [
 				{
-					Text = "Crowns well deserved.",
+					Text = "Gold well deserved.",
 					function getResult()
 					{
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractSuccess);
 						this.World.Assets.addMoney(this.Contract.m.Payment.getOnCompletion());
-						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "You destroyed a barbarian encampment that threatened " + this.Contract.m.Home.getName());
+						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "You stopped the barbarian raids against " + this.Contract.m.Home.getName());
 						this.World.Contracts.finishActiveContract();
 						return 0;
 					}
@@ -801,6 +848,42 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 			function start()
 			{
 				this.Contract.m.Reward = this.Contract.m.Payment.getOnCompletion();
+				this.List.push({
+					id = 10,
+					icon = "ui/icons/asset_money.png",
+					text = "You gain [color=" + this.Const.UI.Color.PositiveEventValue + "]" + this.Contract.m.Reward + "[/color] Crowns"
+				});
+				this.Contract.m.SituationID = this.Contract.resolveSituation(this.Contract.m.SituationID, this.Contract.m.Home, this.List);
+			}
+
+		});
+		
+		
+		this.m.Screens.push({
+			ID = "Success2",
+			Title = "Near %townname%...",
+			Text = "[img]gfx/ui/events/event_04.png[/img]{As you return to your %employer%, you can sense his displeasure palpably hanging in the air.%SPEECH_ON%You know, my scouts have tracked you to the raider's camp and they report that the raiders are still alive and well. They also tell me there was no battle. So why are you back?%SPEECH_OFF%You explain that their chieftain was killed in single combat and the terms of the duel are clear. There will be no more raiding against %townname%, at least for the time being. A glimmer of relief appears on %employer%\'s face, yet his voice remains stern.%SPEECH_ON%I didn\'t hire you to fight duels, but kill every last one of them. But if the matter is settled, at least that is something. You\'ll still get paid but only half.%SPEECH_OFF% }",
+			Image = "",
+			Characters = [],
+			List = [],
+			ShowEmployer = true,
+			Options = [
+				{
+					Text = "It is what it is...",
+					function getResult()
+					{
+						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractSuccess);
+						this.World.Assets.addMoney(this.Contract.m.Reward);
+						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "You destroyed a barbarian encampment that threatened " + this.Contract.m.Home.getName());
+						this.World.Contracts.finishActiveContract();
+						return 0;
+					}
+
+				}
+			],
+			function start()
+			{
+				this.Contract.m.Reward = this.Contract.m.Payment.getOnCompletion() / 2;
 				this.List.push({
 					id = 10,
 					icon = "ui/icons/asset_money.png",
@@ -822,10 +905,14 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 			"original_reward",
 			this.m.OriginalReward
 		]);
-		_vars.push([
-			"barbarianname",
-			this.m.Flags.get("ChampionName")
-		]);
+		if (this.m.Destination != null && !this.m.Destination.isNull() && this.m.Destination.isAlive())
+		{
+			_vars.push([
+				"enemychieftain",
+				this.m.Destination.getChieftain().getName()
+			]);
+		}
+		
 		_vars.push([
 			"champbrother",
 			this.m.Flags.get("ChampionBrotherName")
@@ -856,7 +943,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 			if (this.m.Destination != null && !this.m.Destination.isNull())
 			{
 				this.m.Destination.getSprite("selection").Visible = false;
-				::NorthMod.Utils.setIsHostile(this.Contract.m.Destination, false);
+				::NorthMod.Utils.setIsHostile(this.m.Destination, false);
 				this.m.Destination.setOnCombatWithPlayerCallback(null);
 			}
 
@@ -893,6 +980,19 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 		else
 		{
 			return true;
+		}
+	}
+	
+	function resetChampionDuels()
+	{
+		local roster = this.World.getPlayerRoster().getAll();
+		foreach( bro in roster )
+		{
+			if (bro.getFlags().has("NEM_duels_won"))
+			{
+				bro.getFlags().remove("NEM_duels_won");
+			}
+			
 		}
 	}
 

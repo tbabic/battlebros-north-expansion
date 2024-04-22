@@ -340,7 +340,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 		this.m.Screens.push({
 			ID = "Success1",
 			Title = "On your return...",
-			Text = "[img]gfx/ui/events/event_61.png[/img]{You return to %townname% and clansfolk welcome you as a hero. %employer_short% Pushes his way through the crowd and embraces you.%SPEECH_ON%Raiding is messy work, but you did good out there. Gotta admit, a part of me was hoping you\'d bring complete annihilation to %noblehousename% itself%, but what you did is more than fair enough. You deserve your reward. SPEECH_OFF%. He pushes a satchel of %reward_completion% crowns into your hands.}",
+			Text = "[img]gfx/ui/events/event_61.png[/img]{You return to %townname% and clansfolk welcome you as a hero. %employer_short% Pushes his way through the crowd and embraces you.%SPEECH_ON%Raiding is messy work, but you did good out there. Gotta admit, a part of me was hoping you\'d bring complete annihilation to %noblehousename% itself, but what you did is more than fair enough. You deserve your reward. %SPEECH_OFF%.He pushes a satchel of %reward_completion% crowns into your hands.}",
 			Image = "",
 			Characters = [],
 			List = [],

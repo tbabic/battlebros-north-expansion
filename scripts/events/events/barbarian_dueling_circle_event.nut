@@ -164,7 +164,7 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 					local bro = roster[i];
 					local text = bro.getName() + " will fight you!"
 					local isChamp = false;
-					if (bro.getSkills().getSkillByID("trait.champion"))
+					if (bro.getSkills().hasSkill("trait.champion"))
 					{
 						text = bro.getName() + " is my champion!";
 						isChamp = true;
