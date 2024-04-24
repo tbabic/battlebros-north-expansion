@@ -33,6 +33,7 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 		{
 			c.setHome(this.m.Home);
 		}
+		
 	}
 	
 	function setFaction( _f )
@@ -92,6 +93,13 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 
 	function onExecute( _faction )
 	{
+		local allowSkip = this.m.Home.getFlags().get("NEM_allow_contract_skip");
+		if (this.Math.rand(1, 10) > 1 && allowSkip)
+		{
+			this.m.Home.getFlags().set("NEM_allow_contract_skip", false);
+			return;
+		}
+		this.m.Home.getFlags().set("NEM_allow_contract_skip", true);
 		local scores = [];
 		foreach(contractAction in this.m.ContractActions)
 		{

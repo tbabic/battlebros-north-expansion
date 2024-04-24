@@ -18,7 +18,11 @@ this.barbarian_contract <- this.inherit("scripts/contracts/contract", {
 	function clear()
 	{
 		this.contract.clear();
-		this.World.getGuestRoster().clear();
+		if(this.m.IsActive)
+		{
+			this.World.getGuestRoster().clear();
+		}
+		
 	}
 	
 	function addGuests()

@@ -216,6 +216,7 @@ this.feral_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		_properties.RangedDefense += this.m.Ferocity.SkillBonus;
 		_properties.Bravery += this.m.Ferocity.SkillBonus;
 		_properties.MeleeDamageMult *= 0.01 * this.m.Ferocity.DamageBonus + 1.0;
+		_properties.FatigueRecoveryRate += this.m.Ferocity.FatigueRecovery;
 		
 		if (this.m.Ferocity.Unstoppable)
 		{

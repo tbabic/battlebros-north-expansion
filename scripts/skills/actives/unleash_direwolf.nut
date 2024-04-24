@@ -42,9 +42,9 @@ this.unleash_direwolf <- this.inherit("scripts/skills/skill", {
 		this.m.ID = "actives.unleash_direwolf";
 		this.m.Name = "Unleash Direwolf";
 		this.m.Description = "Unleash your direwolf and send him fighting the enemy. Needs a free tile adjacent.";
-		this.m.Icon = "skills/active_83.png";
-		this.m.IconDisabled = "skills/active_83_sw.png";
-		this.m.Overlay = "active_83";
+		this.m.Icon = "skills/active_165.png";
+		this.m.IconDisabled = "skills/active_165_sw.png";
+		this.m.Overlay = "active_165";
 		this.m.SoundOnUse = [
 			"sounds/enemies/wolf_idle_00.wav",
 			"sounds/enemies/wolf_idle_01.wav",

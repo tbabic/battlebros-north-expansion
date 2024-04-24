@@ -39,25 +39,12 @@ this.nem_hunting_unholds_action <- this.inherit("scripts/factions/faction_action
 			return;
 		}
 		this.logInfo("check: " + this.m.ID);
-		
-		if (::NorthMod.Utils.isNearbySnow(this.m.Home))
-		{
-			this.m.EnemyType = 1;
-		}
-		else if (::NorthMod.Utils.isNearbyForest(this.m.Home))
-		{
-			this.m.EnemyType = 0;
-		}
-		else
-		{
-			this.m.EnemyType = 2;
-		}
+
 		this.m.Score = 1;
 	}
 
 	function onClear()
 	{
-		this.m.EnemyType = 0;
 	}
 
 	function onExecute( _faction )
@@ -66,7 +53,6 @@ this.nem_hunting_unholds_action <- this.inherit("scripts/factions/faction_action
 		contract.setFaction(_faction.getID());
 		contract.setHome(this.m.Home);
 		contract.setEmployerID(this.m.Home.getChieftain().getID());
-		contract.setEnemyType(this.m.EnemyType);
 		this.World.Contracts.addContract(contract);
 	}
 

@@ -80,20 +80,20 @@ this.nem_hunting_unholds_contract <- this.inherit("scripts/contracts/barbarian_c
 					this.Const.World.TerrainType.Mountains
 				]);
 				local nearTile = this.Contract.getTileToSpawnLocation(playerTile, 4, 8);
-				local party;
 
-				if (this.Flags.get("EnemyType") == 0)
+				local enemyType = this.Const.World.Spawn.Unhold;
+				if (::NorthMod.Utils.isNearbySnow(this.Contract.m.Home))
 				{
-					party = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Beasts).spawnEntity(tile, "Unholds", false, this.Const.World.Spawn.UnholdBog, 100 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
+					enemyType = this.Const.World.Spawn.UnholdFrost;
 				}
-				else if (this.Flags.get("EnemyType") == 1)
+				else if (::NorthMod.Utils.isNearbyForest(this.Contract.m.Home))
 				{
-					party = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Beasts).spawnEntity(tile, "Unholds", false, this.Const.World.Spawn.UnholdFrost, 100 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
+					enemyType = this.Const.World.Spawn.UnholdBog;
 				}
-				else
-				{
-					party = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Beasts).spawnEntity(tile, "Unholds", false, this.Const.World.Spawn.Unhold, 100 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
-				}
+				
+				local party = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Beasts).spawnEntity(tile, "Unholds", false, enemyType, 100 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
+				
+				
 
 				party.setDescription("One or more lumbering giants.");
 				party.setFootprintType(this.Const.World.FootprintsType.Unholds);

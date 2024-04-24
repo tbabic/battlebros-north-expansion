@@ -197,6 +197,11 @@ this.skald_event <- this.inherit("scripts/events/event", {
 			return;
 		}
 		
+		if(this.World.getTime().IsDaytime)
+		{
+			return;
+		}
+		
 		local currentTile = this.World.State.getPlayer().getTile();
 
 		if (currentTile.Type != this.Const.World.TerrainType.Mountains)
