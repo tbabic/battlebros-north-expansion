@@ -19,8 +19,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 		local banditcamp = nearest.settlement;
 		this.m.Destination = this.WeakTableRef(banditcamp);
 		this.m.Flags.set("DestinationName", banditcamp.getName());
-		this.m.Flags.set("EnemyBanner", banditcamp.getBanner());
-		this.m.Flags.set("ChampionName", ::NorthMod.Utils.barbarianNameAndTitle());
+		this.m.Flags.set("EnemyBanner", banditcamp.getBanner());		
 		this.m.Flags.set("ChampionBrotherName", "");
 		this.m.Flags.set("ChampionBrother", 0);
 		this.m.Payment.Pool = 600 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();
@@ -89,7 +88,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 				{
 					this.Flags.set("EnemyChampion", true);
 				}
-
+				this.Flags.set("EnemyChieftain", this.Contract.m.Destination.getChieftain().getName());
 				this.Contract.setScreen("Overview");
 				this.World.Contracts.setActiveContract(this.Contract);
 			}
@@ -120,7 +119,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 					this.World.Contracts.showActiveContract();
 					this.Flags.set("IsDuelDefeat", false);
 				}
-				else if (this.Contract.m.Destination == null || this.Contract.m.Destination.isNull())
+				else if (this.Contract.m.Destination == null || this.Contract.m.Destination.isNull() || !this.Contract.m.Destination.isAlive())
 				{
 					if (this.Flags.get("IsSurvivor"))
 					{
@@ -280,7 +279,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 		this.m.Screens.push({
 			ID = "Approaching",
 			Title = "As you approach...",
-			Text = "[img]gfx/ui/events/event_138.png[/img]{You\'ve found the clan village and a series of cairns marking a path towards it. At the end of the path a line of men stands firm. %randombrother% nods.%SPEECH_ON% They know we are coming and are well armed. We might be in for a fight. Might be better to challenge their chieftain and settle this in a duel. On the other hand %employer% will be happier if we kill them all.%SPEECH_OFF%}",
+			Text = "[img]gfx/ui/events/event_138.png[/img]{You\'ve found the clan village and a series of cairns marking a path towards it. At the end of the path a line of men stands firm. %randombrother% nods.%SPEECH_ON%They know we are coming and are well armed. We might be in for a fight. Might be better to challenge their chieftain and settle this in a duel. On the other hand %employer% will be happier if we kill them all.%SPEECH_OFF%}",
 			Image = "",
 			List = [],
 			Options = [
@@ -524,9 +523,8 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 						this.World.Assets.addMoralReputation(2);
 						this.Flags.set("IsRevenge", false);
 						this.Flags.set("IsDuel", true);
-						this.Contract.m.Destination.updateChieftain();
+						this.Contract.m.Destination.changeChieftain();
 						this.Contract.setState("Return");
-						
 						return 0;
 					}
 
@@ -534,12 +532,14 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 			],
 			function start()
 			{
+				this.Contract.m.Destination.getSprite("selection").Visible = false;
+				::NorthMod.Utils.setIsHostile(this.Contract.m.Destination, false);
 				local bro = this.Tactical.getEntityByID(this.Flags.get("ChampionBrother"));
 				this.Characters.push(bro.getImagePath());
 				
 				if(bro.getFlags().get("IsPlayerCharacter"))
 				{
-					this.Text = "[img]gfx/ui/events/event_138.png[/img]{Chieftain %barbarianname% is slain, his beaten body lying before your feet. You turn your face towards his clan.}"
+					this.Text = "[img]gfx/ui/events/event_138.png[/img]{Chieftain %enemychieftain% is slain, his beaten body lying before your feet. You turn your face towards his clan.}"
 				}
 				else {
 					this.Text = "[img]gfx/ui/events/event_138.png[/img]{%champbrother% sheathes his weapons and stands over the corpse of the slain chieftain. Nodding, the victorious warrior stares back at you.%SPEECH_ON%Finished, chief.%SPEECH_OFF%}"
@@ -591,6 +591,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 					function getResult()
 					{
 						this.Flags.set("IsRevenge", false);
+						this.Contract.m.Destination.getSprite("selection").Visible = false;
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractFail);
 						this.World.Assets.addMoralReputation(5);
 						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractFail, "Failed to destroy a barbarian encampment threatening " + this.Contract.m.Home.getName());
@@ -905,13 +906,12 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 			"original_reward",
 			this.m.OriginalReward
 		]);
-		if (this.m.Destination != null && !this.m.Destination.isNull() && this.m.Destination.isAlive())
-		{
-			_vars.push([
-				"enemychieftain",
-				this.m.Destination.getChieftain().getName()
-			]);
-		}
+
+		
+		_vars.push([
+			"enemychieftain",
+			this.m.Flags.get("EnemyChieftain")
+		]);
 		
 		_vars.push([
 			"champbrother",

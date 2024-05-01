@@ -10,11 +10,6 @@ this.nem_destroy_goblin_camp_contract <- this.inherit("scripts/contracts/barbari
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 7.0;
 	}
 
-	function onImportIntro()
-	{
-		this.importNobleIntro();
-	}
-
 	function start()
 	{
 		local camp = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Goblins).getNearestSettlement(this.World.State.getPlayer().getTile());

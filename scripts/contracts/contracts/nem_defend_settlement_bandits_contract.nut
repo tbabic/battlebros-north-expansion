@@ -13,11 +13,6 @@ this.nem_defend_settlement_bandits_contract <- this.inherit("scripts/contracts/b
 		this.m.MakeAllSpawnsAttackableByAIOnceDiscovered = true;
 	}
 
-	function onImportIntro()
-	{
-		this.importSettlementIntro();
-	}
-
 	function start()
 	{
 		this.m.Payment.Pool = 700 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();

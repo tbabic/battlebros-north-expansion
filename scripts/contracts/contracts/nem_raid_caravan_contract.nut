@@ -198,7 +198,13 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 				}
 				
 				local party = enemyFaction.spawnEntity(best_start.getTile(), "Caravan", false, template, 100 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult() * forceMultiplier);
-				
+				if (best_start.getProduce().len() != 0)
+				{
+					for( local j = 0; j != 3; j = ++j )
+					{
+						party.addToInventory(this.m.Home.getProduce()[this.Math.rand(0, this.m.Home.getProduce().len() - 1)]);
+					}
+				}
 				
 				party.getSprite("base").Visible = false;
 				if (enemyFaction.getBannerSmall() != "") {
@@ -414,8 +420,15 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 					Text = "{So be it. Hand over the crowns. | A fair offer, we\'ll take it.}",
 					function getResult()
 					{
-						this.Flags.set("Failed", true)
-						this.Contract.setState("Return");
+						//this.Flags.set("Failed", true)
+						//this.Contract.setState("Return");
+						
+						this.World.Assets.addMoney(this.Flags.get("Bribe1"));
+						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractFail * 2);
+						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationNobleContractFail);
+						this.World.Contracts.removeContract(this.Contract);
+						
+						
 						return 0;
 					}
 

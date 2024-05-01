@@ -40,7 +40,7 @@ this.skald_event <- this.inherit("scripts/events/event", {
 					{
 						this.World.getTemporaryRoster().clear();
 						_event.m.Dude = null;
-						return "";
+						return "Avoid";
 					}
 
 				}
@@ -96,7 +96,7 @@ this.skald_event <- this.inherit("scripts/events/event", {
 				
 				
 				
-				this.Characters.push(_event.m.Dude.getImagePath());
+				//this.Characters.push(_event.m.Dude.getImagePath());
 			}
 
 		});
@@ -171,7 +171,7 @@ this.skald_event <- this.inherit("scripts/events/event", {
 			],
 			function start( _event )
 			{
-				this.Characters.push(_event.m.Dude.getImagePath());
+				
 			}
 		});
 	}
@@ -220,10 +220,14 @@ this.skald_event <- this.inherit("scripts/events/event", {
 	
 	function onPrepareVariables( _vars )
 	{
-		_vars.push([
-			"skald",
-			this.m.Dude.getNameOnly()
-		]);
+		if (this.m.Dude != null)
+		{
+			_vars.push([
+				"skald",
+				this.m.Dude.getNameOnly()
+			]);
+		}
+		
 	}
 
 	function onClear()

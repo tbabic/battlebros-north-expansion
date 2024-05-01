@@ -27,20 +27,20 @@ this.big_direwolf_event <- this.inherit("scripts/events/event", {
 			],
 			function start( _event )
 			{
-				_event.m.DirewolfItem.Level = 2;
+				_event.m.DirewolfItem.m.Level = 2;
 				local strangeMeat = this.World.Assets.getStash().getItemByID("supplies.strange_meat");
 				
 				
 				this.List.push({
 					id = 10,
-					icon = "ui/items/" + _strangeMeat.getIcon(),
+					icon = "ui/items/" + strangeMeat.getIcon(),
 					text = "You lose " + strangeMeat.getName()
 				});
 				
 				this.List.push({
 					id = 10,
-					icon = "ui/items/" + this.m.DirewolfItem.getIcon(),
-					text = this.m.DirewolfItem.getName() + "is now more effective in combat."
+					icon = "ui/items/" + _event.m.DirewolfItem.getIcon(),
+					text = _event.m.DirewolfItem.getName() + " is now more effective in combat."
 				});
 				
 				this.World.Assets.getStash().remove(strangeMeat);

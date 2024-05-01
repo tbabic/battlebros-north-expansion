@@ -5,7 +5,7 @@ this.nem_hunting_lindwurms_action <- this.inherit("scripts/factions/faction_acti
 	function create()
 	{
 		this.m.ID = "nem_hunting_lindwurms_action";
-		this.m.Cooldown = this.World.getTime().SecondsPerDay * 14;
+		this.m.Cooldown = this.World.getTime().SecondsPerDay * 30;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
 		this.faction_action.create();
@@ -39,6 +39,11 @@ this.nem_hunting_lindwurms_action <- this.inherit("scripts/factions/faction_acti
 		}
 
 		if (::NorthMod.Utils.isNearbySnow(this.m.Home))
+		{
+			return;
+		}
+		
+		if (this.Math.rand(1, 100) > 10)
 		{
 			return;
 		}

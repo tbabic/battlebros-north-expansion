@@ -5,6 +5,7 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 	},
 	function setItem( _i )
 	{
+		
 		if (typeof _i == "instance")
 		{
 			this.m.Item = _i;
@@ -13,6 +14,7 @@ this.direwolf_pet <- this.inherit("scripts/entity/tactical/actor", {
 		{
 			this.m.Item = this.WeakTableRef(_i);
 		}
+		this.logInfo("direwolf level: " + this.m.Item.m.Level);
 		if (this.m.Item.m.Level == 2)
 		{
 			

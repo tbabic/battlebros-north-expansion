@@ -77,11 +77,18 @@
 	function isNearbySnow(location)
 	{
 		if (location.getFlags().has("NEMisNearbySnow")) {
-			return location.getFlags().get("NEMisNearbySnow");
+			//return location.getFlags().get("NEMisNearbySnow");
 		}
 		local worldmap = this.MapGen.get("world.worldmap_generator");
 		local terrain = worldmap.getTerrainInRegion(location.getTile());
-		local result = checkSuitableTerrain(terrain, "small_snow_village")
+		local result = checkSuitableTerrain(terrain, "small_snow_village");
+		this.logInfo("local terrain: " + terrain.Local);
+		this.logInfo("adjacents");
+		foreach(i, adjacent in terrain.Adjacent)
+		{
+			this.logInfo(i + ", " + adjacent);
+		}
+		
 		location.getFlags().set("NEMisNearbySnow", result);
 	}
 	
@@ -234,8 +241,8 @@
 	
 	function addOverrideHostility(_entity)
 	{
-		local _isAlliedWithPlayer = ::mods_getMember(_entity, "isAlliedWithPlayer") 
-		::mods_override(this, "isAlliedWithPlayer", function() {
+		local _isAlliedWithPlayer = ::mods_getMember(_entity, "isAlliedWithPlayer");
+		::mods_override(_entity, "isAlliedWithPlayer", function() {
 			local isHostile = ::NorthMod.Utils.isHostile(this)
 			if (isHostile) {
 				return false;
@@ -244,7 +251,7 @@
 		});	
 		
 		local _isAlliedWith = ::mods_getMember(_entity, "isAlliedWith") 
-		::mods_override(this, "isAlliedWith", function(_p) {
+		::mods_override(_entity, "isAlliedWith", function(_p) {
 			local isHostile = ::NorthMod.Utils.isHostile(this);
 			if (_p.getFaction() == this.Const.Faction.Player && isHostile)
 			{

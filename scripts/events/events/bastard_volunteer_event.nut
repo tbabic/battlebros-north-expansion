@@ -9,7 +9,7 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 		this.m.Cooldown = 999999.0 * this.World.getTime().SecondsPerDay;
 		this.m.Screens.push({
 			ID = "A",
-			Text = "%terrainImage%You walk over a hill and sees a man in black cloak fighting undead. It looks like there is a large wolf helping him out.The man\'s sword cuts and slashes through the unded and wolf tears rips and shred them until they are all dead again.%randombrother% comes up and says%SPEECH_ON%He's not bad with that blade. Looks like he has it handled.%SPEECH_OFF%Just as he has finished those words a new group of undead comes over the hill. The man with the sword breathes visibly and you are not sure he has the strength to fight them again. He seems to realize it too and starts running away, but his steps are heavy and slow. He will not outrun them.",
+			Text = "%terrainImage%You walk over a hill and sees a man in black cloak fighting undead. It looks like there is a large wolf helping him out.The man\'s sword cuts and slashes through the unded and wolf tears, rips and shreds them until they are all dead again. %randombrother% comes up and says.%SPEECH_ON%He's not bad with that blade. Looks like he has it handled.%SPEECH_OFF%Just as he has finished those words, a new group of undead comes over the hill. The man with the sword breathes visibly and you are not sure he has the strength to fight them again. He seems to realize it as well and starts running away, but his steps are heavy and slow. He will not outrun them.",
 			Image = "",
 			List = [],
 			Characters = [],

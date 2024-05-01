@@ -37,6 +37,11 @@ this.nem_hunting_alps_action <- this.inherit("scripts/factions/faction_action", 
 		{
 			return;
 		}
+		
+		if (this.Math.rand(1, 100) > 10)
+		{
+			return;
+		}
 		this.logInfo("check: " + this.m.ID);
 
 		this.m.Score = 1;

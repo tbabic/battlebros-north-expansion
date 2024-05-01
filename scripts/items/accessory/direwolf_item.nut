@@ -82,6 +82,10 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 	function updateVariant()
 	{	
 		this.setEntity(this.m.Entity);
+		if(this.m.Level == 2)
+		{
+			this.m.Description = "This large and ferocious direwolf is loyal to his human friend " + this.m.Friend + ", but will not listen to anyone else";
+		}
 	}
 
 	function setEntity( _e )
@@ -96,6 +100,7 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 		{
 			this.m.Icon = "tools/direwolf_70x70.png";
 		}
+		
 	}
 
 	function onEquip()
@@ -151,12 +156,15 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 	{
 		this.accessory.onSerialize(_out);
 		_out.writeString(this.m.Name);
+		_out.writeU16(this.m.Level);
 	}
 
 	function onDeserialize( _in )
 	{
 		this.accessory.onDeserialize(_in);
 		this.m.Name = _in.readString();
+		this.m.Level = _in.readU16();
+		this.updateVariant();
 	}
 	
 	

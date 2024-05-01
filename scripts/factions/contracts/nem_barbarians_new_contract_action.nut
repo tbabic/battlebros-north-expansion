@@ -94,8 +94,9 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 	function onExecute( _faction )
 	{
 		local allowSkip = this.m.Home.getFlags().get("NEM_allow_contract_skip");
-		if (this.Math.rand(1, 10) > 1 && allowSkip)
+		if (allowSkip && this.Math.rand(1, 10) > 1)
 		{
+			this.logInfo("skipping contract: " + this.m.Home.getName());
 			this.m.Home.getFlags().set("NEM_allow_contract_skip", false);
 			return;
 		}

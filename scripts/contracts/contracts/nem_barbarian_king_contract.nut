@@ -74,8 +74,8 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/barbarian_co
 				party.getSprite("body").setBrush("figure_wildman_04");
 				party.setVisibilityMult(2.0);
 		
-				::NorthMod.Utils.addOverrideHostility(_party);
-				::NorthMod.Utils.setIsHostile(_party, true);
+				::NorthMod.Utils.addOverrideHostility(party);
+				::NorthMod.Utils.setIsHostile(party, true);
 				
 				
 				
@@ -800,7 +800,7 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/barbarian_co
 		if (obj != 0)
 		{
 			local party = this.World.getEntityByID(obj);
-			if (party != null && !partyisNull() && party.isAlive())
+			if (party != null && party.isAlive())
 			{
 				::NorthMod.Utils.addOverrideHostility(party);	
 			}

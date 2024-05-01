@@ -12,11 +12,6 @@ this.nem_destroy_orc_camp_contract <- this.inherit("scripts/contracts/barbarian_
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 7.0;
 	}
 
-	function onImportIntro()
-	{
-		this.importNobleIntro();
-	}
-
 	function start()
 	{
 		local camp = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Orcs).getNearestSettlement(this.m.Origin.getTile());

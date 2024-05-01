@@ -17,11 +17,6 @@ this.nem_hunting_unholds_contract <- this.inherit("scripts/contracts/barbarian_c
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 7.0;
 	}
 
-	function onImportIntro()
-	{
-		this.importSettlementIntro();
-	}
-
 	function start()
 	{
 		this.m.Payment.Pool = 750 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();

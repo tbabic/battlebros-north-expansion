@@ -12,11 +12,6 @@ this.nem_hunting_alps_contract <- this.inherit("scripts/contracts/barbarian_cont
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 7.0;
 	}
 
-	function onImportIntro()
-	{
-		this.importSettlementIntro();
-	}
-
 	function start()
 	{
 		this.m.Payment.Pool = 600 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();

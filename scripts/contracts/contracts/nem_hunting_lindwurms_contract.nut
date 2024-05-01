@@ -13,11 +13,6 @@ this.nem_hunting_lindwurms_contract <- this.inherit("scripts/contracts/barbarian
 		this.m.DifficultyMult = this.Math.rand(95, 135) * 0.01;
 	}
 
-	function onImportIntro()
-	{
-		this.importSettlementIntro();
-	}
-
 	function start()
 	{
 		this.m.Payment.Pool = 800 * this.getPaymentMult() * this.Math.pow(this.getDifficultyMult(), this.Const.World.Assets.ContractRewardPOW) * this.getReputationToPaymentMult();

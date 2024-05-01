@@ -12,11 +12,6 @@ this.nem_discover_location_contract <- this.inherit("scripts/contracts/barbarian
 		this.m.TimeOut = this.Time.getVirtualTimeF() + this.World.getTime().SecondsPerDay * 7.0;
 	}
 
-	function onImportIntro()
-	{
-		this.importSettlementIntro();
-	}
-
 	function start()
 	{
 		if (this.m.Home == null)

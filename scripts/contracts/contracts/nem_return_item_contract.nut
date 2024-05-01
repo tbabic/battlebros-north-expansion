@@ -100,7 +100,7 @@ this.nem_return_item_contract <- this.inherit("scripts/contracts/barbarian_contr
 				}
 				else
 				{
-					party = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).spawnEntity(tile, "Thieves", false, this.Const.World.Spawn.Barbarians, 80 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
+					party = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).spawnEntity(tile, "Thieves", false, this.Const.World.Spawn.Barbarians, 100 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
 					party.setDescription("A group of sturdy northmen.");
 					party.setFootprintType(this.Const.World.FootprintsType.Barbarians);
 				}
