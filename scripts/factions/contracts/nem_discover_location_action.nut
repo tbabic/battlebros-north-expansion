@@ -51,6 +51,11 @@ this.nem_discover_location_action <- this.inherit("scripts/factions/faction_acti
 			{
 				continue;
 			}
+			
+			if (b == this.m.Home)
+			{
+				continue;
+			}
 
 
 			local d = myTile.getDistanceTo(b.getTile());
@@ -76,7 +81,7 @@ this.nem_discover_location_action <- this.inherit("scripts/factions/faction_acti
 
 	function onExecute( _faction )
 	{
-		local contract = this.new("scripts/contracts/contracts/discover_location_contract");
+		local contract = this.new("scripts/contracts/contracts/nem_discover_location_contract");
 		contract.setFaction(_faction.getID());
 		contract.setEmployerID(this.m.Home.getChieftain().getID());
 		contract.setHome(this.m.Home);
