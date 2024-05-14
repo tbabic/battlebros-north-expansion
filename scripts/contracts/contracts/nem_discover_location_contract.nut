@@ -39,7 +39,7 @@ this.nem_discover_location_contract <- this.inherit("scripts/contracts/barbarian
 				continue;
 			}
 			
-			if (b == this.m.Home)
+			if (b.getID() == this.m.Home.getID())
 			{
 				continue;
 			}

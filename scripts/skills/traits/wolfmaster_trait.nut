@@ -36,12 +36,18 @@ this.wolfmaster_trait <- this.inherit("scripts/skills/traits/character_trait", {
 				type = "text",
 				icon = "ui/icons/melee_skill.png",
 				text = "While adjacent to his wolf, character gains [color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Skill"
-			}
+			},
 			{
 				id = 12,
 				type = "text",
 				icon = "ui/icons/melee_defense.png",
 				text = "While adjacent to his wolf, character gains [color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Defense"
+			}
+			{
+				id = 13,
+				type = "text",
+				icon = "ui/icons/bravery.png",
+				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Resolve"
 			}
 			
 		];

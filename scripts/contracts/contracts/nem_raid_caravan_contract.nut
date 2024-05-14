@@ -22,10 +22,11 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 		local allSettlements = this.World.EntityManager.getSettlements();
 		
 		local southY = this.World.getMapSize().Y * 0.7;
+		//this.logInfo("south: " + southY);
 		foreach(i, startCandidate in allSettlements)
 		{
 			
-			
+			//this.logInfo("start:" + startCandidate.getName() + " / " + startCandidate.getTile().SquareCoords.Y);
 			if ((startCandidate.isSouthern() || startCandidate.isMilitary()) && this.getDifficultySkulls() == 1)
 			{
 				continue;
@@ -36,21 +37,28 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 			}
 					
 			foreach(j, endCandidate in allSettlements)
-			{				
+			{
+				//this.logInfo("end:" + endCandidate.getName() + " / " + endCandidate.getTile().SquareCoords.Y);				
 				if(startCandidate == endCandidate)
 				{
 					continue;
 				}
 				
-				if (startCandidate.getTile().Coords.Y < southY && endCandidate.getTile().Coords.Y < southY)
+				if (startCandidate.getTile().SquareCoords.Y < southY && endCandidate.getTile().SquareCoords.Y < southY)
 				{
+					//this.logInfo("both south");
 					continue;
 				}
 				local distanceCaravan = this.getDistanceOnRoads(startCandidate.getTile(), endCandidate.getTile());
-				local daysCaravan = this.getDaysRequiredToTravel(distanceCaravan, this.Const.World.MovementSettings.Speed * 0.6, true)
+				local daysCaravan = this.getDaysRequiredToTravel(distanceCaravan, this.Const.World.MovementSettings.Speed * 0.6, true);
 				
 				local distancePlayer = endCandidate.getTile().getDistanceTo(playerTile);
-				local daysPlayer = this.getDaysRequiredToTravel(distancePlayer, this.Const.World.MovementSettings.Speed * 1.0, true)
+				local daysPlayer = this.getDaysRequiredToTravel(distancePlayer, this.Const.World.MovementSettings.Speed * 1.0, false);
+				
+				
+				
+				//this.logInfo("daysCaravan: " + daysCaravan);
+				//this.logInfo("daysPlayer: " + daysPlayer);
 				
 				if (daysPlayer > 1.5 * daysCaravan)
 				{
@@ -202,7 +210,7 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 				{
 					for( local j = 0; j != 3; j = ++j )
 					{
-						party.addToInventory(this.m.Home.getProduce()[this.Math.rand(0, this.m.Home.getProduce().len() - 1)]);
+						party.addToInventory(best_start.getProduce()[this.Math.rand(0, best_start.getProduce().len() - 1)]);
 					}
 				}
 				

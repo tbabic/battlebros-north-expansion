@@ -6,7 +6,7 @@ this.wolfmaster_bonus_effect <- this.inherit("scripts/skills/skill", {
 	{
 		this.m.ID = "effects.wolfmaster_bonus";
 		this.m.Name = "Wolf & Master";
-		this.m.Description = "Wolf & Master are fighting together increasing their effectiveness.";
+		this.m.Description = "Wolf & Master are fighting, together increasing their effectiveness.";
 		this.m.Icon = "skills/status_effect_06.png";
 		this.m.Type = this.Const.SkillType.StatusEffect;
 		this.m.Order = this.Const.SkillOrder.VeryLast;
@@ -34,7 +34,26 @@ this.wolfmaster_bonus_effect <- this.inherit("scripts/skills/skill", {
 				type = "text",
 				icon = "ui/icons/bravery.png",
 				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+" + bonus + "[/color] Resolve"
-			}
+			},
+			{
+			
+				id = 10,
+				type = "text",
+				icon = "ui/icons/melee_skill.png",
+				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Skill"
+			},
+			{
+				id = 10,
+				type = "text",
+				icon = "ui/icons/melee_defense.png",
+				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Defense"
+			},
+			{
+				id = 10,
+				type = "text",
+				icon = "ui/icons/bravery.png",
+				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Resolve"
+			},
 		];
 	}
 	
@@ -79,6 +98,7 @@ this.wolfmaster_bonus_effect <- this.inherit("scripts/skills/skill", {
 			this.m.IsHidden = false;
 			_properties.MeleeSkill += 5;
 			_properties.MeleeDefense += 5;
+			_properties.Bravery += 5;
 			//add bonuse to wolf
 		}
 	}

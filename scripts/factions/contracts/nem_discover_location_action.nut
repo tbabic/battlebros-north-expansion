@@ -52,7 +52,7 @@ this.nem_discover_location_action <- this.inherit("scripts/factions/faction_acti
 				continue;
 			}
 			
-			if (b == this.m.Home)
+			if (b.getID() == this.m.Home.getID())
 			{
 				continue;
 			}
