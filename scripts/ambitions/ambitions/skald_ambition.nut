@@ -5,7 +5,7 @@ this.skald_ambition <- this.inherit("scripts/ambitions/ambition", {
 		this.ambition.create();
 		this.m.ID = "ambition.skald";
 		this.m.Duration = 14.0 * this.World.getTime().SecondsPerDay;
-		this.m.ButtonText = "We fight well, but we need someone to raise the morale in case things get dire.\nI shall name a skald to rally you on the battlefield.";
+		this.m.ButtonText = "We fight well, but we need a second in command to organize us on the battlefield.";
 		this.m.RewardTooltip = "You\'ll be awarded a unique item that grants anyone near the wearer additional resolve..";
 		this.m.UIText = "Have one man with the \'Rally the Troops\' perk";
 		this.m.TooltipText = "Have at least one man with the \'Rally the Troops\' perk. You\'ll also need space enough in your inventory for a new item.";
@@ -71,7 +71,7 @@ this.skald_ambition <- this.inherit("scripts/ambitions/ambition", {
 
 		if (bestSergeant != null && bestSergeant.getTitle() == "")
 		{
-			bestSergeant.setTitle("the Skald");
+			bestSergeant.setTitle("the Second");
 			this.m.SuccessList.push({
 				id = 90,
 				icon = "ui/icons/special.png",

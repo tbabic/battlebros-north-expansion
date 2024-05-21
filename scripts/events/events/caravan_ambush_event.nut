@@ -60,7 +60,7 @@ this.caravan_ambush_event <- this.inherit("scripts/events/event", {
 			Banner = "",
 			Options = [
 				{
-					Text = "Spread the word", //TODO: text;
+					Text = "Spread the word.", //TODO: text;
 					function getResult( _event )
 					{
 						this.m.Faction.addPlayerRelation(this.Const.World.Assets.RelationNobleContractSuccess, "Helped out their caravan");
@@ -109,10 +109,9 @@ this.caravan_ambush_event <- this.inherit("scripts/events/event", {
 			Characters = [],
 			Options = [
 				{
-					Text = "We are raiders not helpers. Attack!",
+					Text = "This is good loot!",
 					function getResult( _event )
 					{
-						//TODO: combat ??
 						return 0;
 					}
 
@@ -131,6 +130,7 @@ this.caravan_ambush_event <- this.inherit("scripts/events/event", {
 
 	function onUpdateScore()
 	{
+		this.logInfo("update score: caravan ambush");
 		if (!this.Const.DLC.Wildmen)
 		{
 			return;
@@ -143,9 +143,10 @@ this.caravan_ambush_event <- this.inherit("scripts/events/event", {
 		
 		if (!this.World.Ambitions.hasActiveAmbition() || this.World.Ambitions.getActiveAmbition().getID() != "ambition.make_civil_friends")
 		{
+			this.logInfo("caravan ambush: no ambition");
 			return;
 		}
-		
+		local currentTile = this.World.State.getPlayer().getTile();
 		if (!currentTile.HasRoad)
 		{
 			return;
@@ -169,7 +170,7 @@ this.caravan_ambush_event <- this.inherit("scripts/events/event", {
 
 			foreach( s in n.getSettlements() )
 			{
-				local d = s.getTile().getDistanceTo(randomVillageTile);
+				local d = s.getTile().getDistanceTo(currentTile);
 
 				if (d < dist)
 				{

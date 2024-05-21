@@ -4,7 +4,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 	{
 		this.m.ID = "scenario.barbarian_raiders";
 		this.m.Name = "Barbarians of the North";
-		this.m.Description = "[p=c][img]gfx/ui/events/event_08.png[/img][/p][p]You are a warrior and a raider. Your whole life has been battle and struggle and it's not about to change now.\n\n[color=#bcad8c]Barbarian Leader:[/color] Start with a leader that has permanently bad relations with civilized factions but friendly with a barbarian settlement. If the leader dies, the campaign ends.\n[color=#bcad8c]Barbarian dozen:[/color] Can not have more than 12 men.\n[color=#bcad8c]Father\'s Sword:[/color] Start with a greatsword inherited from your father.\n[color=#bcad8c]Mercenary Path:[/color] Make decisions to become mercenary and remove restrictions or stay barbarian.[/p]";
+		this.m.Description = "[p=c][img]gfx/ui/events/event_08.png[/img][/p][p]You are a warrior and a raider. Your whole life has been battle and struggle and it's not about to change now.\n\n[color=#bcad8c]Barbarian Leader:[/color] Start with a leader that has permanently bad relations with civilized factions but friendly with barbarian settlements. If the leader dies, the campaign ends.\n[color=#bcad8c]Barbarian dozen:[/color] Can not have more than 12 men.\n[color=#bcad8c]Father\'s Sword:[/color] Start with a greatsword inherited from your father.\n[color=#bcad8c]Mercenary Path:[/color] Make decisions to become mercenary and remove restrictions or stay barbarian.[/p]";
 		this.m.Difficulty = 3;
 		this.m.Order = 60;
 		this.m.IsFixedLook = true;

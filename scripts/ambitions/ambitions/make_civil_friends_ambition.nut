@@ -40,7 +40,7 @@ this.make_civil_friends_ambition <- this.inherit("scripts/ambitions/ambition", {
 		local nobles = this.World.FactionManager.getFactionsOfType(this.Const.FactionType.NobleHouse);
 		foreach (nobleHouse in nobles)
 		{
-			if (nobles.getPlayerRelations >= 30)
+			if (nobleHouse.getPlayerRelation() >= 30)
 			{
 				return true;
 			}

@@ -13,7 +13,7 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 		
 		this.m.Screens.push({
 			ID = "A",
-			Text = "[img]gfx/ui/events/event_58.png[/img]{%noblebro% has been with %companyname% for some time now. Traveling, fighting, killing without much complaints, until now at least. However, he has decided it is time to talk to you.%SPEECH_ON%Chief, I\'ve heard you want to make some headway with the nobles. Reckon, you think it would be better to have them as friends, rather then enemies. That\'s true, probably, although they can be more dangerous as friends. I believe I can help.%SPEECH_off%He explains, he still has friends and contacts among influential people, particularly in %noblehouse%. He could ask a favor, put in a good word, but ultimately, he says, words are cheap, money is not. At least %crowns% coins is not cheap.}",
+			Text = "[img]gfx/ui/events/event_58.png[/img]{%noblebro% has been with %companyname% for some time now. Traveling, fighting, killing without much complaints, until now at least. However, he has decided it is time to talk to you.%SPEECH_ON%Chief, I\'ve heard you want to make some headway with the nobles. Reckon, you think it would be better to have them as friends, rather then enemies. That\'s true, probably, although they can be more dangerous as friends. I believe I can help.%SPEECH_OFF%He explains, he still has friends and contacts among influential people, particularly in %noblehouse%. He could ask a favor, put in a good word, but ultimately, he says, words are cheap, money is not. At least %crowns% coins is not cheap.}",
 			Banner = "",
 			Image = "",
 			List = [],
@@ -38,8 +38,8 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 			],
 			function start( _event )
 			{
-				this.Characters.push(_event.m.Monk.getImagePath());
-				this.Banner = _event.m.NobleHouse.getUIBannerSmall();
+				this.Characters.push(_event.m.NobleBro.getImagePath());
+				this.Banner = _event.m.Faction.getUIBannerSmall();
 			}
 
 		});
@@ -62,9 +62,9 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 			],
 			function start( _event )
 			{
-				this.Characters.push(_event.m.Monk.getImagePath());
-				this.Banner = _event.m.NobleHouse.getUIBannerSmall();
-				this.World.Flags.set("IsRaidersRedemption", true);
+				this.Characters.push(_event.m.NobleBro.getImagePath());
+				this.Banner = _event.m.Faction.getUIBannerSmall();
+				this.World.Flags.set("NorthExpansionRedemptionAccepted", true);
 				this.World.Assets.addBusinessReputation(50);
 				this.World.Assets.addMoney(-2000);
 				this.List.push({
@@ -72,11 +72,11 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 					icon = "ui/icons/asset_money.png",
 					text = "You lose [color=" + this.Const.UI.Color.NegativeEventValue + "]-2000[/color] Crowns"
 				});
-				_event.m.NobleHouse.addPlayerRelation(20.0, "Was bribed to have dealings with you");
+				_event.m.Faction.addPlayerRelation(20.0, "Was bribed to have dealings with you");
 				this.List.push({
 					id = 10,
 					icon = "ui/icons/relations.png",
-					text = "Your relations to " + _event.m.NobleHouse.getName() + " improve"
+					text = "Your relations to " + _event.m.Faction.getName() + " improve"
 				});
 			}
 
@@ -88,30 +88,39 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 
 	function onUpdateScore()
 	{
+		this.logInfo("redemption update score");
 		if (!this.Const.DLC.Wildmen)
 		{
+			this.logInfo("no wildmen");
 			return;
 		}
 		
 		if (!this.World.Flags.get("NorthExpansionActive") )
 		{
+			this.logInfo("not active");
 			return;
 		}
 		
-		if(this.World.Flags.getAsInt("NorthExpansionCivilLevel") <= 1)
-		{
-			return false;
-		}
 		
 		if (!this.World.Ambitions.hasActiveAmbition() || this.World.Ambitions.getActiveAmbition().getID() != "ambition.make_civil_friends")
 		{
+			this.logInfo("no ambition");
 			return;
 		}
 		
-		if(this.World.getFlags().get("NorthExpansionRedemptionAccepted"))
+		if(this.World.Flags.get("NorthExpansionRedemptionAccepted"))
+		{
+			this.logInfo("already accepted");
+			return;
+		}
+		
+		if (this.World.Assets.getMoney() < 2000)
 		{
 			return;
 		}
+		
+		this.logInfo("redemption update score2");
+		
 		
 		local brothers = this.World.getPlayerRoster().getAll();
 		local candidates = [];
@@ -136,8 +145,10 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 
 		if (candidates.len() == 0)
 		{
+			this.logInfo("no candidates for redemption");
 			return;
 		}
+		
 		this.m.NobleBro = candidates[this.Math.rand(0, candidates.len() - 1)];
 		
 		
@@ -167,7 +178,7 @@ this.noble_offers_redemption_event<- this.inherit("scripts/events/event", {
 		]);
 		_vars.push([
 			"noblehouse",
-			this.m.NobleHouse.getName()
+			this.m.Faction.getName()
 		]);
 		_vars.push([
 			"crowns",
