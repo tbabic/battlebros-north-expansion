@@ -16,7 +16,7 @@ You are a warrior and a raider. Your whole life has been battle and struggle and
 
 ## Mod compatibility
 
-Mod is pretty much intended to work with [Create your character mod] (https://www.nexusmods.com/battlebrothers/mods/580) (that is also done by me)
+Mod is pretty much intended to work with [Create your character mod](https://www.nexusmods.com/battlebrothers/mods/580) (that is also done by me)
 
 ## Installation
 
