@@ -43,7 +43,7 @@
 		Strength = 25,
 		Cost = 25,
 		Row = 0,
-		Script = "scripts/entity/tactical/humans/barbarian_marauder"
+		Script = "scripts/entity/tactical/humans/barbarian_wolf_marauder"
 	}
 
 ::NorthMod.Const.Spawn <- {}

@@ -116,19 +116,11 @@ this.nem_roaming_beasts_contract <- this.inherit("scripts/contracts/barbarian_co
 				}
 				if (this.Flags.get("IsBarbarians"))
 				{
-					party = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).spawnEntity(tile, "Direwolves", false, ::NorthMod.Const.Troop.BarbarianWolf, 100 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
+					party = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).spawnEntity(tile, "Direwolves", false, ::NorthMod.Const.Spawn.BarbarianWolves, 100 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult());
 					party.setDescription("A pack of ferocious direwolves on the hunt for prey.");
 					party.setFootprintType(this.Const.World.FootprintsType.Direwolves);
 					this.Const.World.Common.addFootprintsFromTo(this.Contract.m.Home.getTile(), party.getTile(), this.Const.BeastFootprints, this.Const.World.FootprintsType.Direwolves, 0.75);
-					foreach(t in party.getTroops())
-					{
-						local items = t.getItems();
-						local armor = items.getItemAtSlot(this.Const.ItemSlot.Body)
-						local upgrade = this.new("scripts/items/armor_upgrades/direwolf_pelt_upgrade");
-						armor.setUpgrade(upgrade);
-						items.unequip(items.getItemAtSlot(this.Const.ItemSlot.Head));
-						items.equip(this.new("scripts/items/helmets/barbarians/bear_headpiece"));
-					}
+					
 
 				}
 				else if (this.Flags.get("IsGhouls"))
