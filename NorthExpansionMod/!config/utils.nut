@@ -22,6 +22,10 @@
 	{
 		local strings = this.stringSplit(sourceString, textToReplace);
 		local result = strings[0];
+		if(strings.len() == 1)
+		{
+			return result;
+		}
 		
 		for (local i = 1; i < strings.len(); i++) {
 			 result += replacementText + strings[i];

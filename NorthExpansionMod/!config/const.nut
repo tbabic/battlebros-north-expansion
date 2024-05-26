@@ -70,6 +70,16 @@ for(local i = 3; i<=30; i++)
 	});
 }
 
+::NorthMod.Const.Spawn.StrongholdBarbarians <- [];
+foreach(p in this.Const.World.Spawn.Barbarians)
+{
+	if (p.Troops[0].Type == this.Const.World.Spawn.Troops.BarbarianThrall)
+	{
+		continue;
+	}
+	::NorthMod.Const.Spawn.StrongholdBarbarians.push(p);
+}
+
 
 
 ::NorthMod.Const.EnabledLogging <- true;
