@@ -10,7 +10,7 @@
 ::NorthMod <- {};
 
 
-::mods_queue(null, ">mod_avatar, !mod_stronghold(>=2)", function()
+::mods_queue(null, ">mod_avatar, >mod_stronghold", function()
 {
 	if(::mods_getRegisteredMod("mod_avatar")) {
 		::AvatarMod.Const.ScenarioBackgrounds["scenario.barbarian_raiders"] <- { 
