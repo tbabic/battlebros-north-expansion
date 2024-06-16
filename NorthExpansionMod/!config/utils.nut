@@ -284,5 +284,52 @@
 		return entities;
 		
 	}
+	
+	function duelRosterSort(roster)
+	{
+		roster.sort(function ( _a, _b )
+		{
+			
+			if (_a.getSkills().getSkillByID("trait.player") && _b.getSkills().getSkillByID("trait.player"))
+			{
+				return 0;
+			}
+			
+			if (_a.getSkills().getSkillByID("trait.player"))
+			{
+				return -1;
+			}
+			if (_b.getSkills().getSkillByID("trait.player"))
+			{
+				return 1;
+			}
+			
+			
+			if (_a.getSkills().getSkillByID("trait.champion") && _b.getSkills().getSkillByID("trait.champion"))
+			{
+				return 0;
+			}
+			
+			if (_a.getSkills().getSkillByID("trait.champion"))
+			{
+				return -1;
+			}
+			if (_b.getSkills().getSkillByID("trait.champion"))
+			{
+				return 1;
+			}
+			
+			if (_a.getXP() > _b.getXP())
+			{
+				return -1;
+			}
+			else if (_a.getXP() < _b.getXP())
+			{
+				return 1;
+			}
+
+			return 0;
+		});
+	}
 
 }

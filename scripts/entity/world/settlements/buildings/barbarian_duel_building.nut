@@ -1,14 +1,15 @@
 this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/buildings/building", {
 	m = {
-		ChampionLevel = 0,
-		ChampionIndex = null,
+		Champion = null,
 		Level = 0,
-		CooldownUntil = 0
+		CooldownUntil = 0,
+		LastUpdate = -1
 	},
 	
 	function setCooldown(_days)
 	{
 		this.m.CooldownUntil = this.World.getTime().Days + _days;
+		this.m.Settlement.getFlags().set("NEM_duel_cooldown", this.m.CooldownUntil);
 	}
 	
 	function getCooldownDays()
@@ -73,78 +74,78 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 	
 	function findChampion()
 	{
-		//renown thresholds
-		//1500 or above- only champions
-		// 1000 or above only chosen and champion
-		// 500 or above, reavers, chosen and champions
+		this.logInfo("last update:" + this.m.LastUpdate);
+		if(this.m.LastUpdate >= this.World.getTime().Days)
+		{
+			return;
+		}
+		
+		this.m.Champion = null;
+		this.m.Settlement.getFlags().set("NEM_duel_champion", 0);
+		this.m.LastUpdate = this.World.getTime().Days;
+		this.m.Settlement.getFlags().set("NEM_duel_lastUpdate", this.m.LastUpdate);
+		this.logInfo("new update: " + this.m.LastUpdate);
 		
 		local renown = this.World.Assets.getBusinessReputation();
-		local fighterStrength = 0;
-		local fighter = null;
 		
-		local troops = this.m.Settlement.getTroops();
-		foreach( i, t in troops )
+		local upgradeChance = 0;
+		upgradeChance += this.m.Level;
+		upgradeChance += this.Math.floor(renown / 100);
+		upgradeChance = this.Math.min(40, upgradeChance);
+		this.logInfo("upgrade chance: " + upgradeChance);
+		
+		local r = this.Math.rand(1, 100);
+		this.logInfo("roll: " + r);
+		r += upgradeChance;
+		
+		local currentChance = 0;
+		foreach (champ in ::NorthMod.Const.DuelChampions )
 		{
-			if (t.ID != this.Const.EntityType.BarbarianThrall 
-				&& t.ID != this.Const.EntityType.BarbarianMarauder
-				&& t.ID != this.Const.EntityType.BarbarianChampion)
+			currentChance += champ.Chance;
+			this.logInfo("compare: " + r + " ? " + currentChance);
+			if(r <= currentChance)
 			{
-				continue;
+				this.m.Champion = champ;
+				break;
 			}
-			
-			if (t.Script.len() != "")
+		}
+		
+		
+		local minPartyLevel = 100;
+		local roster = this.World.getPlayerRoster().getAll();
+		foreach( bro in roster )
+		{
+			if (bro.m.Level < minPartyLevel)
 			{
-				if (t.Strength > fighterStrength)
-				{
-					fighter = t;
-					this.m.ChampionIndex = i;
-				}
+				minPartyLevel = bro.m.Level;
 			}
 		}
-		if (fighter == null)
+		if (this.m.Champion != null && this.m.Champion.MaxBroLevel < minPartyLevel)
 		{
-			return null;
+			this.m.Champion = null;
+			return;
 		}
-		this.logInfo("find champion: " + fighter.ID);
-		if(fighter.ID == this.Const.EntityType.BarbarianThrall && renown < 500 && this.m.Level == 0)
-		{
-			this.m.ChampionLevel = 1;
-			return fighter;
-		}
+		this.m.Settlement.getFlags().set("NEM_duel_champion", this.m.Champion.Level);
 		
-		if(fighter.ID == this.Const.EntityType.BarbarianMarauder && renown < 1000 && this.m.Level <= 1)
-		{
-			this.m.ChampionLevel = 2;
-			return fighter;
-		}
 		
-		if(fighter.ID == this.Const.EntityType.BarbarianChampion && fighter.Variant == 0 && renown < 1500 && this.m.Level <= 1)
-		{
-			this.m.ChampionLevel = 3;
-			return fighter;
-		}
-		if (fighter.ID == this.Const.EntityType.BarbarianChampion && fighter.Variant > 0) {
-			this.m.ChampionLevel = 4;
-			return fighter;
-		}
-		this.m.ChampionIndex = null;
-		return null;
-
 	}
 	
 	function getChampion()
 	{
-		if(this.m.ChampionIndex != null && this.m.ChampionIndex >= 0 && this.m.ChampionIndex < this.m.Settlement.getTroops().len())
-		{
-			return this.m.Settlement.getTroops()[this.m.ChampionIndex];
-		}
-		
-		return null;
+		return this.m.Champion;
 	}
+	
 	
 	function isDuelAvailable()
 	{
-		return this.getChampion() !=null;
+		return this.m.Champion != null;
+	}
+	
+	function championDefeated()
+	{
+		this.m.Level += this.m.Champion.Level;
+		this.m.Champion == null;
+		this.m.Settlement.getFlags().set("NEM_duel_level", this.m.Level);
 	}
 
 	function onSettlementEntered()
@@ -154,8 +155,6 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 
 	function onSerialize( _out )
 	{
-		this.m.Settlement.getFlags().set("NEM_duel_cooldown", this.m.CooldownUntil);
-		this.m.Settlement.getFlags().set("NEM_duel_level", this.m.Level);
 		this.building.onSerialize(_out);
 		//_out.writeU32(this.m.CooldownUntil);
 	}
@@ -165,7 +164,17 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 		this.building.onDeserialize(_in);
 		this.m.CooldownUntil = this.m.Settlement.getFlags().getAsInt("NEM_duel_cooldown");
 		this.m.Level = this.m.Settlement.getFlags().getAsInt("NEM_duel_level");
+		this.m.LastUpdate = this.m.Settlement.getFlags().getAsInt("NEM_duel_lastUpdate");
+		local championLevel = this.m.Settlement.getFlags().getAsInt("NEM_duel_champion");
+		if (championLevel > 0)
+		{
+			this.m.Champion = ::NorthMod.Const.DuelChampions[championLevel - 1];
+		}
+
+		
 		//this.m.CooldownUntil = _in.readU32();
 	}
+	
+	
 });
 

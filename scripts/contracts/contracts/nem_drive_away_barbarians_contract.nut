@@ -383,61 +383,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 					}
 				}
 
-				roster.sort(function ( _a, _b )
-				{
-					
-					if (_a.getSkills().getSkillByID("trait.player") && _b.getSkills().getSkillByID("trait.player"))
-					{
-						return 0;
-					}
-					
-					if (_a.getSkills().getSkillByID("trait.player"))
-					{
-						return -1;
-					}
-					if (_b.getSkills().getSkillByID("trait.player"))
-					{
-						return 1;
-					}
-					
-					
-					if (_a.getSkills().getSkillByID("trait.champion") && _b.getSkills().getSkillByID("trait.champion"))
-					{
-						return 0;
-					}
-					
-					if (_a.getSkills().getSkillByID("trait.champion"))
-					{
-						return -1;
-					}
-					if (_b.getSkills().getSkillByID("trait.champion"))
-					{
-						return 1;
-					}
-					
-					local _a_duels_won = _a.getFlags().getAsInt("NEM_duels_won");
-					local _b_duels_won = _b.getFlags().getAsInt("NEM_duels_won");
-					
-					if (_a_duels_won > _b_duels_won)
-					{
-						return -1;
-					}
-					if (_a_duels_won < _b_duels_won)
-					{
-						return 1;
-					}
-					
-					if (_a.getXP() > _b.getXP())
-					{
-						return -1;
-					}
-					else if (_a.getXP() < _b.getXP())
-					{
-						return 1;
-					}
-
-					return 0;
-				});
+				::NorthMod.Utils.duelRosterSort(roster);
 				
 				
 				local e = this.Math.min(4, roster.len());
@@ -547,35 +493,59 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 				
 				this.Text += "{One of the clan elders comes forward and raises his staff.%SPEECH_ON%So it is, our chieftain is dead and you have accomplished honorably your goal. We will stop the raiding and attacks against %townname%.%SPEECH_OFF%If they\'re true to their word then you can go and tell %employer% now.}"
 				
+				local championBro = this.Tactical.getEntityByID(this.Flags.get("ChampionBrother"));
+				
+				
 				
 				if(this.Flags.get("EnemyChampion") && !this.Flags.get("PartyChampion"))
 				{
 					
-					local championBro = this.Tactical.getEntityByID(this.Flags.get("ChampionBrother"));
-
-					championBro.getFlags().increment("NEM_duels_won");
-					if(championBro.getFlags().getAsInt("NEM_duels_won") == 5)
+					
+					local trait = this.new("scripts/skills/traits/champion_trait");
+					championBro.getSkills().add(trait);
+					this.Contract.resetChampionDuels();
+					
+					if(championBro.getSkills().hasSkill("trait.player"))
 					{
-						local trait = this.new("scripts/skills/traits/champion_trait");
-						championBro.getSkills().add(trait);
-						this.Contract.resetChampionDuels();
-						
-						if(championBro.getSkills().hasSkill("trait.player"))
-						{
-							this.Text += "\n\n You have now won a number of duels against renowned champions. This experience has made you a better fighter, particularly when in single combat."
-						}
-						else
-						{
-							this.Text += "\n\n %champbrother% has now won a number of duels against renowned champions. This experience has made him a better fighter, particularly when in single combat."
-						}
+						this.Text += "\n\n You have now won a duel against renowned champion. This experience has made you a better fighter, particularly when in single combat."
+					}
+					else
+					{
+						this.Text += "\n\n %champbrother% has now won a duel against renowned champion. This experience has made him a better fighter, particularly when in single combat."
+					}
+					
+					this.List.push({
+						id = 10,
+						icon = trait.getIcon(),
+						text = championBro.getName() + " becomes " + trait.getName()
+					});
+					
+				}
+				
+				if(championBro.getLevel() < 11)
+				{
+					local duelExperience = championBro.getSkills().getSkillByID("effects.duel_experience");
+					if(duelExperience == null)
+					{
+						duelExperience = this.new("scripts/skills/effects/duel_experience_effect");
+						duelExperience.updateExperienceLevel(_event.getChampion().Level);
+						_event.m.ChampionBro.getSkills().add(duelExperience);
 						
 						this.List.push({
-							id = 10,
-							icon = trait.getIcon(),
-							text = championBro.getName() + " becomes " + trait.getName()
+							id = 11,
+							icon = duelExperience.getIcon(),
+							text = _event.m.ChampionBro.getName() + " now has " + duelExperience.getName()
 						});
 					}
+					else
+					{
+						duelExperience.updateExperienceLevel(_event.getChampion().Level);
+					}
+					
+					
 				}
+				
+				
 			}
 
 		});

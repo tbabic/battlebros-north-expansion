@@ -2,11 +2,12 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 	m = {
 		Home = null,
 		DuelingCircle = null,
-		ChampionIndex = null,
 		ChampionName = null,
-		ChampionLevel = null
 		ChampionBro = null,
-		BroHasChampion = false
+		BroHasChampion = false,
+		SortedRoster = [],
+		PageSize = 3,
+		CurrentPage = 0
 	},
 	
 	function setHome( _home)
@@ -20,12 +21,6 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 			this.m.Home = this.WeakTableRef(_home);
 		}
 	}
-	
-	function setChampionIndex( _championIndex)
-	{
-		this.m.ChampionIndex = _championIndex;
-	}
-	
 	
 	function create()
 	{
@@ -63,105 +58,47 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 				}
 				this.Text = "[img]gfx/ui/events/event_139.png[/img]You approach the dueling circle and ask is there a champion in this place who will fight you or one of your men?\n\n"
 				
-				local championLevel = _event.m.DuelingCircle.m.ChampionLevel;
-				if (championLevel == 0)
+				local champion = _event.m.DuelingCircle.getChampion();
+				
+				if (champion == null)
 				{
-					this.Text += "There are no worthy fighters in this place that are willing to step forth to combat one of your warriors."
+					this.Text += "There are no worthy fighters in this place that are willing to step forth to combat one of your warriors. Come back tomorrow."
 					return;
 				}
 
-				if (championLevel == 1)
+				if (champion.Level == 1)
 				{
 					this.Text += "There are no great champions in this place, but one of the thralls comes forth to fight you and earn his status as a free man."
 				}
 				
-				if (championLevel == 2)
+				if (champion.Level == 2)
 				{
 					this.Text += "There are no great champions in this place, but a marauder, with the experience of many raids, comes forth to fight you."
 				}
 				
-				if (championLevel == 3)
+				if (champion.Level == 3)
 				{
 					this.Text += "There are no great champions in this place, but there is an experienced warrior with many victories that comes forth to fight you."
 				}
 				
-				if (championLevel == 4)
+				if (champion.Level == 4)
 				{
 					this.Text += "%enemy% steps forth, you can see he is an impressive warrior with a body of pure muscle, tendon, and scars. A worthy champion."
 				}
 				
-				local raw_roster = this.World.getPlayerRoster().getAll();
-				local roster = [];
-				foreach( bro in raw_roster )
+				
+				
+				
+				local startIdx = _event.m.PageSize * _event.m.CurrentPage;
+				local endIdx = this.Math.min(startIdx + _event.m.PageSize -1, _event.m.SortedRoster.len()-1);
+				if(startIdx == 0 && endIdx +1 == _event.m.SortedRoster.len() -1 )
 				{
-					if (bro.getPlaceInFormation() <= 17)
-					{
-						roster.push(bro);
-					}
+					endIdx++;
 				}
 
-				roster.sort(function ( _a, _b )
+				for( local i = startIdx; i <= endIdx; i++ )
 				{
-					
-					if (_a.getSkills().getSkillByID("trait.player") && _b.getSkills().getSkillByID("trait.player"))
-					{
-						return 0;
-					}
-					
-					if (_a.getSkills().getSkillByID("trait.player"))
-					{
-						return -1;
-					}
-					if (_b.getSkills().getSkillByID("trait.player"))
-					{
-						return 1;
-					}
-					
-					
-					if (_a.getSkills().getSkillByID("trait.champion") && _b.getSkills().getSkillByID("trait.champion"))
-					{
-						return 0;
-					}
-					
-					if (_a.getSkills().getSkillByID("trait.champion"))
-					{
-						return -1;
-					}
-					if (_b.getSkills().getSkillByID("trait.champion"))
-					{
-						return 1;
-					}
-					
-					local _a_duels_won = _a.getFlags().getAsInt("NEM_duels_won");
-					local _b_duels_won = _b.getFlags().getAsInt("NEM_duels_won");
-					
-					if (_a_duels_won > _b_duels_won)
-					{
-						return -1;
-					}
-					if (_a_duels_won < _b_duels_won)
-					{
-						return 1;
-					}
-					
-					if (_a.getXP() > _b.getXP())
-					{
-						return -1;
-					}
-					else if (_a.getXP() < _b.getXP())
-					{
-						return 1;
-					}
-
-					return 0;
-				});
-				
-				
-				local e = this.Math.min(4, roster.len());
-
-				for( local i = 0; i < e; i = ++i )
-				{
-					local bro = roster[i];
+					local bro = _event.m.SortedRoster[i];
 					local text = bro.getName() + " will fight you!"
 					local isChamp = false;
 					if (bro.getSkills().hasSkill("trait.champion"))
@@ -190,6 +127,26 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 					});
 
 				}
+				if(startIdx != 0 || endIdx < _event.m.SortedRoster.len() -1 )
+				{
+					this.Options.push({
+						Text = "Someone else will fight you...",
+						function getResult(_event)
+						{
+							this.logInfo("old page: " + _event.m.CurrentPage);
+							_event.m.CurrentPage++;
+							
+							if (_event.m.CurrentPage* _event.m.PageSize >= _event.m.SortedRoster.len() )
+							{
+								_event.m.CurrentPage = 0;
+							}
+							this.logInfo("new page: " + _event.m.CurrentPage);
+							return "A";	
+						}
+					});
+				}
+				
+				
 				
 				
 			}
@@ -217,33 +174,64 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 			function start( _event )
 			{
 				_event.m.DuelingCircle.setCooldown(5);
-				if(_event.m.ChampionLevel >= 4 && !_event.m.BroHasChampion)
+				_event.m.DuelingCircle.championDefeated();
+				if(_event.getChampion().Level >= 4 && !_event.m.BroHasChampion)
 				{
-					_event.m.ChampionBro.getFlags().increment("NEM_duels_won");
-					if(_event.m.ChampionBro.getFlags().getAsInt("NEM_duels_won") == 5)
+					
+					local trait = this.new("scripts/skills/traits/champion_trait");
+					_event.m.ChampionBro.getSkills().add(trait);
+					
+					if(_event.m.ChampionBro.getSkills().hasSkill("trait.player"))
 					{
-						local trait = this.new("scripts/skills/traits/champion_trait");
-						_event.m.ChampionBro.getSkills().add(trait);
-						_event.resetDuels();
-						
-						if(_event.m.ChampionBro.getSkills().hasSkill("trait.player"))
-						{
-							this.Text += "\n\n You have now won a number of duels against renowned champions. This experience has made you a better fighter, particularly when in single combat."
-						}
-						else
-						{
-							this.Text += "\n\n %champbrother% has now won a number of duels against renowned champions. This experience has made him a better fighter, particularly when in single combat."
-						}
-						
-						this.List.push({
-							id = 10,
-							icon = trait.getIcon(),
-							text = _event.m.ChampionBro.getName() + " becomes " + trait.getName()
-						});
-						
+						this.Text += "\n\n You have now won a number of duel against renowned champion. This experience has made you a better fighter, particularly when in single combat."
 					}
+					else
+					{
+						this.Text += "\n\n %champbrother% has now won a number of duel against renowned champion. This experience has made him a better fighter, particularly when in single combat."
+					}
+					
+					this.List.push({
+						id = 10,
+						icon = trait.getIcon(),
+						text = _event.m.ChampionBro.getName() + " becomes " + trait.getName()
+					});
 				}
 				
+				if(_event.m.ChampionBro.getLevel() < 11)
+				{
+					local duelExperience = _event.m.ChampionBro.getSkills().getSkillByID("effects.duel_experience");
+					if(duelExperience == null)
+					{
+						duelExperience = this.new("scripts/skills/effects/duel_experience_effect");
+						duelExperience.updateExperienceLevel(_event.getChampion().Level);
+						_event.m.ChampionBro.getSkills().add(duelExperience);
+						
+						this.List.push({
+							id = 11,
+							icon = duelExperience.getIcon(),
+							text = _event.m.ChampionBro.getName() + " now has " + duelExperience.getName()
+						});
+					}
+					else
+					{
+						duelExperience.updateExperienceLevel(_event.getChampion().Level);
+					}
+					
+					
+				}
+				
+				local duelFighter = _event.m.ChampionBro.getSkills().getSkillByID("trait.duel_fighter");
+				if(duelFighter == null)
+				{
+					duelFighter = this.new("scripts/skills/traits/duel_fighter_trait");
+					_event.m.ChampionBro.getSkills().add(duelFighter);
+					this.List.push({
+						id = 12,
+						icon = duelFighter.getIcon(),
+						text = _event.m.ChampionBro.getName() + " is now " + duelFighter.getName()
+					});
+				}
+				duelFighter.updateStatistics(_event.getChampion().Level);
 				
 				return 0;
 			}
@@ -270,45 +258,13 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 			function start( _event )
 			{
 				_event.m.DuelingCircle.setCooldown(1);
-				if(_event.m.BroHasChampion)
-				{
-					_event.resetDuels();
-				}
-				if (_event.getChampion().ID == this.Const.EntityType.BarbarianThrall)
-				{
-					_event.m.Home.removeTroop(_event.getChampion());
-					this.Const.World.Common.addTroop(_event.m.Home, { Type = this.Const.World.Spawn.Troops.BarbarianMarauder }, true)
-				}
 				return 0;
 			}
 		});
 		
 		
-		this.m.Screens.push({
-			ID = "Champion",
-			Title = "After the battle...",
-			Text = "[img]gfx/ui/events/event_145.png[/img]{}",
-			Image = "",
-			List = [],
-			Options = [
-				{
-					Text = "It is done.",
-					function getResult(_event)
-					{
-						if(_event.m.BroHasChampion)
-						{
-							_event.resetDuels();
-						}
-						return 0;
-					}
-
-				}
-			],
-			function start( _event )
-			{
-				return 0;
-			}
-		});
+				
+		
 	}
 
 	function onUpdateScore()
@@ -320,7 +276,6 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 	{	
 		return true;
 	}
-	
 	
 	
 	function onPrepare()
@@ -351,39 +306,45 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 			}
 		}
 
-		if(this.m.ChampionIndex == null)
+		this.m.ChampionName = "";
+		local champion = this.getChampion();
+		this.logInfo("champion: " + champion);
+		if (champion == null)
 		{
-			this.m.ChampionIndex = this.m.DuelingCircle.m.ChampionIndex;
+			return;
+		}
+		if (champion.Variant == 1)
+		{
+			this.m.ChampionName = ::NorthMod.Utils.barbarianNameAndTitle();
 		}
 		
-		if(this.m.ChampionLevel == null)
+		local raw_roster = this.World.getPlayerRoster().getAll();
+		this.m.SortedRoster = [];
+		this.logInfo("create roster");
+		foreach( bro in raw_roster )
 		{
-			this.m.ChampionLevel = this.m.DuelingCircle.m.ChampionLevel;
+			if (bro.getPlaceInFormation() <= 17 && bro.getLevel() <= champion.MaxBroLevel)
+			{
+				this.m.SortedRoster.push(bro);
+			}
 		}
-		
+		this.logInfo("sorted roster len:" + this.m.SortedRoster.len());
+		::NorthMod.Utils.duelRosterSort(this.m.SortedRoster);
+
 		
 	}
 	
 	function getChampion()
 	{
-		if(this.m.ChampionIndex != null && this.m.ChampionIndex >= 0 && this.m.ChampionIndex < this.m.Home.getTroops().len())
-		{
-			return this.m.Home.getTroops()[this.m.ChampionIndex];
-		}
-		
-		return null;
+		return this.m.DuelingCircle.getChampion();
 	}
 	
 	function onPrepareVariables( _vars )
 	{
-		local champion = this.getChampion();
-		if (champion != null && champion.Name != "")
-		{
-			_vars.push([
-				"enemy",
-				champion.Name
-			]);
-		}
+		_vars.push([
+			"enemy",
+			this.m.ChampionName
+		]);
 		
 		
 		
@@ -404,7 +365,25 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 		properties.CombatID = "Duel";
 		properties.Music = this.Const.Music.BarbarianTracks;
 		properties.Entities = [];
-		properties.Entities.push(this.getChampion());
+		local champion = this.getChampion();
+		local name = this.m.ChampionName;
+		properties.Entities.push({
+			ID = champion.ID,
+			Name = name,
+			Variant = champion.Variant,
+			Row = 0,
+			Script = champion.Script,
+			Faction = this.Const.Faction.Enemy
+			function Callback( _entity, _tag )
+			{
+				if(name != "")
+				{
+					_entity.setName(name);
+				}
+				
+			}
+
+		});
 		properties.EnemyBanners.push(this.m.Home.getBanner());
 		properties.Players.push(this.m.ChampionBro);
 		properties.IsUsingSetPlayers = true;
@@ -424,36 +403,16 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 		};
 		
 		this.registerToShowAfterCombat("TheDuel2","TheDuel3");
-		properties.TemporaryEnemies = [
-			this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID()
-		];
-		this.logInfo("StartCombat");
 		this.World.State.startScriptedCombat(properties, false, false, false);
-		
-		
-	}
-	
-	function resetDuels()
-	{
-		local roster = this.World.getPlayerRoster().getAll();
-		foreach( bro in roster )
-		{
-			if (bro.getFlags().has("NEM_duels_won"))
-			{
-				bro.getFlags().remove("NEM_duels_won");
-			}
-			
-		}
+
 	}
 
 	function onClear()
 	{
 		this.m.Home = null;
 		this.m.DuelingCircle = null;
-		this.m.ChampionIndex = null;
 		this.m.ChampionBro = null;
 		this.m.ChampionName = null;
-		this.m.ChampionLevel = null;
 		this.m.BroHasChampion = false;
 	}
 

@@ -94,3 +94,40 @@ foreach(p in this.Const.World.Spawn.Barbarians)
 ]);
 	
 ::NorthMod.Const.BarbarianTitles.extend(["The Bear", "The Wolf", "The Bearclaw", "Giantborn", "Bonesmasher", "Skullsmasher", "Frostborn", "Iceblood", "Ironhead", "Thunderhead", "Skullsplitter"]);
+
+::NorthMod.Const.DuelChampions <- [];
+::NorthMod.Const.DuelChampions.push({
+	Level = 1,
+	ID = this.Const.EntityType.BarbarianThrall,
+	Script = "scripts/entity/tactical/humans/barbarian_thrall",
+	Variant = 0,
+	Chance = 60,
+	MaxBroLevel = 3
+});
+
+::NorthMod.Const.DuelChampions.push({
+	Level = 2,
+	ID = this.Const.EntityType.BarbarianMarauder,
+	Script = "scripts/entity/tactical/humans/barbarian_marauder",
+	Variant = 0,
+	Chance = 30,
+	MaxBroLevel = 6
+});
+
+::NorthMod.Const.DuelChampions.push({
+	Level = 3,
+	ID = this.Const.EntityType.BarbarianChampion,
+	Script = "scripts/entity/tactical/humans/barbarian_champion",
+	Variant = 0,
+	Chance = 30,
+	MaxBroLevel = 9
+});
+
+::NorthMod.Const.DuelChampions.push({
+	Level = 4,
+	ID = this.Const.EntityType.BarbarianChampion,
+	Script = "scripts/entity/tactical/humans/barbarian_champion",
+	Variant = 1,
+	Chance = 20,
+	MaxBroLevel = 100
+});
