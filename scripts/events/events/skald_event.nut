@@ -24,7 +24,8 @@ this.skald_event <- this.inherit("scripts/events/event", {
 						p.Music = this.Const.Music.UndeadTracks;
 						
 						p.Entities = [];
-						this.Const.World.Common.addUnitsToCombat(p.Entities, this.Const.World.Spawn.Mercenaries, 0.8* this.Math.rand(90, 110) * _event.getReputationToDifficultyLightMult(), this.Const.Faction.Enemy);
+						local faction = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Bandits).getID();
+						this.Const.World.Common.addUnitsToCombat(p.Entities, this.Const.World.Spawn.Mercenaries, 0.8* this.Math.rand(90, 110) * _event.getReputationToDifficultyLightMult(), faction);
 						
 						
 						_event.registerToShowAfterCombat("Victory", null);

@@ -117,7 +117,6 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 						Text = text,
 						function getResult(_event)
 						{
-							this.logInfo("name:" + bro.getName());
 							_event.m.ChampionBro = bro;
 							_event.prepareCombat();
 							return 0;
@@ -133,14 +132,12 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 						Text = "Someone else will fight you...",
 						function getResult(_event)
 						{
-							this.logInfo("old page: " + _event.m.CurrentPage);
 							_event.m.CurrentPage++;
 							
 							if (_event.m.CurrentPage* _event.m.PageSize >= _event.m.SortedRoster.len() )
 							{
 								_event.m.CurrentPage = 0;
 							}
-							this.logInfo("new page: " + _event.m.CurrentPage);
 							return "A";	
 						}
 					});
@@ -308,7 +305,6 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 
 		this.m.ChampionName = "";
 		local champion = this.getChampion();
-		this.logInfo("champion: " + champion);
 		if (champion == null)
 		{
 			return;
@@ -320,7 +316,6 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 		
 		local raw_roster = this.World.getPlayerRoster().getAll();
 		this.m.SortedRoster = [];
-		this.logInfo("create roster");
 		foreach( bro in raw_roster )
 		{
 			if (bro.getPlaceInFormation() <= 17 && bro.getLevel() <= champion.MaxBroLevel)
@@ -328,7 +323,6 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 				this.m.SortedRoster.push(bro);
 			}
 		}
-		this.logInfo("sorted roster len:" + this.m.SortedRoster.len());
 		::NorthMod.Utils.duelRosterSort(this.m.SortedRoster);
 
 		
@@ -360,7 +354,8 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 	
 	function prepareCombat()
 	{
-		
+		local duelSkill = this.new("scripts/skills/special/duel_effect")
+		this.m.ChampionBro.getSkills().add(duelSkill);
 		local properties = this.World.State.getLocalCombatProperties(this.World.State.getPlayer().getPos());
 		properties.CombatID = "Duel";
 		properties.Music = this.Const.Music.BarbarianTracks;
@@ -373,7 +368,7 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 			Variant = champion.Variant,
 			Row = 0,
 			Script = champion.Script,
-			Faction = this.Const.Faction.Enemy
+			Faction = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID()
 			function Callback( _entity, _tag )
 			{
 				if(name != "")
@@ -388,6 +383,9 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 		properties.Players.push(this.m.ChampionBro);
 		properties.IsUsingSetPlayers = true;
 		properties.IsFleeingProhibited = true;
+		properties.TemporaryEnemies = [
+			this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID()
+		];
 		properties.BeforeDeploymentCallback = function ()
 		{
 			local size = this.Tactical.getMapSize();

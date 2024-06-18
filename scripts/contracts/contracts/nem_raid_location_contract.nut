@@ -94,9 +94,10 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 				if (this.Contract.m.Destination != null && !this.Contract.m.Destination.isNull())
 				{
 					this.Contract.m.Destination.getSprite("selection").Visible = true;
-					this.Contract.m.Destination.setFaction(this.Const.Faction.Enemy);
+					//this.Contract.m.Destination.setFaction(this.Contract.m.Settlement.getOwner().getID());
 					this.Contract.m.Destination.setAttackable(true);
 					this.Contract.m.Destination.setOnCombatWithPlayerCallback(this.onDestinationAttacked.bindenv(this));
+					this.World.FactionManager.getFactionOfType(this.Contract.m.Destination.getFaction()).setIsTemporaryEnemy(true);
 				}
 			}
 
@@ -114,7 +115,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 			{
 				if (_entity.getFlags().has("peasant") || _entity.getFlags().has("militia"))
 				{
-					_entity.setFaction(this.Const.Faction.Enemy);
+					_entity.setFaction(this.Contract.m.Destination.getFaction());
 					_entity.getSprite("socket").setBrush("bust_base_militia");
 				}
 			}

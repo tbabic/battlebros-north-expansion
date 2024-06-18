@@ -18,13 +18,13 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 					Text = "Let's help him out.", 
 					function getResult( _event )
 					{
-						
+						local zombieFaction = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Zombies).getID();
 						local p = this.World.State.getLocalCombatProperties(this.World.State.getPlayer().getPos(), true);
 						p.CombatID = "JonSnow";
 						p.Music = this.Const.Music.UndeadTracks;
 						
 						p.Entities = [];
-						this.Const.World.Common.addUnitsToCombat(p.Entities, this.Const.World.Spawn.Zombies, 0.5* this.Math.rand(90, 110) * _event.getReputationToDifficultyLightMult(), this.Const.Faction.Enemy);
+						this.Const.World.Common.addUnitsToCombat(p.Entities, this.Const.World.Spawn.Zombies, 0.5* this.Math.rand(90, 110) * _event.getReputationToDifficultyLightMult(), zombieFaction);
 						
 						
 						_event.registerToShowAfterCombat("Aftermath", null);
