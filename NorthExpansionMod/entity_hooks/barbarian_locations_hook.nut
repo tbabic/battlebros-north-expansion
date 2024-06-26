@@ -10,7 +10,8 @@
 		
 		if (this.getTypeID() != "location.barbarian_camp" && 
 			this.getTypeID() != "location.barbarian_shelter" && 
-			this.getTypeID() != "location.barbarian_sanctuary") {
+			this.getTypeID() != "location.barbarian_sanctuary" &&
+			this.getTypeID() != "location.barbarian_sacred_grove") {	
 			return;
 		}
 		
@@ -35,6 +36,11 @@
 		}
 		
 		if (this.getTypeID() == "location.barbarian_sanctuary") 
+		{
+			this.m.CampSize <- 3;
+		}
+		//camps and artifacts mod
+		if (this.getTypeID() == "location.barbarian_sacred_grove") 
 		{
 			this.m.CampSize <- 3;
 		}
