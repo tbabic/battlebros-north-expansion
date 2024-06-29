@@ -1,4 +1,4 @@
-::mods_registerMod("mod_north_expansion", "0.4.2", "North Expansion");
+::mods_registerMod("mod_north_expansion", "0.4.3", "North Expansion");
 
 //TODO: test traits
 //TODO: extract utils and const
