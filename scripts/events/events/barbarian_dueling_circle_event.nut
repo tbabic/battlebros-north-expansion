@@ -412,6 +412,7 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 		this.m.ChampionBro = null;
 		this.m.ChampionName = null;
 		this.m.BroHasChampion = false;
+		this.m.CurrentPage = 0;
 	}
 
 });

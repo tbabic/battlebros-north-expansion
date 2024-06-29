@@ -154,7 +154,7 @@
 				return false;
 			}
 			
-			if (this.World.Flags.getAsInt("NorthExpansionCivilLevel") > 1)
+			if (this.World.Flags.getAsInt("NorthExpansionCivilLevel") > 2)
 			{
 				this.logInfo("civil level: " + this.World.Flags.getAsInt("NorthExpansionCivilLevel"));
 				return false;
@@ -685,6 +685,10 @@
 			{
 				this.m.Situations[g].onRemoved(this);
 				this.m.Situations.remove(g);
+			}
+			if(this.World.Flags.getAsInt("NorthExpansionCivilLevel") == 2 && !this.hasSituation("situation.nem_unwelcome"))
+			{
+				this.addSituation(this.new("scripts/entity/world/settlements/situations/nem_unwelcome_situation"))
 			}
 			
 			foreach( building in this.m.Buildings )

@@ -97,7 +97,9 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 					//this.Contract.m.Destination.setFaction(this.Contract.m.Settlement.getOwner().getID());
 					this.Contract.m.Destination.setAttackable(true);
 					this.Contract.m.Destination.setOnCombatWithPlayerCallback(this.onDestinationAttacked.bindenv(this));
-					this.World.FactionManager.getFactionOfType(this.Contract.m.Destination.getFaction()).setIsTemporaryEnemy(true);
+					local f = this.World.FactionManager.getFaction(this.Contract.m.Destination.getFaction());
+					this.logInfo("raid location faction: " + f.getName());
+					f.setIsTemporaryEnemy(true);
 				}
 			}
 

@@ -5,10 +5,10 @@ this.make_civil_friends_ambition <- this.inherit("scripts/ambitions/ambition", {
 		this.ambition.create();
 		this.m.ID = "ambition.make_civil_friends";
 		this.m.Duration = 99999.0 * this.World.getTime().SecondsPerDay;
-		this.m.ButtonText = "We need to make relations with of one of the noble houses. They'll have more work for us and more resources";
-		this.m.RewardTooltip = "You'll be able to trade and work for civilized factions";
-		this.m.UIText = "Reach \'Cold\' relations with one of the factions";
-		this.m.TooltipText = "Improve your relations to \'Cold\' with one of the major faction. Relations trend towards neutral with time.";
+		this.m.ButtonText = "Being a barbarian is not profitable, we should ally ourselves with a noble house.\nThey'll have more work for us and more resources";
+		this.m.RewardTooltip = "You'll be able to trade and work for civilized factions, but barbarians will be less hospitable.";
+		this.m.UIText = "Reach \'Cold\' relations with one of the factions.";
+		this.m.TooltipText = "Improve your relations to \'Cold\' with one of the major faction. However, other barbarians will not like it.";
 		this.m.SuccessText = "[img]gfx/ui/events/event_31.png[/img]You avoided raiding and pillaging, much to the dismay of your men. You\'ve helped farmers and villagers to their even greater dismay. When you've helped a pompous noble, there was talk of revolt in the %companyname%, but finally your efforts have borne fruit and some civilized settlements are willing to open doors to you.";
 		this.m.SuccessButtonText = "We need friends and allies.";
 	}
