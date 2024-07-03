@@ -780,7 +780,7 @@
 		}
 		
 		this.changeChieftain <- function (){
-			character = this.getChieftain();
+			local character = this.getChieftain();
 			character.m.Name = ::NorthMod.Utils.barbarianNameOnly();
 			character.setTitle(::NorthMod.Utils.barbarianTitle());
 			character.assignRandomEquipment();
