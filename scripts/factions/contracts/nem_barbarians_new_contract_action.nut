@@ -112,7 +112,7 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 		if (i == null) {
 			return;
 		}
-		
+		//i = 23;
 		this.logInfo("picked action:" + i + " - " + this.m.ContractActions[i].getID() + "/" + this.m.Home.getID());
 		this.m.ContractActions[i].execute();
 		//this.m.ContractActions[this.m.ContractActions.len()-1].execute();
@@ -123,10 +123,7 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 			//contracts to convert
 			
 			// "scripts/factions/contracts/free_greenskin_prisoners_action",
-			// "scripts/factions/contracts/find_artifact_action",
-			// "scripts/factions/contracts/root_out_undead_action",
 			// "scripts/factions/contracts/privateering_action", //barbarianize
-			// "scripts/factions/contracts/investigate_cemetery_action",
 			
 			//converted
 			"scripts/factions/contracts/nem_raid_location_action",
@@ -134,7 +131,7 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 			"scripts/factions/contracts/nem_drive_away_bandits_action", 
 			"scripts/factions/contracts/nem_drive_away_barbarians_action",
 			"scripts/factions/contracts/nem_hunting_alps_action",
-			"scripts/factions/contracts/nem_hunting_hexen_action", //TODO: win scenario test
+			"scripts/factions/contracts/nem_hunting_hexen_action",
 			"scripts/factions/contracts/nem_hunting_lindwurms_action",
 			"scripts/factions/contracts/nem_hunting_schrats_action", 
 			"scripts/factions/contracts/nem_hunting_unholds_action", 
@@ -144,7 +141,6 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 			"scripts/factions/contracts/nem_return_item_action",
 			"scripts/factions/contracts/nem_roaming_beasts_action",
 			
-			//TODO: test
 			"scripts/factions/contracts/nem_defend_settlement_greenskins_action",
 			"scripts/factions/contracts/nem_defend_settlement_bandits_action",
 			"scripts/factions/contracts/nem_defend_settlement_barbarians_action",
@@ -154,6 +150,16 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 			"scripts/factions/contracts/nem_discover_location_action",
 			"scripts/factions/contracts/nem_defend_settlement_nobles_action",
 			
+			
+			"scripts/factions/contracts/nem_find_artifact_action", 
+			"scripts/factions/contracts/nem_investigate_cemetery_action", 
+			"scripts/factions/contracts/nem_last_stand_action", 
+			"scripts/factions/contracts/nem_root_out_undead_action",
+			
+			//TODO:
+			//privateering contract - holy and civil war
+			// attack aftermath of decisive battle - civil war
+			// interrupt siege and defeat both parties - holy and civil war
 			
 	
 		];

@@ -712,7 +712,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 		this.m.Screens.push({
 			ID = "Revenge1",
 			Title = "On your return...",
-			Text = "[img]gfx/ui/events/event_135.png[/img]{A man stands out into your path. He\'s an elder among northemen.%SPEECH_ON%Ah, the fellow northmen. You come to our home and ravage an undefended village.%SPEECH_OFF%You spit and nod. %randombrother% yells out that it\'s what the they themselves do. The old man smiles.%SPEECH_ON%So we are in cycle, and through this violence we all shall regenerate, but violence there shall be. When we are through with you, %townname% will not be spared.%SPEECH_OFF%A line of strongmen get up out of the terrain where they were hiding. By the looks of it, this is the main war party of the village you burned down. They may have been out raiding when you sacked the place. Now here they are seeking retribution.}",
+			Text = "[img]gfx/ui/events/event_135.png[/img]{A man stands out into your path. He\'s an elder among northmen.%SPEECH_ON%Ah, the fellow northmen. You come to our home and ravage an undefended village.%SPEECH_OFF%You spit and nod. %randombrother% yells out that it\'s what the they themselves do. The old man smiles.%SPEECH_ON%So we are in cycle, and through this violence we all shall regenerate, but violence there shall be. When we are through with you, %townname% will not be spared.%SPEECH_OFF%A line of strongmen get up out of the terrain where they were hiding. By the looks of it, this is the main war party of the village you burned down. They may have been out raiding when you sacked the place. Now here they are seeking retribution.}",
 			Image = "",
 			List = [],
 			Options = [
