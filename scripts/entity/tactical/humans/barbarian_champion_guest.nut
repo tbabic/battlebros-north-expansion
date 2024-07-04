@@ -1,4 +1,4 @@
-this.barbarian_champion <- this.inherit("scripts/entity/tactical/player", {
+this.barbarian_champion_guest <- this.inherit("scripts/entity/tactical/player", {
 	m = {},
 	
 	function isReallyKilled( _fatalityType )
