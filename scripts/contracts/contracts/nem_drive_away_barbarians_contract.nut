@@ -579,7 +579,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 						local relation = barbarians.getPlayerRelation();
 						if (relation > 30)
 						{
-							change = relation - 30;
+							local change = relation - 30;
 							this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).addPlayerRelation(-change, "Broke the rules of an honorable duel");
 						}
 						this.Contract.getActiveState().onDestinationAttacked(this.Contract.m.Destination);

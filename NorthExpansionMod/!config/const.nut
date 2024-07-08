@@ -131,3 +131,22 @@ foreach(p in this.Const.World.Spawn.Barbarians)
 	Chance = 20,
 	MaxBroLevel = 100
 });
+
+::NorthMod.Const.Spawn <- {};
+::NorthMod.Const.Spawn.BarbarianNoThralls <- [];
+foreach ( s in Const.World.Spawn.Barbarians)
+{
+	local valid = true;
+	foreach(t in s.Troops)
+	{
+		if(t.Type == this.Const.World.Spawn.Troops.BarbarianThrall)
+		{
+			valid = false;
+			break;
+		}
+	}
+	if (valid)
+	{
+		::NorthMod.Const.Spawn.BarbarianNoThralls.push(s);
+	}
+}

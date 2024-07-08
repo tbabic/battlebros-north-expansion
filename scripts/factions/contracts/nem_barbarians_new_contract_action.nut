@@ -112,7 +112,7 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 		if (i == null) {
 			return;
 		}
-		//i = 23;
+		//i = 27;
 		this.logInfo("picked action:" + i + " - " + this.m.ContractActions[i].getID() + "/" + this.m.Home.getID());
 		this.m.ContractActions[i].execute();
 		//this.m.ContractActions[this.m.ContractActions.len()-1].execute();
@@ -156,6 +156,9 @@ this.nem_barbarians_new_contract_action <- this.inherit("scripts/factions/factio
 			"scripts/factions/contracts/nem_last_stand_action", 
 			"scripts/factions/contracts/nem_root_out_undead_action",
 			
+			
+			"scripts/factions/contracts/nem_privateering_action",
+			"scripts/factions/contracts/nem_decisive_battle_action",
 			//TODO:
 			//privateering contract - holy and civil war
 			// attack aftermath of decisive battle - civil war
