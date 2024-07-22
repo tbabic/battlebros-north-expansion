@@ -201,7 +201,6 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 		local r = this.Math.rand(1, 100);
 		this.logInfo("roll: " + r);
 		r += upgradeChance;
-		r=1;
 		local currentChance = 0;
 		foreach (champ in ::NorthMod.Const.DuelChampions )
 		{
@@ -316,8 +315,6 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 			}
 		}
 		
-		this.m.CooldownUntil = 0;
-		this.m.LastUpdate = 0;
 		//this.m.CooldownUntil = _in.readU32();
 	}
 	
