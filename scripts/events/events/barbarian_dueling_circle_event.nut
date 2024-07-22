@@ -303,7 +303,7 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 			}
 		}
 
-		this.m.ChampionName = "";
+		this.m.ChampionName = null;
 		local champion = this.getChampion();
 		if (champion == null)
 		{
@@ -311,7 +311,7 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 		}
 		if (champion.Variant == 1)
 		{
-			this.m.ChampionName = ::NorthMod.Utils.barbarianNameAndTitle();
+			this.m.ChampionName = this.m.DuelingCircle.m.ChampionName;
 		}
 		
 		local raw_roster = this.World.getPlayerRoster().getAll();
@@ -383,23 +383,17 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 		properties.Players.push(this.m.ChampionBro);
 		properties.IsUsingSetPlayers = true;
 		properties.IsFleeingProhibited = true;
+		properties.PlayerDeploymentType = this.Const.Tactical.DeploymentType.Custom;
+		properties.EnemyDeploymentType = this.Const.Tactical.DeploymentType.Line;
 		properties.TemporaryEnemies = [
 			this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID()
 		];
-		properties.BeforeDeploymentCallback = function ()
+		properties.PlayerDeploymentCallback = function ()
 		{
-			local size = this.Tactical.getMapSize();
-
-			for( local x = 0; x < size.X; x = ++x )
-			{
-				for( local y = 0; y < size.Y; y = ++y )
-				{
-					local tile = this.Tactical.getTileSquare(x, y);
-					tile.Level = this.Math.min(1, tile.Level);
-				}
-			}
-		};
-		
+			::NorthMod.Utils.duelDeployment(properties);
+		}
+		properties.BeforeDeploymentCallback = ::NorthMod.Utils.duelCleanMap.bindenv(this);
+		properties.AfterDeploymentCallback = ::NorthMod.Utils.duelPlaceActors.bindenv(this);
 		this.registerToShowAfterCombat("TheDuel2","TheDuel3");
 		this.World.State.startScriptedCombat(properties, false, false, false);
 

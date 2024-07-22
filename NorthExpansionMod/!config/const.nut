@@ -93,7 +93,8 @@ foreach(p in this.Const.World.Spawn.Barbarians)
 	"Magnor", "Modolf", "Mord", "Njall", "Roar", "Rune","Rurik", "Sigbjorn", "Sten", "Skarde","Toke","Trygve", "Vegeir"
 ]);
 	
-::NorthMod.Const.BarbarianTitles.extend(["The Bear", "The Wolf", "The Bearclaw", "Giantborn", "Bonesmasher", "Skullsmasher", "Frostborn", "Iceblood", "Ironhead", "Thunderhead", "Skullsplitter"]);
+::NorthMod.Const.BarbarianTitles.extend(["The Bear", "The Wolf", "The Bearclaw", "Giantborn", "Bonesmasher", "Skullsmasher",
+	"Frostborn", "Iceblood", "Ironhead", "Thunderhead", "Skullsplitter", "Icebeard"]);
 
 ::NorthMod.Const.DuelChampions <- [];
 ::NorthMod.Const.DuelChampions.push({
@@ -102,7 +103,8 @@ foreach(p in this.Const.World.Spawn.Barbarians)
 	Script = "scripts/entity/tactical/humans/barbarian_thrall",
 	Variant = 0,
 	Chance = 60,
-	MaxBroLevel = 3
+	MaxBroLevel = 4,
+	Image = "ui/images/duel_thrall_image.png"
 });
 
 ::NorthMod.Const.DuelChampions.push({
@@ -111,7 +113,8 @@ foreach(p in this.Const.World.Spawn.Barbarians)
 	Script = "scripts/entity/tactical/humans/barbarian_marauder",
 	Variant = 0,
 	Chance = 30,
-	MaxBroLevel = 6
+	MaxBroLevel = 7,
+	Image = "ui/images/duel_reaver_image.png"
 });
 
 ::NorthMod.Const.DuelChampions.push({
@@ -120,7 +123,8 @@ foreach(p in this.Const.World.Spawn.Barbarians)
 	Script = "scripts/entity/tactical/humans/barbarian_champion",
 	Variant = 0,
 	Chance = 30,
-	MaxBroLevel = 9
+	MaxBroLevel = 11,
+	Image = "ui/images/duel_chosen_image.png"
 });
 
 ::NorthMod.Const.DuelChampions.push({
@@ -129,7 +133,8 @@ foreach(p in this.Const.World.Spawn.Barbarians)
 	Script = "scripts/entity/tactical/humans/barbarian_champion",
 	Variant = 1,
 	Chance = 20,
-	MaxBroLevel = 100
+	MaxBroLevel = 100,
+	Image = "ui/images/duel_champion_image.png"
 });
 
 ::NorthMod.Const.Spawn <- {};

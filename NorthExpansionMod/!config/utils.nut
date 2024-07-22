@@ -331,5 +331,67 @@
 			return 0;
 		});
 	}
+	
+	function duelDeployment(properties)
+	{
+		local size = this.Tactical.getMapSize();
+		local x = (size.X / 2) - 3;
+		local y = size.Y / 2;
+		local tile = this.Tactical.getTileSquare(x, y);
+		this.Tactical.addEntityToMap(properties.Players[0], tile.Coords.X, tile.Coords.Y);
+		if (!this.World.getTime().IsDaytime && e.getBaseProperties().IsAffectedByNight)
+		{
+			e.getSkills().add(this.new("scripts/skills/special/night_effect"));
+		}
+	}
+	
+	function duelCleanMap()
+	{
+		local size = this.Tactical.getMapSize();
+		for( local x = 0; x < size.X; x = ++x )
+		{
+			for( local y = 0; y < size.Y; y = ++y )
+			{
+				local tile = this.Tactical.getTileSquare(x, y);
+				tile.Level = 0;
+				tile.removeObject();
+			}
+		}
+		local centerTile = this.Tactical.getTileSquare(size.X / 2, size.Y / 2);
+		centerTile.Level = 1;
+	}
+		
+	function duelPlaceActors()
+	{	
+		local size = this.Tactical.getMapSize();
+		local radius = 5;
+		local center = {
+			X = size.X / 2,
+			Y = size.Y / 2
+		};
+		local centerTile = this.Tactical.getTileSquare(center.X, center.Y);
+
+		for( local x = 0; x < size.X; x = ++x )
+		{
+			for( local y = 0; y < size.Y; y = ++y )
+			{
+				local tile = this.Tactical.getTileSquare(x, y);
+				local d = centerTile.getDistanceTo(tile);
+				if (d == radius)
+				{
+					local o = tile.spawnObject("entity/tactical/objects/duel_spectator");
+					if(o == null)
+					{
+						this.logInfo("no spectator");
+					}
+					else if (tile.Coords.X > center.X)
+					{
+						o.setFlipped(true);
+					}
+				}
+				
+			}
+		}
+	}
 
 }

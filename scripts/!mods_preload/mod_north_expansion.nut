@@ -1,4 +1,5 @@
-::mods_registerMod("mod_north_expansion", "0.5.0", "North Expansion");
+::NorthMod <- { ID = "mod_north_expansion",	Name = "North Expansion", Version = "0.5.0"};
+::mods_registerMod(::NorthMod.ID, ::NorthMod.Version, ::NorthMod.Name);
 
 //TODO: test traits
 //TODO: extract utils and const
@@ -6,12 +7,9 @@
 //TODO: situation eager recruits, icon: perk13
 
 
-
-::NorthMod <- {};
-
-
-::mods_queue(null, ">mod_avatar, >mod_stronghold", function()
+::mods_queue(null, "mod_msu, >mod_avatar, >mod_stronghold", function()
 {
+	::NorthMod.Mod <- ::MSU.Class.Mod(::NorthMod.ID, ::NorthMod.Version, ::NorthMod.Name);
 	if(::mods_getRegisteredMod("mod_avatar")) {
 		::AvatarMod.Const.ScenarioBackgrounds["scenario.barbarian_raiders"] <- { 
 			Background = "barbarian_background",
@@ -36,6 +34,17 @@
 		logInfo(scriptFile);
 		this.include(scriptFile);
 	}
+	
+	::mods_registerCSS("nem_screens/nem_main.css");
+	// register the screen using modhooks.
+	::mods_registerJS("nem_screens/duel_circle_screen.js");
+
+	// create a new sq screen and set it in our mod table.
+	::NorthMod.Screens <- {};
+	::NorthMod.Screens.DuelCircleScreen <- this.new("scripts/ui/nem_screens/duel_circle_screen");
+
+	// register the screen to be connected.
+	::MSU.UI.registerConnection(::NorthMod.Screens.DuelCircleScreen);
 	
 });
 

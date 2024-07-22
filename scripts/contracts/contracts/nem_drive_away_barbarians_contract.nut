@@ -430,19 +430,8 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 							properties.TemporaryEnemies = [
 								this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians).getID()
 							];
-							properties.BeforeDeploymentCallback = function ()
-							{
-								local size = this.Tactical.getMapSize();
-
-								for( local x = 0; x < size.X; x = ++x )
-								{
-									for( local y = 0; y < size.Y; y = ++y )
-									{
-										local tile = this.Tactical.getTileSquare(x, y);
-										tile.Level = this.Math.min(1, tile.Level);
-									}
-								}
-							};
+							properties.BeforeDeploymentCallback = ::NorthMod.Utils.duelCleanMap.bindenv(this);
+							properties.AfterDeploymentCallback = ::NorthMod.Utils.duelPlaceActors.bindenv(this);
 							this.World.Contracts.startScriptedCombat(properties, false, true, false);
 							return 0;
 						}

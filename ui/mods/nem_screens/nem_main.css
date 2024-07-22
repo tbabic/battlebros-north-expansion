@@ -1,0 +1,71 @@
+.duel-screen
+{
+	top: 0;
+	left: 0;
+    width: 102.4rem;
+    height: 76.8rem;
+	position: absolute;
+    z-index: 2;
+	overflow: hidden;
+
+    /*border: 5px solid white;*/
+}
+
+.nem-description-container
+{
+    position:absolute;
+    top: 20rem;
+}
+
+.empty-duel
+{
+	
+    margin-left: 4rem;
+    margin-right: 2rem;
+}
+
+.description-duel
+{
+
+    margin-top: 17rem;
+    margin-left: 4rem;
+    margin-right: 3rem;
+}
+
+.conflict-container
+{
+    position:absolute;
+    top: 16rem;
+    margin-left: 20rem;
+}
+
+
+
+.opponent-container
+{
+    position:absolute;
+    top: 22rem;
+    margin-left: 4rem;
+}
+
+.opponent-name
+{
+    top: 9rem;
+    position:absolute;
+    width: 27rem;
+    
+    border-image: url("coui://gfx/ui/skin/line_metal.png") 0% 0% 100% 0%;
+    border-image-outset: 0 0 -0.5rem 0;
+
+    
+}
+
+.opponent-portrait
+{
+    position:absolute;
+    left: 25rem;
+
+}
+
+
+

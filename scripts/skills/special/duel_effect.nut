@@ -33,6 +33,7 @@ this.duel_effect <- this.inherit("scripts/skills/skill", {
 			
 		}
 		
+		
 	}
 	
 	function onCombatFinished()
@@ -52,6 +53,11 @@ this.duel_effect <- this.inherit("scripts/skills/skill", {
 		}
 		
 		this.removeSelf();
+	}
+	
+	function onUpdate( _properties )
+	{
+		_properties.Vision += 2; // to see the circle of men
 	}
 
 });

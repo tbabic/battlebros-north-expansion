@@ -1,6 +1,7 @@
 this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/buildings/building", {
 	m = {
 		Champion = null,
+		ChampionName = null,
 		Level = 0,
 		CooldownUntil = 0,
 		LastUpdate = -1
@@ -62,14 +63,113 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 			return;
 		}
 			
-		local event = this.World.Events.getEvent("event.barbarian_dueling_circle");
+		/*local event = this.World.Events.getEvent("event.barbarian_dueling_circle");
 		event.setHome(this.m.Settlement);
 		
 		//this.World.State.m.MenuStack.popAll();
 		this.World.Events.m.ActiveEvent = event;
 		event.fire();
 		this.World.State.showEventScreenFromTown(event, false, false);
+		this.pushUIMenuStack();*/
+		
+		local data = this.prepareScreenData();
+		::NorthMod.Screens.DuelCircleScreen.setDuelingCircle(this);
+		::NorthMod.Screens.DuelCircleScreen.show(data);
+		
 
+	}
+	
+
+	function prepareScreenData()
+	{
+		local data = {
+			Bros = [],
+			Text = "",
+			Opponent = null,
+			OpponentImage = null
+		}
+		
+		if(this.isClosed())
+		{
+			data.Text = "You approach the dueling circle but there is no one to fight you. Come back in " + this.getCooldownDays() + " day";
+			if (this.getCooldownDays() > 1)
+			{
+				data.Text += "s";
+			}
+			return data;
+			
+		}
+
+		data.Text = "You approach the dueling circle and ask is there a champion in this place who will fight you or one of your men?\n\n"
+		if (!this.isDuelAvailable())
+		{
+			data.Text += "There are no worthy fighters in this place that are willing to step forth to combat one of your warriors. Come back tomorrow."
+			return data;
+		}
+		if (this.m.Champion.Level == 1)
+		{
+			data.Text += "There are no great champions in this place, but one of the thralls comes forth to fight you and earn his status as a free man."
+			data.Opponent = "Barbarian Thrall"
+		}
+		
+		if (this.m.Champion.Level == 2)
+		{
+			data.Text += "There are no great champions in this place, but a marauder, with the experience of many raids, comes forth to fight you."
+			data.Opponent = "Barbarian Reaver"
+		}
+		
+		if (this.m.Champion.Level == 3)
+		{
+			data.Text += "There are no great champions in this place, but there is an experienced warrior with many victories that comes forth to fight you."
+			data.Opponent = "Barbarian Chosen"
+		}
+		
+		if (this.m.Champion.Level == 4)
+		{
+			data.Text += this.m.ChampionName + " steps forth, you can see he is an impressive warrior with a body of pure muscle, tendon, and scars. A worthy champion."
+			data.Opponent = this.m.ChampionName
+		}
+		data.OpponentImage = this.getChampionImage();
+		
+		
+		
+		local roster = this.World.getPlayerRoster().getAll();
+		foreach( bro in roster )
+		{
+			if(bro.getLevel() > this.m.Champion.MaxBroLevel)
+			{
+				continue;
+			}
+			
+			local background = bro.getBackground();
+			local skills = bro.getSkills();
+			local uiTraits = [];
+			
+			foreach( s in skills.m.Skills )
+			{
+				if (s.getType() == this.Const.SkillType.Trait)
+				{
+					uiTraits.push({
+						id = s.getID(),
+						icon = s.getIconColored()
+					});
+				}
+			}
+			
+			data.Bros.push({
+				ID = bro.getID(),
+				Name = bro.getName(),
+				Level = bro.getLevel(),
+				ImagePath = bro.getImagePath(),
+				ImageOffsetX = bro.getImageOffsetX(),
+				ImageOffsetY = bro.getImageOffsetY(),
+				BackgroundImagePath = background.getIconColored(),
+				BackgroundText = background.getDescription(),
+				Traits = uiTraits
+			});
+			
+		}
+		return data;
 	}
 	
 	function findChampion()
@@ -82,6 +182,10 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 		
 		this.m.Champion = null;
 		this.m.Settlement.getFlags().set("NEM_duel_champion", 0);
+		if(this.m.Settlement.getFlags().has("NEM_duel_champion_name"))
+		{
+			this.m.Settlement.getFlags().remove("NEM_duel_champion_name");
+		}
 		this.m.LastUpdate = this.World.getTime().Days;
 		this.m.Settlement.getFlags().set("NEM_duel_lastUpdate", this.m.LastUpdate);
 		this.logInfo("new update: " + this.m.LastUpdate);
@@ -97,7 +201,7 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 		local r = this.Math.rand(1, 100);
 		this.logInfo("roll: " + r);
 		r += upgradeChance;
-		
+		r=1;
 		local currentChance = 0;
 		foreach (champ in ::NorthMod.Const.DuelChampions )
 		{
@@ -124,6 +228,11 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 		{
 			this.m.Champion = null;
 			return;
+		}
+		if (this.m.Champion.Variant == 1)
+		{
+			this.m.ChampionName = ::NorthMod.Utils.barbarianNameAndTitle();
+			this.m.Settlement.getFlags().set("NEM_duel_champion_name", this.m.ChampionName);
 		}
 		this.m.Settlement.getFlags().set("NEM_duel_champion", this.m.Champion.Level);
 		
@@ -152,6 +261,38 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 	{	
 		this.findChampion();
 	}
+	
+	function prepareDuelRoster()
+	{	
+		local rosterId = this.toHash(this);
+		this.logInfo("duel roster id: " + rosterId);
+		
+		this.World.Flags.set("NorthExpansionDuelRoster", rosterId);
+		this.World.createRoster(this.World.Flags.get("NorthExpansionDuelRoster"));
+		
+		
+		local roster = this.World.getRoster(this.World.Flags.get("NorthExpansionDuelRoster"));
+		
+		local opponent = roster.create("scripts/entity/tactical/humans/barbarian_duel_placeholder");
+		opponent.setFaction(this.Const.Faction.Enemy);
+	}
+	
+	function getChampionImage()
+	{
+		if(this.m.Champion == null)
+		{
+			return null;
+		}
+		if(!this.World.Flags.has("NorthExpansionDuelRoster")) {
+			prepareDuelRoster();
+		}
+		local roster = this.World.getRoster(this.World.Flags.get("NorthExpansionDuelRoster")).getAll();
+		local opponent = roster[0];
+		opponent.assignEquipment(this.m.Champion.Level);
+		
+		return opponent.getImagePath();
+		
+	}
 
 	function onSerialize( _out )
 	{
@@ -169,9 +310,14 @@ this.barbarian_duel_building <- this.inherit("scripts/entity/world/settlements/b
 		if (championLevel > 0)
 		{
 			this.m.Champion = ::NorthMod.Const.DuelChampions[championLevel - 1];
+			if (this.m.Champion.Variant == 1 && this.m.Settlement.getFlags().has("NEM_duel_champion_name"))
+			{
+				this.m.ChampionName = this.m.Settlement.getFlags().get("NEM_duel_champion_name");
+			}
 		}
-
 		
+		this.m.CooldownUntil = 0;
+		this.m.LastUpdate = 0;
 		//this.m.CooldownUntil = _in.readU32();
 	}
 	
