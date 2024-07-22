@@ -67,11 +67,12 @@ this.skaldhorn <- this.inherit("scripts/items/accessory/accessory", {
 
 	function onCombatFinished()
 	{
-		local actor = this.getContainer().getActor();
-		if(this.getContainer() == null || actor == null)
+		
+		if(this.getContainer() == null || this.getContainer().getActor() == null)
 		{
 			return;
 		}
+		local actor = this.getContainer().getActor();
 		local allies = this.Tactical.Entities.getInstancesOfFaction(actor.getFaction());
 
 		foreach( ally in allies )

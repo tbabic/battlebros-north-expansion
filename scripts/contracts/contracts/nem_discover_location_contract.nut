@@ -111,7 +111,7 @@ this.nem_discover_location_contract <- this.inherit("scripts/contracts/barbarian
 				this.Contract.addGuests();
 				local r = this.Math.rand(1, 100);
 
-				if (r <= 15)
+				if (r <= 15 && !this.World.FactionManager.getFaction(this.Contract.getFaction()).getType() == this.Const.FactionType.Barbarians)
 				{
 					this.Flags.set("IsAnotherParty", true);
 					this.Flags.set("IsShowingAnotherParty", true);

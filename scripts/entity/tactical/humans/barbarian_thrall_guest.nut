@@ -49,6 +49,11 @@ this.barbarian_thrall_guest <- this.inherit("scripts/entity/tactical/player", {
 		this.m.ActionPoints = b.ActionPoints;
 		this.m.Hitpoints = b.Hitpoints;
 		this.m.CurrentProperties = clone b;
+		
+		this.m.Talents.resize(this.Const.Attributes.COUNT, 0);
+		this.m.Attributes.resize(this.Const.Attributes.COUNT, [
+			0
+		]);
 		this.setAppearance();
 		this.getSprite("socket").setBrush("bust_base_wildmen_01");
 		this.m.Skills.add(this.new("scripts/skills/actives/barbarian_fury_skill"));

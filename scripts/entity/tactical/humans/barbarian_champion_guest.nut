@@ -51,6 +51,13 @@ this.barbarian_champion_guest <- this.inherit("scripts/entity/tactical/player", 
 		this.m.ActionPoints = b.ActionPoints;
 		this.m.Hitpoints = b.Hitpoints;
 		this.m.CurrentProperties = clone b;
+		
+		this.m.Talents.resize(this.Const.Attributes.COUNT, 0);
+		this.m.Attributes.resize(this.Const.Attributes.COUNT, [
+			0
+		]);
+		
+		
 		b.IsSpecializedInSwords = true;
 		b.IsSpecializedInAxes = true;
 		b.IsSpecializedInMaces = true;

@@ -686,10 +686,13 @@
 				this.m.Situations[g].onRemoved(this);
 				this.m.Situations.remove(g);
 			}
+			
 			if(this.World.Flags.getAsInt("NorthExpansionCivilLevel") == 2 && !this.hasSituation("situation.nem_unwelcome"))
 			{
 				this.addSituation(this.new("scripts/entity/world/settlements/situations/nem_unwelcome_situation"))
 			}
+			
+			this.m.Modifiers.reset()
 			
 			foreach( building in this.m.Buildings )
 			{
@@ -1052,6 +1055,13 @@
 			}
 
 			this.m.Modifiers.reset();
+
+			foreach( s in this.m.Situations )
+			{
+				s.onUpdate(this.m.Modifiers);
+			}
+			
+			
 			local cooldownUntil = _in.readF32();
 			this.m.ContractAction.setCooldownUntil(cooldownUntil);
 			//this.m.ContractAction.setCooldownUntil(0); //remove

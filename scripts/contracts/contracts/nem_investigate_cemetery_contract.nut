@@ -144,7 +144,7 @@ this.nem_investigate_cemetery_contract <- this.inherit("scripts/contracts/barbar
 
 			function update()
 			{
-				if (this.Contract.m.Destination == null || this.Contract.m.Destination.isNull())
+				if (this.Contract.m.Destination == null || this.Contract.m.Destination.isNull() || !this.Contract.m.Destination.isAlive())
 				{
 					if (this.Flags.get("IsUndead") && this.World.Assets.getBusinessReputation() > 500 && this.Math.rand(1, 100) <= 25 * this.Contract.m.DifficultyMult)
 					{

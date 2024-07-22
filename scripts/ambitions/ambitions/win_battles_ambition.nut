@@ -14,15 +14,23 @@ this.win_battles_ambition <- this.inherit("scripts/ambitions/ambition", {
 		this.m.SuccessButtonText = "We tested ourselves, but greater things await.";
 	}
 	
+	function getUIText()
+	{
+		return this.m.UIText + " (" + this.Math.min(2, this.m.Defeated) + "/2)";
+	}
+	
 	function onStart()
 	{
-		this.logInfo("win any battles start");
 		this.m.Defeated = 0;
 	}
 
 	function onUpdateScore()
 	{
-		this.m.Score = 1 + this.Math.rand(0, 5);
+		if (this.World.Flags.get("NorthExpansionActive") && this.World.Flags.get("NorthExpansionCivilLevel") <= 2)
+		{
+			this.m.Score = 1 + this.Math.rand(0, 5);
+		}
+			
 	}
 
 	function onCheckSuccess()

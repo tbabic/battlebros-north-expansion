@@ -136,6 +136,11 @@ this.feral_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		this.m.Ferocity.StartingHP = actor.getHitpoints();
 		this.m.Ferocity.Level = 0;
 		this.m.Ferocity.Combat = true;
+		if(this.isFerocityActive())
+		{
+			this.m.Type = this.Const.SkillType.Trait | this.Const.SkillType.StatusEffect;
+			return;
+		}
 	}
 
 	
@@ -146,6 +151,7 @@ this.feral_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		this.m.Ferocity.IsHit = false;
 		this.m.Ferocity.Active = false;
 		this.m.Ferocity.Unstoppable = false;
+		this.m.Type = this.Const.SkillType.Trait;
 	}
 	
 	function onDamageReceived( _attacker, _damageHitpoints, _damageArmor )

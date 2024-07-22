@@ -28,6 +28,12 @@ this.moonkissed_trait <- this.inherit("scripts/skills/traits/character_trait", {
 			{
 				id = 10,
 				type = "text",
+				icon = "ui/icons/bravery.png",
+				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Resolve during Nighttime"
+			}
+			{
+				id = 11,
+				type = "text",
 				icon = "ui/icons/melee_skill.png",
 				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Melee Skill during Nighttime"
 			}
@@ -48,6 +54,7 @@ this.moonkissed_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		{
 			_properties.MeleeSkill += 5;
 			_properties.MeleeDamageMult *= 1.1;
+			_properties.Bravery +=5;
 		}
 	}
 

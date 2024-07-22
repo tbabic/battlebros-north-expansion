@@ -1,15 +1,15 @@
-this.skald_event <- this.inherit("scripts/events/event", {
+this.moonkissed_event <- this.inherit("scripts/events/event", {
 	m = {
 		Dude = null
 	},
 	function create()
 	{
-		this.m.ID = "event.skald";
+		this.m.ID = "event.moonkissed";
 		this.m.Title = "Along the way...";
 		this.m.Cooldown = 999999.0 * this.World.getTime().SecondsPerDay;
 		this.m.Screens.push({
 			ID = "A",
-			Text = "[img]gfx/ui/events/event_33.png[/img]As night falls upon the rugged mountain pass, you prepare to prepare the camp for the night. Yet, before settling in, %randombrother% returns from scouting, bearing troubling news.%SPEECH_ON%Chief, some mercenaries have made camp nearby. They seem well armed and ready for a fight. Might be they are looking for us, might be not. I doubt we could surprise them, though.%SPEECH_OFF%You pause to gather your thoughts. Mercenaries won't be an easy fight. But leaving them, they might present a bigger threat later.",
+			Text = "[img]gfx/ui/events/event_33.png[/img]Night falls, casting shadows over the land as the moon slowly emerges, illuminating the landscape with its soft, silvery light. As you prepare to prepare to camp for the night, %randombrother% returns from scouting. Looking at his expression you can see he does not have good news.%SPEECH_ON%Chief, some mercenaries have made camp nearby. They seem well armed and ready for a fight. Might be they are looking for us, might be not. I doubt we could surprise them, though.%SPEECH_OFF%You pause to gather your thoughts. Mercenaries won't be an easy fight. But leaving them unchecked, they might present a bigger threat later.",
 			Image = "",
 			List = [],
 			Characters = [],
@@ -70,16 +70,16 @@ this.skald_event <- this.inherit("scripts/events/event", {
 				
 				local b = _event.m.Dude.getBaseProperties();
 
-				local trait = this.new("scripts/skills/traits/skald_trait");
+				local trait = this.new("scripts/skills/traits/fat_trait");
 				if (trait == null)
 				{
-					this.logInfo("skald trait null");
+					this.logInfo("fat trait null");
 				}
 				_event.m.Dude.getSkills().add(trait);
 				_event.m.Dude.getSkills().add(this.new("scripts/skills/traits/moonkissed_trait"));
 	
 				
-				//::NorthMod.Utils.guaranteedTalents(_event.m.Dude, this.Const.Attributes.MeleeSkill, 1);
+				//::NorthMod.Utils.guaranteedTalents(_event.m.Dude, this.Const.Attributes.Bravery, 2);
 	
 				
 				_event.m.Dude.getSkills().update();
@@ -103,7 +103,7 @@ this.skald_event <- this.inherit("scripts/events/event", {
 		});
 		this.m.Screens.push({
 			ID = "Victory",
-			Text = "[img]gfx/ui/events/event_33.png[/img]{You look upon the scene of carnage, blood soaking ground, bodies slashed and crushed. Out of the darkness a man steps forward, he's carrying a heavy hammer.%SPEECH_ON%A good job you boys did. A very good job indeed!%SPEECH_OFF%The man speaks to you in a jovial manner, as if he knows you your whole life. You ask him what's he doing here and he replies that he came to deal with the mercenaries. He explains that nobles send men from time to time looking for him.%SPEECH_ON%But the men they send, they never return, because they are not favoured by the Moon. Not like you, boys.%SPEECH_OFF%You start to suspect the man might be touched in the head but then he continues. %SPEECH_ON%Seeing as you boys my job for me, now I have nothing to do. Indeed it seems that I'm in a need of a work. Might be you boys would let me come along? The Moon will bless us double if we are together. I'm %skald% by the way.%SPEECH_OFF%}", 
+			Text = "[img]gfx/ui/events/event_33.png[/img]{You look upon the scene of carnage: blood-soaked ground, bodies slashed and crushed. Out of the darkness, a man steps forward, carrying a heavy hammer.%SPEECH_ON%A good job you boys did. A very good job indeed!%SPEECH_OFF%He speaks to you in a jovial manner, as if he\'s known you your whole life. You ask him what he\'s doing here, and he replies that he came to deal with the mercenaries. He explains that nobles send men from time to time looking for him.%SPEECH_ON%But the men they send never return, because they are not favored by the Moon. Not like you, boys.%SPEECH_OFF%You start to suspect the man might be touched in the head, but then he continues.%SPEECH_ON%Seeing as you did my job for me, now I have nothing to do. Indeed, it seems that I\'m in need of work. Might be you would let me come along? The Moon will bless us double, if we are together. I\'m %skald%, by the way.%SPEECH_OFF%}", 
 			Image = "",
 			List = [],
 			Characters = [],
@@ -204,15 +204,15 @@ this.skald_event <- this.inherit("scripts/events/event", {
 		}
 		
 		local currentTile = this.World.State.getPlayer().getTile();
-
-		if (currentTile.Type != this.Const.World.TerrainType.Mountains)
-		{
-			return;
-		}
 		local multiplier = 1;
+		if (currentTile.Type == this.Const.World.TerrainType.Mountains)
+		{
+			multiplier = multiplier*2;
+		}
+		
 		if (this.World.Ambitions.hasActiveAmbition() && this.World.Ambitions.getActiveAmbition().getID() == "ambition.roster_of_12")
 		{
-			multiplier = 4;
+			multiplier = multiplier*4;
 		}
 		this.m.Score = 20 * multiplier;
 		logInfo("updated score: " + this.m.ID + " - " + this.m.Score);

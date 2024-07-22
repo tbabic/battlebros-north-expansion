@@ -728,7 +728,7 @@ this.nem_hunting_hexen_contract <- this.inherit("scripts/contracts/barbarian_con
 					function getResult()
 					{
 						this.World.Assets.addBusinessReputation(this.Const.World.Assets.ReputationOnContractSuccess);
-						this.World.Assets.addMoney(this.Contract.m.Payment.getOnCompletion()*0.75);
+						this.World.Assets.addMoney(this.Math.round(this.Contract.m.Payment.getOnCompletion()*0.75));
 						this.World.FactionManager.getFaction(this.Contract.getFaction()).addPlayerRelation(this.Const.World.Assets.RelationCivilianContractSuccess, "Protected " + this.Contract.getEmployer().getName() + "\'s firstborn son");
 						this.World.Contracts.finishActiveContract();
 						return 0;
@@ -741,7 +741,7 @@ this.nem_hunting_hexen_contract <- this.inherit("scripts/contracts/barbarian_con
 				this.List.push({
 					id = 10,
 					icon = "ui/icons/asset_money.png",
-					text = "You gain [color=" + this.Const.UI.Color.PositiveEventValue + "]" + this.Contract.m.Payment.getOnCompletion()*0.75 + "[/color] Crowns"
+					text = "You gain [color=" + this.Const.UI.Color.PositiveEventValue + "]" + this.Math.round(this.Contract.m.Payment.getOnCompletion()*0.75) + "[/color] Crowns"
 				});
 				this.Contract.m.SituationID = this.Contract.resolveSituation(this.Contract.m.SituationID, this.Contract.m.Home, this.List);
 			}

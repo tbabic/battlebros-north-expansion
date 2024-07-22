@@ -26,7 +26,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 
 	function start()
 	{
-		this.m.Payment.Pool = 300 * this.getPaymentMult() * this.getDifficultyMult() * this.getReputationToPaymentMult();
+		this.m.Payment.Pool = 500 * this.getPaymentMult() * this.getDifficultyMult() * this.getReputationToPaymentMult();
 
 		this.m.Payment.Completion = 1.0;
 
@@ -72,7 +72,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 					this.Flags.set("IsNoblesReady", true);
 				
 				}
-				else if (this.Contract.getDifficultyMult() <= 0.85 && this.Math.rand(1, 100) <= 50 && !this.Contract.m.Destination.isMilitary())
+				else if (this.Contract.getDifficultyMult() <= 0.85 && this.Math.rand(1, 100) <= 50 && !this.Contract.m.Destination.isMilitary() && this.World.getTime().Days <= 10)
 				{
 					this.Contract.addUnitsToEntity(this.Contract.m.Destination, this.Const.World.Spawn.PeasantsArmed, this.Math.min(300, 150 * this.Contract.getDifficultyMult() * this.Contract.getScaledDifficultyMult()));
 				}
@@ -182,6 +182,7 @@ this.nem_raid_location_contract <- this.inherit("scripts/contracts/barbarian_con
 				if (_combatID == "RazeLocation")
 				{
 					this.Contract.m.Destination.setActive(false);
+					this.Contract.m.Destination.setAttackable(false);
 					this.Contract.m.Destination.spawnFireAndSmoke();
 					this.Flags.set("IsDone", true);
 				}

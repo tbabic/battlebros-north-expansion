@@ -29,7 +29,7 @@ this.nem_investigate_cemetery_action <- this.inherit("scripts/factions/faction_a
 			return;
 		}
 
-		local myTile = _faction.getSettlements()[0].getTile();
+		local myTile = this.m.Home.getTile();
 		this.m.Target = null;
 		local undead = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Zombies).getSettlements();
 
