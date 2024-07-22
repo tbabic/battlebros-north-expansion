@@ -130,6 +130,19 @@ this.feral_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		
 	}
 	
+	
+	function getIcon()
+	{
+		if(this.m.Ferocity.Level == 0)
+		{
+			return this.m.Icon;
+		}
+		else
+		{
+			return "ui/traits/trait_icon_feral_" + this.m.Ferocity.Level + ".png";
+		}
+	}
+	
 	function onCombatStarted()
 	{
 		local actor = this.getContainer().getActor();
