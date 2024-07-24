@@ -359,6 +359,16 @@
 		}
 		local centerTile = this.Tactical.getTileSquare(size.X / 2, size.Y / 2);
 		centerTile.Level = 1;
+		if (centerTile.Type == this.Const.Tactical.TerrainType.Swamp)
+		{
+			centerTile.Type = this.Const.Tactical.TerrainType.RoughGround;
+			centerTile.Subtype = this.Const.Tactical.TerrainSubtype.MoistEarth;
+			centerTile.BlendPriority = this.Const.Tactical.TileBlendPriority.Swamp2;
+			centerTile.IsBadTerrain = false;
+			centerTile.setBrush("tile_swamp_02");
+		}
+		
+
 	}
 		
 	function duelPlaceActors()

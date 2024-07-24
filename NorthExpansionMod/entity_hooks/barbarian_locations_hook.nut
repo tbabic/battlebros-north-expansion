@@ -692,7 +692,11 @@
 				this.addSituation(this.new("scripts/entity/world/settlements/situations/nem_unwelcome_situation"))
 			}
 			
-			this.m.Modifiers.reset()
+			this.m.Modifiers.reset();
+			foreach( s in this.m.Situations )
+			{
+				s.onUpdate(this.m.Modifiers);
+			}
 			
 			foreach( building in this.m.Buildings )
 			{

@@ -287,8 +287,13 @@ DuelCircleScreen.prototype.addListEntry = function(_entity)
     // bind tooltip
 	image.bindTooltip({ contentType: 'ui-element', elementId: TooltipIdentifier.CharacterBackgrounds.Generic, elementOwner: TooltipIdentifier.ElementOwner.HireScreen, entityId: _entity.ID });
 
-    var name = $('<div class="name title-font-normal font-bold font-color-title">' + _entity[WorldTownScreenIdentifier.HireRosterEntry.Name] + '</div>');
+    var name = $('<div class="name title-font-normal font-bold font-color-title">' + _entity.Name + '</div>');
     row.append(name);
+    
+    var levelContainer = $('<div class="l-level-container"/>');
+	row.append(levelContainer);
+    var level = $('<div class="level text-font-normal font-bold font-color-subtitle">' + _entity.Level + '</div>');
+	levelContainer.append(level);
 
     // bottom row
     row = $('<div class="row is-bottom"/>');
