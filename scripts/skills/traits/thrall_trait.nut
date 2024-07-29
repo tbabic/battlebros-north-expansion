@@ -138,6 +138,7 @@ this.thrall_trait <- this.inherit("scripts/skills/traits/character_trait", {
 			
 			background.m.HairColors = this.Const.HairColors.Young;
 			background.m.Level = 1;
+			background.m.HiringCost = this.Math.rand(20, 25)*10;
 			
 			actor.m.PerkPoints = 0;
 			actor.m.LevelUps = 0;
