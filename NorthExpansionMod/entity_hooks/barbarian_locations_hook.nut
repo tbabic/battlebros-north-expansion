@@ -391,7 +391,11 @@
 			while (maxRecruits > current.len())
 			{
 				local bro = roster.create("scripts/entity/tactical/player");
+				bro.getFlags().set("nem_allow_thrall", true);
+				bro.getFlags().set("nem_allow_chosen", true);
 				bro.setStartValuesEx(draftList);
+				bro.getFlags().remove("nem_allow_thrall");
+				bro.getFlags().remove("nem_allow_chosen");
 				current.push(bro);
 			}
 

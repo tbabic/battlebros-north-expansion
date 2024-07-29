@@ -44,13 +44,52 @@ this.barbarian_raiders_intro_event <- this.inherit("scripts/events/event", {
 	{
 		this.m.Title = "Barbarian raiders";
 		
+		local startingCamps = ::NorthMod.Mod.ModSettings.getSetting("StartingCamps").getValue()
 		
 		local barbarians = this.World.FactionManager.getFactionOfType(this.Const.FactionType.Barbarians);
 		local playerTile = this.World.State.getPlayer().getTile()
-		this.m.Nearest = barbarians.getNearestSettlement(playerTile);
-		logInfo("nearest:"+ this.m.Nearest.getTypeID());
-		this.m.Nearest.setDiscovered(true);
-		this.World.uncoverFogOfWar(this.m.Nearest.getTile().Pos, 500.0);
+		local camps = barbarians.getSettlements();
+		local campDistances = [];
+		
+		foreach( c in camps )
+		{
+			if (c.getTypeID() != "location.barbarian_camp" && 
+				c.getTypeID() != "location.barbarian_shelter" && 
+				c.getTypeID() != "location.barbarian_sanctuary") {
+				continue;
+			}
+			
+			local d = playerTile.getDistanceTo(c.getTile());
+			campDistances.push({
+				Camp = c,
+				Dist = d
+			})
+			
+		}
+		
+		campDistances.sort(function ( _a, _b )
+		{
+			if (_a.Dist > _b.Dist)
+			{
+				return 1;
+			}
+			else if (_a.Dist < _b.Dist)
+			{
+				return -1;
+			}
+
+			return 0;
+		});
+		
+		this.m.Nearest = campDistances[0].Camp;
+		
+		for(local i = 0; i < startingCamps && i < campDistances.len(); i++)
+		{
+			local c = campDistances[i].Camp;
+			c.setDiscovered(true);
+			this.World.uncoverFogOfWar(c.getTile().Pos, 500.0);
+		}
+		
 	}
 
 	function onPrepareVariables( _vars )
@@ -79,9 +118,6 @@ this.barbarian_raiders_intro_event <- this.inherit("scripts/events/event", {
 			"chieftain",
 			this.m.Nearest.getChieftain().getName()
 		]);
-		
-		
-		
 		
 	}
 

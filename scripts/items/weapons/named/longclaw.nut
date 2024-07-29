@@ -23,6 +23,7 @@ this.longclaw <- this.inherit("scripts/items/weapons/named/named_weapon", {
 		this.m.RegularDamageMax = 50;
 		this.m.ArmorDamageMult = 1;
 		this.m.DirectDamageMult = 0.36;
+		this.m.FatigueOnSkillUse = -1;
 	}
 
 	function updateVariant()

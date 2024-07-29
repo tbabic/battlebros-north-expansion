@@ -155,3 +155,46 @@ foreach ( s in Const.World.Spawn.Barbarians)
 		::NorthMod.Const.Spawn.BarbarianNoThralls.push(s);
 	}
 }
+
+
+::NorthMod.Const.Skills <- [];
+::NorthMod.Const.Skills.push({
+	icon = "ui/icons/melee_skill.png",
+	name = "Melee Skill",
+	property = "MeleeSkill",
+});
+::NorthMod.Const.Skills.push({
+	icon = "ui/icons/melee_defense.png",
+	name = "Melee Defense",
+	property = "MeleeDefense",
+});
+::NorthMod.Const.Skills.push({
+	icon = "ui/icons/ranged_skill.png",
+	name = "Ranged Skill",
+	property = "RangedSkill"
+});
+::NorthMod.Const.Skills.push({
+	icon = "ui/icons/ranged_defense.png",
+	name = "Ranged Defense",
+	property = "RangedDefense"
+});
+::NorthMod.Const.Skills.push({
+	icon = "ui/icons/health.png",
+	name = "Hitpoints",
+	property = "Hitpoints"
+});
+::NorthMod.Const.Skills.push({
+	icon = "ui/icons/fatigue.png",
+	name = "Max Fatigue",
+	property = "Stamina"
+});
+::NorthMod.Const.Skills.push({
+	icon = "ui/icons/bravery.png",
+	name = "Resolve",
+	property = "Bravery"
+});
+::NorthMod.Const.Skills.push({
+	icon = "ui/icons/initiative.png",
+	name = "Initiative",
+	property = "Initiative"
+});

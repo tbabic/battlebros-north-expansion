@@ -22,7 +22,7 @@
 		local r = this.Math.rand(1,100);
 		
 
-		if (this.m.Level == 2 && r <= 90) {
+		if (this.getContainer().getSkillByID("trait.thrall") != null) {
 			// thrall equipment
 			local weapons = [
 				"weapons/barbarians/antler_cleaver",
@@ -54,7 +54,7 @@
 			}
 			
 		}
-		else if (this.m.Level == 4 && r <= 30)
+		else if (this.getContainer().getSkillByID("trait.chosen") != null)
 		{	
 			// chosen equipment
 			local weapons = [
@@ -89,12 +89,8 @@
 	
 	local onAdded = ::mods_getMember(o, "onAdded");
 	::mods_override(o, "onAdded", function() {
-		if(this.World.Assets.getOrigin()== null)
+		if(this.World.Assets.getOrigin()== null || !this.World.Flags.get("NorthExpansionActive"))
 		{
-			onAdded();
-			return;
-		}
-		if (!this.World.Flags.get("NorthExpansionActive")) {
 			onAdded();
 			return;
 		}
@@ -107,7 +103,19 @@
 
 			if (this.m.IsNew && !(("State" in this.Tactical) && this.Tactical.State != null && this.Tactical.State.isScenarioMode()))
 			{
-				if (actor.getTitle() == "" && this.Math.rand(0, 3) == 3)
+				local r = this.Math.rand(1, 100);
+				local thrallThreshold = ::NorthMod.Mod.ModSettings.getSetting("ThrallChance").getValue();
+				local chosenThreshold = thrallThreshold + ::NorthMod.Mod.ModSettings.getSetting("ChosenChance").getValue();
+				
+				if (r <= thrallThreshold && bro.getFlags().get("nem_allow_thrall"))
+				{
+					actor.getSkills().add(this.new("scripts/skills/traits/thrall_trait"));
+				}
+				else if (r <= chosenThreshold && bro.getFlags().get("nem_allow_chosen"))
+				{
+					actor.getSkills().add(this.new("scripts/skills/traits/chosen_trait"));
+				}
+				else if (actor.getTitle() == "" && this.Math.rand(0, 3) == 3)
 				{
 					actor.setTitle(::NorthMod.Utils.barbarianTitle());
 				}

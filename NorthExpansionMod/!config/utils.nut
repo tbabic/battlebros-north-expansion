@@ -403,5 +403,33 @@
 			}
 		}
 	}
+	
+	
+	function createBonusSkillTooltip(_skill, _bonusValue = 0, _id = 10)
+	{
+		foreach(s in ::NorthMod.Const.Skills)
+		{
+			if(s.property == _skill || s.name == _skill)
+			{
+				local _text;
+				if (_bonusValue >= 0)
+				{
+					_text = "[color=" + this.Const.UI.Color.PositiveValue + "]+";
+				}
+				else 
+				{
+					_text = "[color=" + this.Const.UI.Color.NegativeValue + "]-";
+				}
+				_text += this.Math.abs(_bonusValue) + "[/color] " + s.name;
+				return {
+					id = _id,
+					type = "text",
+					icon = s.icon,
+					text = _text
+				}
+			}
+		}
+		return null;
+	}
 
 }

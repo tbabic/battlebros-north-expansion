@@ -46,6 +46,14 @@
 	// register the screen to be connected.
 	::MSU.UI.registerConnection(::NorthMod.Screens.DuelCircleScreen);
 	
+	
+	
+	local page = ::NorthMod.Mod.ModSettings.addPage("General");
+	page.addRangeSetting("StartingCamps", 1, 1, 8, 1, "Barbarian camps discovered", "Number of barbarian camps discovered at the start of the game.");
+	
+	page.addRangeSetting("ThrallChance", 5, 0, 30, 5, "Thrall chance", "Chance of a barbarian with a 'thrall' trait appearing for hiring");
+	page.addRangeSetting("ChosenChance", 10, 0, 30, 5, "Chosen chance", "Chance of a barbarian with a 'chosen' trait appearing for hiring");
+	
 });
 
 
