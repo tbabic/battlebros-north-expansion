@@ -94,34 +94,46 @@
 			onAdded();
 			return;
 		}
-		else {
-			local actor = this.getContainer().getActor();
-			if (this.m.IsNew)
-			{
-				actor.setName(::NorthMod.Utils.barbarianNameOnly());
-			}
+		
+		if (this.m.DailyCost > 0)
+		{
+			this.m.DailyCost += 1;
+		}
+		
+		local actor = this.getContainer().getActor();
+		actor.m.Background = this;
 
-			if (this.m.IsNew && !(("State" in this.Tactical) && this.Tactical.State != null && this.Tactical.State.isScenarioMode()))
+		if (this.m.IsNew && !(("State" in this.Tactical) && this.Tactical.State != null && this.Tactical.State.isScenarioMode()))
+		{
+			this.m.IsNew = false;
+			actor.setName(::NorthMod.Utils.barbarianNameOnly());
+			
+			local r = this.Math.rand(1, 100);
+			local thrallThreshold = ::NorthMod.Mod.ModSettings.getSetting("ThrallChance").getValue();
+			local chosenThreshold = thrallThreshold + ::NorthMod.Mod.ModSettings.getSetting("ChosenChance").getValue();
+			this.logInfo("trait chance: " + r);
+			if (r <= thrallThreshold && actor.getFlags().get("nem_allow_thrall"))
 			{
-				local r = this.Math.rand(1, 100);
-				local thrallThreshold = ::NorthMod.Mod.ModSettings.getSetting("ThrallChance").getValue();
-				local chosenThreshold = thrallThreshold + ::NorthMod.Mod.ModSettings.getSetting("ChosenChance").getValue();
-				
-				if (r <= thrallThreshold && bro.getFlags().get("nem_allow_thrall"))
-				{
-					actor.getSkills().add(this.new("scripts/skills/traits/thrall_trait"));
-				}
-				else if (r <= chosenThreshold && bro.getFlags().get("nem_allow_chosen"))
-				{
-					actor.getSkills().add(this.new("scripts/skills/traits/chosen_trait"));
-				}
-				else if (actor.getTitle() == "" && this.Math.rand(0, 3) == 3)
-				{
-					actor.setTitle(::NorthMod.Utils.barbarianTitle());
-				}
+				actor.getSkills().add(this.new("scripts/skills/traits/thrall_trait"));
+			}
+			else if (r <= chosenThreshold && actor.getFlags().get("nem_allow_chosen"))
+			{
+				actor.getSkills().add(this.new("scripts/skills/traits/chosen_trait"));
+			}
+			else if (actor.getTitle() == "" && this.Math.rand(0, 3) == 3)
+			{
+				actor.setTitle(::NorthMod.Utils.barbarianTitle());
 			}
 			
-			this.character_background.onAdded();
+			
+			if (this.m.Level != 1)
+			{
+				actor.m.PerkPoints = this.m.Level - 1;
+				actor.m.LevelUps = this.m.Level - 1;
+				actor.m.Level = this.m.Level;
+				actor.m.XP = this.Const.LevelXP[this.m.Level - 1];
+			}
 		}
+			
 	});
 });

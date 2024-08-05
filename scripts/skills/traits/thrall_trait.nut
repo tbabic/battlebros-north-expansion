@@ -13,7 +13,9 @@ this.thrall_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		this.m.Description = "This character is a thrall and is not accustomed to wearing heavy armor.";
 		this.m.Excluded = [
 			"trait.chosen",
+			"trait.greedy"
 		];
+		this.m.Order = this.Const.SkillOrder.Trait;
 
 	}
 
@@ -135,10 +137,10 @@ this.thrall_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		{
 			local actor = this.getContainer().getActor();
 			actor.setTitle("");
-			
+			background.m.Titles = [];
 			background.m.HairColors = this.Const.HairColors.Young;
 			background.m.Level = 1;
-			background.m.HiringCost = this.Math.rand(20, 25)*10;
+			background.m.HiringCost = this.Math.rand(10, 15)*10;
 			
 			actor.m.PerkPoints = 0;
 			actor.m.LevelUps = 0;
@@ -148,6 +150,20 @@ this.thrall_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		
 		background.m.DailyCost = 0;
 		this.character_trait.onAdded();
+	}
+	
+	function onRemoved()
+	{
+		if(this.getContainer() == null)
+		{
+			return;
+		}
+		local background = this.getContainer().getSkillByID("background.barbarian");
+		if(background == null)
+		{
+			return;
+		}
+		background.m.DailyCost = 20;
 	}
 	
 	function onCombatFinished()

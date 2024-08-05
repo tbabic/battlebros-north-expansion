@@ -70,10 +70,10 @@ this.moonkissed_event <- this.inherit("scripts/events/event", {
 				
 				local b = _event.m.Dude.getBaseProperties();
 
-				local trait = this.new("scripts/skills/traits/fat_trait");
+				local trait = this.new("scripts/skills/traits/mad_trait");
 				if (trait == null)
 				{
-					this.logInfo("fat trait null");
+					this.logInfo("trait null");
 				}
 				_event.m.Dude.getSkills().add(trait);
 				_event.m.Dude.getSkills().add(this.new("scripts/skills/traits/moonkissed_trait"));
@@ -202,6 +202,11 @@ this.moonkissed_event <- this.inherit("scripts/events/event", {
 		{
 			return;
 		}
+		if(this.World.getTime().Days < 20)
+		{
+			return;
+		}
+		
 		
 		local currentTile = this.World.State.getPlayer().getTile();
 		local multiplier = 1;

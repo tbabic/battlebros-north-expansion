@@ -47,7 +47,7 @@ this.wolfmaster_trait <- this.inherit("scripts/skills/traits/character_trait", {
 				id = 13,
 				type = "text",
 				icon = "ui/icons/bravery.png",
-				text = "[color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Resolve"
+				text = "While adjacent to his wolf, character gains [color=" + this.Const.UI.Color.PositiveValue + "]+5[/color] Resolve"
 			}
 			
 		];
@@ -112,6 +112,7 @@ this.wolfmaster_trait <- this.inherit("scripts/skills/traits/character_trait", {
 			logInfo("wolfmaster active");
 			_properties.MeleeSkill += 5;
 			_properties.MeleeDefense += 5;
+			_properties.Bravery +=5;
 		}
 		
 	}

@@ -441,7 +441,7 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 	
 	function onUpdateHiringRoster( _roster )
 	{
-		if (this.World.Statistics.getFlags().getAsInt("NorthExpansionCivilLevel") < 2)
+		if (this.World.Flags.getAsInt("NorthExpansionCivilLevel") < 2)
 		{
 			local garbage = [];
 			local bros = _roster.getAll();
@@ -499,7 +499,15 @@ this.barbarian_raiders_scenario <- this.inherit("scripts/scenarios/world/startin
 	}
 	
 
-	
+	function isDroppedAsLoot( _item )
+	{
+		if (this.World.Flags.get("NorthExpansionCivilLevel") <= 2)
+		{
+			return this.Math.rand(1, 100) <= 15;
+		}
+		return false;
+		
+	}
 	
 	
 

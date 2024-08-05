@@ -13,6 +13,7 @@ this.chosen_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		this.m.Excluded = [
 			"trait.thrall",
 		];
+		this.m.Order = this.Const.SkillOrder.Trait;
 
 	}
 
@@ -57,21 +58,24 @@ this.chosen_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		
 		if (body != null)
 		{
+			this.logInfo("chosen: " + body.getArmorMax());
 			armor += body.getArmorMax();
 		}
 
 		if (head != null)
 		{
+			this.logInfo("chosen: " + head.getArmorMax());
 			armor += head.getArmorMax();
 		}
 		
+		this.logInfo("armor: " + armor);
 		if (armor < 300)
 		{
 			this.m.Value = this.Math.max(-5, (armor - 300) / 10);
 		}
 		else
 		{
-			this.m.Value = this.Math.min(-5, (armor - 300) / 50);
+			this.m.Value = this.Math.min(5, (armor - 300) / 50);
 		}
 		this.m.Value = this.Math.round(this.m.Value);
 		
@@ -91,18 +95,16 @@ this.chosen_trait <- this.inherit("scripts/skills/traits/character_trait", {
 			local actor = this.getContainer().getActor();
 			actor.setTitle(::NorthMod.Utils.barbarianTitle());
 			
-			background.m.Level = 1;
-			
 			background.m.ExcludedTalents = [
 				this.Const.Attributes.Initiative,
 				this.Const.Attributes.RangedSkill
 			];
 			
-			actor.m.Level = this.m.Math.rand(4,5);
-			actor.m.PerkPoints = actor.m.Level - 1;
-			actor.m.LevelUps = actor.m.Level - 1;
-			actor.m.Level = actor.m.Level;
-			actor.m.XP = this.Const.LevelXP[actor.m.Level - 1];
+			background.m.Level = this.Math.rand(4,5);
+			actor.m.PerkPoints = background.m.Level - 1;
+			actor.m.LevelUps = background.m.Level - 1;
+			actor.m.Level = background.m.Level
+			actor.m.XP = this.Const.LevelXP[background.m.Level - 1];
 		}
 		
 		background.m.DailyCost = 30;

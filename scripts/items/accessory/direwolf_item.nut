@@ -137,19 +137,8 @@ this.direwolf_item <- this.inherit("scripts/items/accessory/accessory", {
 			this.setEntity(entity);
 			entity.setFaction(this.Const.Faction.PlayerAnimals);
 
-			if (this.m.ArmorScript != null)
-			{
-				local item = this.new(this.m.ArmorScript);
-				entity.getItems().equip(item);
-			}
-
 			this.Sound.play(this.m.UnleashSounds[this.Math.rand(0, this.m.UnleashSounds.len() - 1)], this.Const.Sound.Volume.Skill, _onTile.Pos);
 		}
-	}
-
-	function onCombatFinished()
-	{
-		this.setEntity(null);
 	}
 
 	function onSerialize( _out )

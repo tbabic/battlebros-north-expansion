@@ -58,6 +58,7 @@ this.duel_effect <- this.inherit("scripts/skills/skill", {
 	function onUpdate( _properties )
 	{
 		_properties.Vision += 2; // to see the circle of men
+		_properties.SurviveWithInjuryChanceMult = 0; //no survivors in case of losing
 	}
 
 });

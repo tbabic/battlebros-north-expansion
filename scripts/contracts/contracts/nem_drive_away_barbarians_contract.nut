@@ -899,7 +899,7 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 	{
 		if (this.m.IsActive)
 		{
-			if (this.m.Destination != null && !this.m.Destination.isNull())
+			if (this.m.Destination != null && !this.m.Destination.isNull() && !this.m.Destination.isAlive())
 			{
 				this.m.Destination.getSprite("selection").Visible = false;
 				::NorthMod.Utils.setIsHostile(this.m.Destination, false);

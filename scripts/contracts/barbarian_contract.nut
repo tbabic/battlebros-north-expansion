@@ -1,6 +1,6 @@
 this.barbarian_contract <- this.inherit("scripts/contracts/contract", {
 	m = {
-		MinimumCost = this.Const.World.Spawn.Troops.BarbarianThrall.Cost * 20,
+		MinimumCost = this.Const.World.Spawn.Troops.BarbarianThrall.Cost * 10,
 		OfferStep = 0.33,
 	},
 	
