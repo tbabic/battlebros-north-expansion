@@ -4,7 +4,6 @@ this.chosen_trait <- this.inherit("scripts/skills/traits/character_trait", {
 	},
 	function create()
 	{
-		logInfo("creating chosen trait");
 		this.character_trait.create();
 		this.m.ID = "trait.chosen";
 		this.m.Name = "Chosen";
@@ -38,7 +37,7 @@ this.chosen_trait <- this.inherit("scripts/skills/traits/character_trait", {
 			}
 		];
 		
-		if (this.m.Value < 0)
+		if (this.m.Value != 0)
 		{
 			t.push(::NorthMod.Utils.createBonusSkillTooltip("MeleeSkill", this.m.Value, 11));
 			t.push(::NorthMod.Utils.createBonusSkillTooltip("MeleeDefense", this.m.Value, 12));
@@ -58,17 +57,14 @@ this.chosen_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		
 		if (body != null)
 		{
-			this.logInfo("chosen: " + body.getArmorMax());
 			armor += body.getArmorMax();
 		}
 
 		if (head != null)
 		{
-			this.logInfo("chosen: " + head.getArmorMax());
 			armor += head.getArmorMax();
 		}
 		
-		this.logInfo("armor: " + armor);
 		if (armor < 300)
 		{
 			this.m.Value = this.Math.max(-5, (armor - 300) / 10);

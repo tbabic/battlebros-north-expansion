@@ -32,7 +32,7 @@ this.make_civil_friends_ambition <- this.inherit("scripts/ambitions/ambition", {
 			return;
 		}
 
-		this.m.Score = 10;
+		this.m.Score = 1 + this.Math.rand(0, 5);
 	}
 
 	function onCheckSuccess()

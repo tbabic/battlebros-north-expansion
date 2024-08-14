@@ -172,7 +172,20 @@ this.barbarian_dueling_circle_event <- this.inherit("scripts/events/event", {
 			{
 				_event.m.DuelingCircle.setCooldown(5);
 				_event.m.DuelingCircle.championDefeated();
-				if(_event.getChampion().Level >= 4 && !_event.m.BroHasChampion)
+				
+				
+				local roster = this.World.getPlayerRoster().getAll();
+				local noChampion = true;
+				foreach( bro in roster)
+				{
+					if (bro.getSkills().hasSkill("trait.champion"))
+					{
+						noChampion = false;
+					}
+				}
+				
+				
+				if(_event.getChampion().Level >= 4 && noChampion)
 				{
 					
 					local trait = this.new("scripts/skills/traits/champion_trait");

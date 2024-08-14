@@ -149,8 +149,7 @@ this.free_thrall_event <- this.inherit("scripts/events/event", {
 	}
 
 	function isValid()
-	{		
-		logInfo("is valid: " + this.m.ID);
+	{
 		if (!this.Const.DLC.Wildmen)
 		{
 			return false;

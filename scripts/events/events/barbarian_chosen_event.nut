@@ -108,7 +108,7 @@ this.barbarian_chosen_event <- this.inherit("scripts/events/event", {
 				continue;
 			}
 			
-			local props = bros[0].getBaseProperties();
+			local props = bro.getBaseProperties();
 			if(props.MeleeSkill < 80)
 			{
 				continue;

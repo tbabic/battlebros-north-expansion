@@ -526,8 +526,7 @@ this.nem_barbarian_king_contract <- this.inherit("scripts/contracts/barbarian_co
 				local wait = this.new("scripts/ai/world/orders/wait_order");
 				wait.setTime(99999);
 				c.addOrder(wait);
-				this.Contract.m.Destination.getFlags().set("hostile", false);
-				this.Contract.m.Destination.setFaction(2);
+				::NorthMod.Utils.setIsHostile(this.Contract.m.Destination, false);
 				this.Contract.m.Destination.getSprite("selection").Visible = false;
 				this.Contract.m.Destination.setOnCombatWithPlayerCallback(null);
 				c = this.Contract.m.Destination.getController();

@@ -70,7 +70,7 @@ this.moonkissed_event <- this.inherit("scripts/events/event", {
 				
 				local b = _event.m.Dude.getBaseProperties();
 
-				local trait = this.new("scripts/skills/traits/mad_trait");
+				local trait = this.new("scripts/skills/traits/night_owl_trait");
 				if (trait == null)
 				{
 					this.logInfo("trait null");
