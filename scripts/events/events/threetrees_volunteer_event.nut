@@ -63,7 +63,7 @@ this.threetrees_volunteer_event <- this.inherit("scripts/events/event", {
 				
 				_event.m.Dude.getBackground().m.RawDescription = "{%name% is a great, broad-chested old veteran warrior. He's old even for southern men, let alone northerners. Some time ago, his crew died fighting when ambushed by unholds, him being the only survivor. After that he spent his time surviving in the north, on his own, until he met you.}";
 				_event.m.Dude.getBackground().buildDescription(true);
-				_event.m.Dude.setName("Tormund");
+				_event.m.Dude.setName("Ulfrik");
 				_event.m.Dude.setTitle("Old Boy");
 				
 				foreach( trait in this.Const.CharacterTraits ) {
@@ -78,7 +78,38 @@ this.threetrees_volunteer_event <- this.inherit("scripts/events/event", {
 				_event.m.Dude.getSkills().add(tough);
 				_event.m.Dude.getSkills().add(old);
 				
-				::NorthMod.Utils.guaranteedTalents(_event.m.Dude, this.Const.Attributes.MeleeDefense, 2);
+				if(::NorthMod.Mod.ModSettings.getSetting("PredefinedBros").getValue())
+				{
+					local b = _event.m.Dude.getBaseProperties();
+					b.Hitpoints = 63;
+					b.Bravery = 40;
+					b.Stamina = 103;
+					b.MeleeSkill = 62;
+					b.RangedSkill = 38;
+					b.MeleeDefense = 5;
+					b.RangedDefense = 5;
+					b.Initiative = 110;
+					
+					
+					_event.m.Dude.m.PerkPoints = 2;
+					_event.m.Dude.m.LevelUps = 2;
+					_event.m.Dude.m.Level = 3;
+					
+					
+					_event.m.Dude.m.Talents = [];
+					local talents = _event.m.Dude.getTalents();
+					talents.resize(this.Const.Attributes.COUNT, 0);
+					talents[this.Const.Attributes.Stamina] = 2;
+					talents[this.Const.Attributes.Bravery] = 1;
+					talents[this.Const.Attributes.MeleeDefense] = 2;
+					_event.m.Dude.m.Attributes = [];
+					_event.m.Dude.fillAttributeLevelUpValues(this.Const.XP.MaxLevelWithPerkpoints - 1);
+				}
+				else
+				{
+					::NorthMod.Utils.guaranteedTalents(_event.m.Dude, this.Const.Attributes.MeleeDefense, 2);
+				}
+				
 				
 				
 				_event.m.Dude.getSkills().update();

@@ -68,19 +68,43 @@ this.moonkissed_event <- this.inherit("scripts/events/event", {
 				_event.m.Dude.setTitle("Beloved O' Moon");
 				
 				
-				local b = _event.m.Dude.getBaseProperties();
-
-				local trait = this.new("scripts/skills/traits/night_owl_trait");
-				if (trait == null)
-				{
-					this.logInfo("trait null");
-				}
-				_event.m.Dude.getSkills().add(trait);
+				//_event.m.Dude.getSkills().add(this.new("scripts/skills/traits/brute_trait"));
 				_event.m.Dude.getSkills().add(this.new("scripts/skills/traits/moonkissed_trait"));
 	
 				
 				//::NorthMod.Utils.guaranteedTalents(_event.m.Dude, this.Const.Attributes.Bravery, 2);
-	
+				
+				if(::NorthMod.Mod.ModSettings.getSetting("PredefinedBros").getValue())
+				{
+					local b = _event.m.Dude.getBaseProperties();
+					b.Hitpoints = 65;
+					b.Bravery = 45;
+					b.Stamina = 100;
+					b.MeleeSkill = 57;
+					b.RangedSkill = 33;
+					b.MeleeDefense = 1;
+					b.RangedDefense = 0;
+					b.Initiative = 105;
+					
+					
+					_event.m.Dude.m.PerkPoints = 3;
+					_event.m.Dude.m.LevelUps = 3;
+					_event.m.Dude.m.Level = 4;
+					
+					
+					_event.m.Dude.m.Talents = [];
+					local talents = _event.m.Dude.getTalents();
+					talents.resize(this.Const.Attributes.COUNT, 0);
+					talents[this.Const.Attributes.MeleeSkill] = 1;
+					talents[this.Const.Attributes.MeleeDefense] = 1;
+					talents[this.Const.Attributes.Hitpoints] = 2;
+					_event.m.Dude.m.Attributes = [];
+					_event.m.Dude.fillAttributeLevelUpValues(this.Const.XP.MaxLevelWithPerkpoints - 1);
+					
+					
+				}
+				
+				
 				
 				_event.m.Dude.getSkills().update();
 				

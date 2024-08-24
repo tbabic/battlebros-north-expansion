@@ -28,7 +28,7 @@ this.nem_defend_settlement_nobles_action <- this.inherit("scripts/factions/facti
 			return;
 		}
 
-		if (this.Math.rand(1, 100) > 10)
+		if (this.Math.rand(1, 100) > 20)
 		{
 			return;
 		}

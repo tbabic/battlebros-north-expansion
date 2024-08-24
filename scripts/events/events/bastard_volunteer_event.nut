@@ -80,25 +80,54 @@ this.bastard_volunteer_event <- this.inherit("scripts/events/event", {
 				_event.m.Dude.setTitle("The Crow");
 				
 				
-				local b = _event.m.Dude.getBaseProperties();
-				b.Bravery = 35;
-				if (b.MeleeDefense < 0) {
-					b.MeleeDefense = 0;
-				}
+				
 				local survivor = this.new("scripts/skills/traits/survivor_trait");
 				local wolfmaster = this.new("scripts/skills/traits/wolfmaster_trait");
-				if (survivor == null) {
-					logInfo("survivor null");
-				}
-				if (wolfmaster == null) {
-					logInfo("wolfmaster null");
-				}
 				_event.m.Dude.getSkills().add(this.new("scripts/skills/traits/hate_undead_trait"));
 				//hate undead or survivor trait
 				_event.m.Dude.getSkills().add(survivor);
 				_event.m.Dude.getSkills().add(wolfmaster);
 				
-				::NorthMod.Utils.guaranteedTalents(_event.m.Dude, this.Const.Attributes.MeleeSkill, 1);
+				if(::NorthMod.Mod.ModSettings.getSetting("PredefinedBros").getValue())
+				{
+					local b = _event.m.Dude.getBaseProperties();
+					b.Hitpoints = 55;
+					b.Bravery = 35;
+					b.Stamina = 97;
+					b.MeleeSkill = 58;
+					b.RangedSkill = 42;
+					b.MeleeDefense = 10;
+					b.RangedDefense = 4;
+					b.Initiative = 100;
+					
+					
+					_event.m.Dude.m.PerkPoints = 1;
+					_event.m.Dude.m.LevelUps = 1;
+					_event.m.Dude.m.Level = 2;
+					
+					
+					_event.m.Dude.m.Talents = [];
+					local talents = _event.m.Dude.getTalents();
+					talents.resize(this.Const.Attributes.COUNT, 0);
+					talents[this.Const.Attributes.MeleeSkill] = 1;
+					talents[this.Const.Attributes.Bravery] = 2;
+					talents[this.Const.Attributes.Hitpoints] = 1;
+					_event.m.Dude.m.Attributes = [];
+					_event.m.Dude.fillAttributeLevelUpValues(this.Const.XP.MaxLevelWithPerkpoints - 1);
+				}
+				else
+				{
+					::NorthMod.Utils.guaranteedTalents(_event.m.Dude, this.Const.Attributes.MeleeSkill, 1);
+					
+					local b = _event.m.Dude.getBaseProperties();
+					b.Bravery = 35;
+					if (b.MeleeDefense < 0) {
+						b.MeleeDefense = 0;
+					}
+				}
+				
+				
+				
 	
 				
 				_event.m.Dude.getSkills().update();

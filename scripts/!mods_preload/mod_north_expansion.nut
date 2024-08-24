@@ -53,6 +53,7 @@
 	
 	page.addRangeSetting("ThrallChance", 5, 0, 30, 5, "Thrall chance", "Chance of a barbarian with a 'thrall' trait appearing for hiring");
 	page.addRangeSetting("ChosenChance", 10, 0, 30, 5, "Chosen chance", "Chance of a barbarian with a 'chosen' trait appearing for hiring");
+	page.addBooleanSetting("PredefinedBros", false, "Predefined bros", "Unique bros, recruitable with events, will have predefined attributes and talents." );
 	
 });
 

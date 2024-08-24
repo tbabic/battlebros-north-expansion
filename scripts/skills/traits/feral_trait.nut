@@ -364,7 +364,7 @@ this.feral_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		{
 			threshold = this.threshold();
 		}
-		local baseDR = 20;
+		local baseDR = 10;
 		local bonusDR = 5 * threshold ;
 		this.m.Ferocity.DamageReduction = baseDR + bonusDR;
 	}

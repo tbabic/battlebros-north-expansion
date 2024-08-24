@@ -10,7 +10,7 @@ this.fathers_sword_event <- this.inherit("scripts/events/event", {
 	{
 		this.m.ID = "event.fathers.sword";
 		this.m.Title = "During camp...";
-		this.m.Cooldown = this.m.multiplier * this.World.getTime().SecondsPerDay;
+		this.m.Cooldown = 20 * this.World.getTime().SecondsPerDay;
 		
 		local options = [];
 		

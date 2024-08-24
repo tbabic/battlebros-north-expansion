@@ -517,18 +517,18 @@ this.nem_drive_away_barbarians_contract <- this.inherit("scripts/contracts/barba
 					if(duelExperience == null)
 					{
 						duelExperience = this.new("scripts/skills/effects/duel_experience_effect");
-						duelExperience.updateExperienceLevel(_event.getChampion().Level);
-						_event.m.ChampionBro.getSkills().add(duelExperience);
+						duelExperience.updateExperienceLevel(3);
+						championBro.getSkills().add(duelExperience);
 						
 						this.List.push({
 							id = 11,
 							icon = duelExperience.getIcon(),
-							text = _event.m.ChampionBro.getName() + " now has " + duelExperience.getName()
+							text = championBro.getName() + " now has " + duelExperience.getName()
 						});
 					}
 					else
 					{
-						duelExperience.updateExperienceLevel(_event.getChampion().Level);
+						duelExperience.updateExperienceLevel(3);
 					}
 					
 					
