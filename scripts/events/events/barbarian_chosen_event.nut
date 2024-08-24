@@ -51,7 +51,16 @@ this.barbarian_chosen_event <- this.inherit("scripts/events/event", {
 			Image = "",
 			List = [],
 			Characters = [],
-			Options = [],
+			Options = [
+				{
+					Text = "Good.",
+					function getResult( _event )
+					{
+						return 0;
+					}
+
+				}
+			],
 			function start( _event )
 			{
 				
