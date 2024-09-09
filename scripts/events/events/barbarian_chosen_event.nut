@@ -15,8 +15,8 @@ this.barbarian_chosen_event <- this.inherit("scripts/events/event", {
 		
 		this.m.Screens.push({
 			ID = "A",
-			Text = "[img]gfx/ui/events/event_139.png[/img]{}",
-			Image = "The clank of heavy armor draws your attention, and you look up to see %chosen% approaching. %SPEECH_ON%Chief, I wanted to speak with you.%SPEECH_OFF%You nod, gesturing for him to continue.%SPEECH_ON%We\'ve fought quite a few battles and so far you have not led us astray. It\'s an honor to fight for you chief. Just wanted to say that.%SPEECH_OFF%You can tell his words are sincere and you admit, his ability to wield %weapon% with deadly precision makes him a formidable warrior. He wears his heavy armor as if it were a second skin. Perhaps you should honor him with a position of a Chosen, an elite warrior among the tribes.",
+			Text = "[img]gfx/ui/events/event_139.png[/img]{The clank of heavy armor draws your attention, and you look up to see %chosen% approaching. %SPEECH_ON%Chief, I wanted to speak with you.%SPEECH_OFF%You nod, gesturing for him to continue.%SPEECH_ON%We\'ve fought quite a few battles and so far you have not led us astray. It\'s an honor to fight for you chief. Just wanted to say that.%SPEECH_OFF%You can tell his words are sincere and you admit, his ability to wield %weapon% with deadly precision makes him a formidable warrior. He wears his heavy armor as if it were a second skin. Perhaps you should honor him with a position of a Chosen, an elite warrior among the tribes.}",
+			Image = "",
 			List = [],
 			Characters = [],
 			Options = [
@@ -65,8 +65,9 @@ this.barbarian_chosen_event <- this.inherit("scripts/events/event", {
 			{
 				
 				this.Characters.push(_event.m.Dude.getImagePath())
-				
-				_event.m.Dude.getSkills().add(this.new("scripts/skills/traits/chosen_trait"));
+				local chosenTrait = this.new("scripts/skills/traits/chosen_trait");
+				chosenTrait.m.IsNew = false;
+				_event.m.Dude.getSkills().add(chosenTrait);
 				
 				this.List.push({
 					id = 10,

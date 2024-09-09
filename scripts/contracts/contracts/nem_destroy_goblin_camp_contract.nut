@@ -325,7 +325,7 @@ this.nem_destroy_goblin_camp_contract <- this.inherit("scripts/contracts/barbari
 				return false;
 			}
 
-			if (this.m.Origin.getOwner().getID() != this.m.Faction)
+			if (this.m.Origin.getFaction() != this.m.Faction)
 			{
 				return false;
 			}

@@ -90,43 +90,9 @@ this.thrall_trait <- this.inherit("scripts/skills/traits/character_trait", {
 		
 		if(this.getContainer().getActor().getLevel() >= this.m.MaxLevel)
 		{
-			_properties.IsAllyXPBlocked = true;
+			_properties.XPGainMult *= 0.0;
 		}
 		
-	}
-	
-	
-	function onActorKilled( _actor, _tile, _skill )
-	{
-		this.actor.onActorKilled(_actor, _tile, _skill);
-
-		if(this.getContainer() == null || this.getContainer().getActor() == null)
-		{
-			return;
-		}
-		
-		if(this.getContainer().getActor().getLevel() < this.m.MaxLevel)
-		{
-			return;
-		}
-		if (this.getFaction() != this.Const.Faction.Player)
-		{
-			return;
-		}
-		
-		local XPgroup = _actor.getXPValue();
-		local brothers = this.Tactical.Entities.getInstancesOfFaction(this.Const.Faction.Player);
-
-		foreach( bro in brothers )
-		{
-			if (bro.getCurrentProperties().IsAllyXPBlocked)
-			{
-				return;
-			}
-
-			bro.addXP(this.Math.max(1, this.Math.floor(XPgroup / brothers.len())));
-		}
-	
 	}
 	
 	

@@ -100,6 +100,7 @@ this.moonkissed_event <- this.inherit("scripts/events/event", {
 					talents[this.Const.Attributes.Hitpoints] = 2;
 					_event.m.Dude.m.Attributes = [];
 					_event.m.Dude.fillAttributeLevelUpValues(this.Const.XP.MaxLevelWithPerkpoints - 1);
+					_event.m.Dude.m.XP = this.Const.LevelXP[_event.m.Dude.m.Level-1];
 					
 					
 				}

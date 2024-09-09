@@ -438,8 +438,7 @@ this.nem_destroy_orc_camp_contract <- this.inherit("scripts/contracts/barbarian_
 			{
 				return false;
 			}
-
-			if (this.m.Origin.getOwner().getID() != this.m.Faction)
+			if (this.m.Origin.getFaction() != this.m.Faction)
 			{
 				return false;
 			}

@@ -99,11 +99,12 @@ this.threetrees_volunteer_event <- this.inherit("scripts/events/event", {
 					_event.m.Dude.m.Talents = [];
 					local talents = _event.m.Dude.getTalents();
 					talents.resize(this.Const.Attributes.COUNT, 0);
-					talents[this.Const.Attributes.Stamina] = 2;
+					talents[this.Const.Attributes.Fatigue] = 2;
 					talents[this.Const.Attributes.Bravery] = 1;
 					talents[this.Const.Attributes.MeleeDefense] = 2;
 					_event.m.Dude.m.Attributes = [];
 					_event.m.Dude.fillAttributeLevelUpValues(this.Const.XP.MaxLevelWithPerkpoints - 1);
+					_event.m.Dude.m.XP = this.Const.LevelXP[_event.m.Dude.m.Level-1];
 				}
 				else
 				{
