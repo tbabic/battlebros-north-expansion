@@ -1,4 +1,4 @@
-::NorthMod <- { ID = "mod_north_expansion",	Name = "North Expansion", Version = "0.7.1"};
+::NorthMod <- { ID = "mod_north_expansion",	Name = "North Expansion", Version = "0.7.2"};
 ::mods_registerMod(::NorthMod.ID, ::NorthMod.Version, ::NorthMod.Name);
 
 //TODO: test traits
