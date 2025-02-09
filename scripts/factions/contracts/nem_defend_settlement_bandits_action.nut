@@ -28,11 +28,6 @@ this.nem_defend_settlement_bandits_action <- this.inherit("scripts/factions/fact
 			return;
 		}
 
-		if (this.Math.rand(1, 100) > 10)
-		{
-			return;
-		}
-
 	
 		local tooFar = true;
 		local myTile = this.m.Home.getTile();

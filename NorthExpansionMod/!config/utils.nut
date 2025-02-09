@@ -76,24 +76,68 @@
 		local terrain = worldmap.getTerrainInRegion(location.getTile());
 		local result = checkSuitableTerrain(terrain, "small_lumber_village")
 		location.getFlags().set("NEMisNearbyForest", result);
+		return result;
 	}
 	
 	function isNearbySnow(location)
 	{
 		if (location.getFlags().has("NEMisNearbySnow")) {
-			//return location.getFlags().get("NEMisNearbySnow");
+			return location.getFlags().get("NEMisNearbySnow");
 		}
-		local worldmap = this.MapGen.get("world.worldmap_generator");
-		local terrain = worldmap.getTerrainInRegion(location.getTile());
-		local result = checkSuitableTerrain(terrain, "small_snow_village");
-		this.logInfo("local terrain: " + terrain.Local);
-		this.logInfo("adjacents");
-		foreach(i, adjacent in terrain.Adjacent)
+		local tile = location.getTile();
+		local snowCounter = 0;
+		
+		for( local i = 0; i < 6; i = ++i )
 		{
-			this.logInfo(i + ", " + adjacent);
+			if (!tile.hasNextTile(i))
+			{
+				continue;
+			}
+			if (isTileSnowy(tile.getNextTile(i)))
+			{
+				snowCounter++;
+			}
 		}
 		
-		location.getFlags().set("NEMisNearbySnow", result);
+		
+		if (isTileSnowy(tile) || snowCounter >= 4)
+		{
+			location.getFlags().set("NEMisNearbySnow", true);
+			this.logInfo("isSnow");
+			return true;
+		}
+		else
+		{
+			location.getFlags().set("NEMisNearbySnow", false);
+			this.logInfo("isNotSnow");
+			return false;
+		}
+		
+		
+	}
+	function isTileSnowy(tile)
+	{
+		if (tile.Type == this.Const.World.TerrainType.Snow)
+		{
+			return true;
+		}
+		else if (tile.Type == this.Const.World.TerrainType.SnowyForest)
+		{
+			return true;
+		}
+		else if (tile.TacticalType == this.Const.World.TerrainTacticalType.Snow)
+		{
+			return true;
+		}
+		else if (tile.TacticalType == this.Const.World.TerrainTacticalType.SnowyForest)
+		{
+			return true;
+		}
+		else if (tile.TacticalType == this.Const.World.TerrainTacticalType.SnowyHills)
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	function getBestTerrain(location)

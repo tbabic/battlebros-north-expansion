@@ -4,7 +4,7 @@ this.nem_defend_settlement_barbarians_action <- this.inherit("scripts/factions/f
 	},
 	function create()
 	{
-		this.m.ID = "nem_defend_settlements_bandits_action";
+		this.m.ID = "nem_defend_settlements_barbarians_action";
 		this.m.Cooldown = this.World.getTime().SecondsPerDay * 14;
 		this.m.IsStartingOnCooldown = false;
 		this.m.IsSettlementsRequired = true;
@@ -24,11 +24,6 @@ this.nem_defend_settlement_barbarians_action <- this.inherit("scripts/factions/f
 		}
 
 		if (this.World.Assets.getBusinessReputation() < 500)
-		{
-			return;
-		}
-		
-		if (this.Math.rand(1, 100) > 10)
 		{
 			return;
 		}

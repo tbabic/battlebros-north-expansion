@@ -27,7 +27,7 @@ this.nem_defend_settlement_greenskins_action <- this.inherit("scripts/factions/f
 			return;
 		}
 
-		if (!this.World.FactionManager.isGreenskinInvasion() && this.Math.rand(1, 100) > 10)
+		if (!this.World.FactionManager.isGreenskinInvasion() && this.Math.rand(1, 100) > 50)
 		{
 			return;
 		}

@@ -28,17 +28,13 @@ this.nem_defend_settlement_nobles_action <- this.inherit("scripts/factions/facti
 			return;
 		}
 
-		if (this.Math.rand(1, 100) > 20)
-		{
-			return;
-		}
 
 	
 		local tooFar = true;
 		local myTile = this.m.Home.getTile();
 		
 		local nearestSettlement = this.getNearestLocationTo(this.m.Home, this.World.EntityManager.getSettlements())
-		if (myTile.getDistanceTo(nearestSettlement.getTile()) <= 20)
+		if (myTile.getDistanceTo(nearestSettlement.getTile()) > 20)
 		{
 			return;
 		}

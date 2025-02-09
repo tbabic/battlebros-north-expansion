@@ -5,7 +5,7 @@ this.nem_defend_settlement_nobles_contract <- this.inherit("scripts/contracts/co
 	function create()
 	{
 		this.nem_defend_settlement_bandits_contract.create();
-		this.m.Type = "contract.nem_defend_settlement_barbarians";
+		this.m.Type = "contract.nem_defend_settlement_nobles";
 		
 		if (this.Math.rand(1, 100) <= 50)
 		{
@@ -74,8 +74,7 @@ this.nem_defend_settlement_nobles_contract <- this.inherit("scripts/contracts/co
 
 	function createScreens()
 	{
-		this.importScreens(::NorthMod.Const.Contracts.NegotiationDefault);
-		this.importScreens(::NorthMod.Const.Contracts.Overview);
+		this.nem_defend_settlement_bandits_contract.createScreens();
 		this.getScreen("Task").Text = "[img]gfx/ui/events/event_20.png[/img]{A few clansmen are roaming outside the halls of the room. You can hear their shouting and it is of a nervous tone. %employer% pours a drink and sips it with a shaking hand.%SPEECH_ON%I\'ll just be clear with you, warrior. We have many, many reports that southern nobles are about to attack this camp. If you want to know, those reports came by way of dead women and children. Clearly, we\'ve no reason to doubt the seriousness of these reports. So, the question is, will you protect us?%SPEECH_OFF% | You settle into %employer%\'s room, taking a seat, rubbing your hands along the wooden frame. It\'s a good oak. A once-tree worth sitting in.%SPEECH_ON%Glad you\'re comfortable, warrior, but I sure as hell ain\'t. We have many, many warnings that a large noble army is about to attack our camp. We\'re quite short on defense, but not short on crowns. Obviously, that\'s where you come in. Are you interested?%SPEECH_OFF% | %employer% steps forth, his voice carrying the weight of desperation. %SPEECH_ON%Warriors, we are on the brink of destruction, threatened by the army the accursed nobles seeking to drive us from our lands. We cannot withstand this attack alone, but with your help, we might have a chance%SPEECH_OFF%}";
 		
 		

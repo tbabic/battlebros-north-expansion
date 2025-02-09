@@ -340,13 +340,6 @@ this.nem_raid_caravan_contract <- this.inherit("scripts/contracts/barbarian_cont
 				}
 			}
 
-			function onActorRetreated( _actor, _combatID )
-			{
-				if (!_actor.isNonCombatant() && _actor.getFaction() == this.Flags.get("TargetFaction") && this.Flags.get("IsAttackDialogTriggered"))
-				{
-					this.Flags.set("Survivors", this.Flags.get("Survivors") + 1);
-				}
-			}
 
 			function onRetreatedFromCombat( _combatID )
 			{
